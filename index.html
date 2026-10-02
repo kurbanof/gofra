@@ -7,26 +7,31 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Отчёт гофролинии</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap">
 <style>
-:root{--bg:#dde6ec;--ink:#13222d;--mut:#4d6272;--glass:rgba(255,255,255,.42);--edge:rgba(255,255,255,.75);--hi:rgba(255,255,255,.85);--sh:rgba(20,40,60,.2);--fld:rgba(255,255,255,.55);--flute:rgba(19,34,45,.045);--noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.3'/></svg>");
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1820;--ink:#eaf1f5;--mut:#9db0bd;--glass:rgba(255,255,255,.09);--edge:rgba(255,255,255,.2);--hi:rgba(255,255,255,.3);--sh:rgba(0,0,0,.5);--fld:rgba(255,255,255,.08);--flute:rgba(255,255,255,.03)}}
-:root[data-theme="dark"]{--bg:#0d1820;--ink:#eaf1f5;--mut:#9db0bd;--glass:rgba(255,255,255,.09);--edge:rgba(255,255,255,.2);--hi:rgba(255,255,255,.3);--sh:rgba(0,0,0,.5);--fld:rgba(255,255,255,.08);--flute:rgba(255,255,255,.03)}
-html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%;overscroll-behavior-y:none}
+:root{--bg:#dde6ec;--ink:#13222d;--mut:#4d6272;--glass:rgba(255,255,255,.42);--edge:rgba(255,255,255,.75);--hi:rgba(255,255,255,.85);--sh:rgba(20,40,60,.2);--fld:rgba(255,255,255,.55);--flute:rgba(19,34,45,.045);--noise:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.3'/></svg>")}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1820;--ink:#eaf1f5;--mut:#9db0bd;--glass:rgba(255,255,255,.09);--edge:rgba(255,255,255,.2);--hi:rgba(255,255,255,.3);--sh:rgba(0,0,0,.5);--fld:rgba(255,255,255,.08);--flute:rgba(255,255,255,.03)}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-body{margin:0;min-height:100%;overscroll-behavior-y:none;touch-action:pan-y;background:var(--bg);color:var(--ink);font:400 16px/1.4 Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
-body::before{content:"";position:fixed;inset:0;height:100lvh;z-index:-2;will-change:transform;background:radial-gradient(60% 40% at 15% 8%,#e3a857aa,transparent 70%),radial-gradient(55% 40% at 95% 35%,#4fb3a9aa,transparent 70%),radial-gradient(60% 45% at 20% 95%,#7d9bd1aa,transparent 70%)}
-body::after{content:"";position:fixed;inset:0;height:100lvh;z-index:-1;pointer-events:none;background:repeating-linear-gradient(90deg,var(--flute) 0 7px,transparent 7px 14px)}
-#app{max-width:560px;margin:0 auto;padding:16px 16px 110px}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.4 Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(60% 40% at 15% 8%,#e3a857aa,transparent 70%),radial-gradient(55% 40% at 95% 35%,#4fb3a9aa,transparent 70%),radial-gradient(60% 45% at 20% 95%,#7d9bd1aa,transparent 70%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(90deg,var(--flute) 0 7px,transparent 7px 14px)}
+.shell{position:fixed;inset:0;display:flex;flex-direction:column;touch-action:pan-y}
+.top,.wrap{width:100%;max-width:560px;margin:0 auto}
+.top{flex:none;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 0}
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px 18px}
+.dock{flex:none;display:flex;justify-content:center;padding:6px 16px calc(12px + env(safe-area-inset-bottom,0px))}
 h1{font-size:26px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
 h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .g{background:var(--noise),var(--glass);-webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);border:1px solid var(--edge);border-radius:24px;box-shadow:inset 0 1px 0 var(--hi),0 12px 32px var(--sh)}
-.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:8px 0 16px}
-.link{background:none;border:0;padding:4px 0;color:var(--mut);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
 .mut{color:var(--mut)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:0 0 16px}
+.dt{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left}
+.dt svg{opacity:.55;flex:none}
 .btn{font:inherit;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:16px;padding:12px 16px;cursor:pointer;min-height:46px}
 .btn.sm{padding:8px 14px;min-height:38px;font-size:14px}
 .btn.pri{background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206;border-color:#f6cf90;font-weight:700;box-shadow:inset 0 1px 0 #fff8,0 6px 18px #d8923a55}
@@ -34,300 +39,425 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .btn.dng{color:#c0392b}
 .btn:active{transform:scale(.98)}
 :focus-visible{outline:3px solid #4fb3a9;outline-offset:2px}
-.total{display:flex;justify-content:space-between;align-items:baseline;padding:16px 20px;margin-bottom:14px}
-.total strong{font-size:34px;font-weight:700}.total strong small{font-size:16px;font-weight:500;color:var(--mut)}
+.total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;margin-bottom:14px}
+.tl{flex:1;min-width:0;font-size:15px;line-height:1.25}
+.tn{flex:none;white-space:nowrap;font-size:clamp(24px,8vw,34px);font-weight:700}
+.tn small{font-size:16px;font-weight:500;color:var(--mut);margin-left:5px}
 .oc{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer}
 .oc .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206}
-.oc .m{flex:1;min-width:0}.oc .m b{display:block;overflow-wrap:anywhere}.oc small{display:block;color:var(--mut);font-size:13px}
-.oc .a{font-weight:700;white-space:nowrap}
+.oc .m{flex:1;min-width:0}.oc .m b{display:block;overflow-wrap:anywhere}.oc small,.dc small,.item small,.sy small{display:block;color:var(--mut);font-size:13px}
+.oc .a,.item .a{font-weight:700;white-space:nowrap}
 .prev{padding:16px;margin-top:18px}
 pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--fld);border-radius:16px;padding:14px;max-height:340px;overflow:auto}
 .chk{display:flex;gap:10px;align-items:center;margin:0 0 8px;font-size:14px;color:var(--mut)}
 .chk input{width:20px;height:20px;accent-color:#d8923a}
 .empty{padding:28px 22px;margin-top:20px}.empty p{color:var(--mut);margin:12px 0 18px}
-.item{display:flex;align-items:center;gap:10px;padding:14px 16px;margin-bottom:10px}
-.item .t{flex:1;cursor:pointer;min-width:0}.item .t b{font-size:18px}.item .t small{display:block;color:var(--mut)}
-.item .a{font-weight:700;white-space:nowrap}
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:4px;padding:5px;border-radius:999px;z-index:5}
-.nav button{font:inherit;font-weight:500;color:var(--mut);background:none;border:0;border-radius:999px;padding:11px 26px;cursor:pointer;position:relative;z-index:1;transition:color .25s}
-
-#ov{position:fixed;inset:0;z-index:8;background:rgba(5,12,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .2s}
-#ov.open{opacity:1;pointer-events:auto}
-#sheet{position:fixed;left:50%;bottom:var(--kb,0px);z-index:9;width:min(100%,560px);max-height:calc(var(--vh,100dvh) - env(safe-area-inset-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,105%);transition:transform .25s ease,bottom .22s ease}
-.kbd #sheet{border-radius:28px;padding-bottom:18px}
-#sheet.open{transform:translate(-50%,0)}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.top .ghost{background:none;border:0;color:var(--mut);font:inherit;cursor:pointer;padding:6px 0}
-.dim{color:var(--mut);min-width:40px;text-align:right}
-.bar{height:5px;border-radius:5px;background:var(--fld);margin:10px 0 2px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#f0b967,#d8923a);transition:width .25s}
-label{display:block;font-size:14px;color:var(--mut);margin-bottom:12px}
-input[type=text],input[type=date],input:not([type]){display:block;width:100%;margin-top:6px;font:inherit;font-size:24px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:16px;padding:14px 16px}
-input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
-.calc{margin:6px 0 4px;padding:12px 14px;border-radius:16px;background:var(--fld);font-size:15px}
-.sug{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 8px}
-.chip{font:inherit;font-size:15px;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:999px;padding:10px 14px;cursor:pointer;text-align:left}
-.chip:active{transform:scale(.97)}
-.row{display:flex;gap:10px;margin-top:14px}.row .btn{flex:1}.row .btn.pri{flex:2}
-#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:20;padding:12px 20px;border-radius:999px;font-weight:500;max-width:92vw;text-align:center;transition:transform .25s}
-#toast.show{transform:translate(-50%,0)}
-.seg{position:relative;display:flex;gap:4px;padding:5px;border-radius:999px;margin-bottom:14px}
-.seg button{flex:1;font:inherit;font-weight:500;font-size:15px;color:var(--mut);background:none;border:0;border-radius:999px;padding:11px 8px;cursor:pointer;position:relative;z-index:1;transition:color .25s}
-.seg button.on,.nav button.on{color:var(--ink)}
+.item,.sy,.dc{display:flex;align-items:center;gap:10px;padding:14px 16px;margin-bottom:10px}
+.item .t,.sy .m,.dc .m{flex:1;min-width:0}.item .t{cursor:pointer}.item .t b{font-size:18px}.dc{cursor:pointer;padding:12px 14px}
+.dc.sel{border-color:#d8923a;box-shadow:inset 0 1px 0 var(--hi),0 0 0 2px #d8923a88,0 12px 32px var(--sh)}
 .mn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
 .mtot{padding:16px 18px;margin-bottom:14px}
 .mg{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:10px}
-.mg span{font-size:26px;font-weight:700;line-height:1.1}
-.mg small{display:block;font-size:13px;font-weight:400;color:var(--mut)}
-.dc{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
-.dc .m{flex:1;min-width:0}.dc small{display:block;color:var(--mut);font-size:13px}
-.dc.sel{border-color:#d8923a;box-shadow:inset 0 1px 0 var(--hi),0 0 0 2px #d8923a88,0 12px 32px var(--sh)}
+.mg span{font-size:26px;font-weight:700;line-height:1.1}.mg small{display:block;font-size:13px;font-weight:400;color:var(--mut)}
+.inst{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;margin-bottom:12px}.inst span{flex:1;font-size:14px;line-height:1.3}
+.inst .x{background:none;border:0;color:var(--mut);font-size:22px;line-height:1;padding:6px 10px;cursor:pointer}
+.pill{position:relative;display:flex;gap:4px;padding:5px;border-radius:999px}
+.pill button{flex:1;position:relative;z-index:1;font:inherit;font-weight:500;font-size:15px;color:var(--mut);background:none;border:0;border-radius:999px;padding:11px 12px;cursor:pointer;transition:color .3s}
+.pill.nav button{padding:11px 26px;flex:none}
+.pill button.on{color:var(--ink)}
 .drop{position:absolute;top:5px;bottom:5px;left:0;width:0;border-radius:999px;background:var(--fld);border:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--sh);pointer-events:none;z-index:0}
-.pg-l>*,.pg-r>*{animation:pgl .38s cubic-bezier(.2,.8,.2,1) both}
-.pg-r>*{animation-name:pgr}
-@keyframes pgl{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
-@keyframes pgr{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
-.dbtn{display:inline-flex;align-items:center;gap:7px;margin-top:10px;font:inherit;font-size:14px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:999px;padding:8px 14px 8px 11px;box-shadow:inset 0 1px 0 var(--hi),0 4px 12px var(--sh);cursor:pointer}
-.dbtn:active{transform:scale(.97)}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.sl-enter-active,.sl-leave-active,.sr-enter-active,.sr-leave-active{transition:opacity .15s ease,transform .15s ease}
+.sl-leave-to,.sr-enter-from{opacity:0;transform:translateX(-28px)}
+.sl-enter-from,.sr-leave-to{opacity:0;transform:translateX(28px)}
+.li-enter-active,.li-leave-active{transition:opacity .3s ease,transform .3s ease}
+.li-enter-from,.li-leave-to{opacity:0;transform:translateY(10px)}
+.ov{position:fixed;inset:0;z-index:8;background:rgba(5,12,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:var(--kb,0px);z-index:9;width:min(100%,560px);max-height:calc(var(--vh,100dvh) - env(safe-area-inset-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,105%);transition:transform .25s ease,bottom .22s ease}
+.sheet.open{transform:translate(-50%,0)}
+html.kbd .sheet{border-radius:28px;padding-bottom:18px}
+.top2{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ghost{background:none;border:0;color:var(--mut);font:inherit;cursor:pointer;padding:6px 0}
+.dim{color:var(--mut);min-width:40px;text-align:right}
+.bar{height:5px;border-radius:5px;background:var(--fld);margin:10px 0 2px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#f0b967,#d8923a);transition:width .3s}
+label{display:block;font-size:14px;color:var(--mut);margin-bottom:12px}
+input:not([type=checkbox]){display:block;width:100%;margin-top:6px;font:inherit;font-size:24px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:16px;padding:14px 16px}
+.inw{display:block;position:relative}.inw input{padding-right:66px}
+input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
+.calcb{position:absolute;right:8px;bottom:8px;width:46px;height:46px;border-radius:14px;background:var(--fld);border:1px solid var(--edge);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:inset 0 1px 0 var(--hi)}
+.sug{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 8px}
+.chip{font:inherit;font-size:15px;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:999px;padding:10px 14px;cursor:pointer;text-align:left}
+.info{margin:6px 0 4px;padding:12px 14px;border-radius:16px;background:var(--fld);font-size:15px}
+.row{display:flex;gap:10px;margin-top:14px}.row .btn{flex:1}.row .btn.pri{flex:2}
+.hint{font-size:13px;color:var(--mut);margin:0}
+.calc{position:fixed;left:50%;top:50%;z-index:12;width:min(94vw,440px);padding:16px 12px;transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.calc.open{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.whr{display:flex;gap:2px;margin:10px 0}
+.wh{flex:1;min-width:0;position:relative;z-index:0}
+.whl{height:22px;line-height:18px;text-align:center;font-size:12px;color:var(--mut)}
+.wh::after{content:"";position:absolute;left:2px;right:2px;top:110px;height:44px;border-radius:12px;background:var(--fld);border:1px solid var(--edge);z-index:-1}
+.whs{height:220px;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain;touch-action:pan-y;-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.whs::-webkit-scrollbar{display:none}
+.whp{height:88px}
+.whi{height:44px;display:flex;align-items:center;justify-content:center;gap:2px;scroll-snap-align:center;font-size:21px;color:var(--mut);opacity:.7}
+.whi.sel{color:var(--ink);font-size:27px;font-weight:500;opacity:1}
+.whi small{font-size:11px;color:var(--mut)}
+.res{text-align:center;font-size:18px}.res b{font-size:28px}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:999px;font-weight:500;max-width:92vw;text-align:center;transition:transform .25s}
+.toast.show{transform:translate(-50%,0)}
+.steps{padding-left:22px;margin:0 0 6px;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main id="app"><div class="g seg" id="seg"><span class="drop"></span><button data-a="mode" data-m="day" class="on">Ежедневный отчёт</button><button data-a="mode" data-m="mon">Отчёт за месяц</button></div><section id="v-rep"></section><section id="v-his" hidden></section><section id="v-mon" hidden></section></main>
-<nav class="g nav"><span class="drop"></span><button data-a="tab" data-t="rep" class="on">Отчёт</button><button data-a="tab" data-t="his">История</button></nav>
-<div id="ov" data-a="close"></div>
-<div id="sheet" class="g"></div>
-<div id="toast" class="g"></div>
+<div id="app"></div>
+<script src="vue.global.prod.js"></script>
+<script>window.Vue||document.write('<script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js"><\/script>')</script>
 <script>
-try{const m={name:'Отчёт гофролинии',short_name:'Отчёт',display:'standalone',background_color:'#0d1820',theme_color:'#0d1820',icons:[{src:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#e0a24f"/><path d="M12 24l20-10 20 10v22L32 56 12 46z" fill="#1a1206" opacity=".85"/></svg>'),sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));document.head.appendChild(l)}catch(e){}
-
-const $=s=>document.querySelector(s),K='gofro-reports-v1';
-let db=null;try{db=JSON.parse(localStorage.getItem(K))}catch(e){}
-if(!db||!Array.isArray(db.reports))db={reports:[],cur:null};
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}};
-if(!Array.isArray(db.customers))db.customers=[];
-if(!Array.isArray(db.days))db.days=[];
-function addCust(n){n=(n||'').trim().replace(/\s+/g,' ');if(n&&!db.customers.some(c=>c.toLowerCase()===n.toLowerCase()))db.customers.push(n)}
-db.reports.forEach(r=>r.orders.forEach(o=>addCust(o.customer)));save();
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-const cur=()=>db.reports.find(r=>r.id===db.cur);
+const {createApp,ref,reactive,computed,watch,onMounted,nextTick}=Vue;
+const K='gofro-reports-v1',KS='gofro-sync-v1';
+const now=()=>Date.now(),z2=n=>String(n).padStart(2,'0');
+const uid=()=>now().toString(36)+Math.random().toString(36).slice(2,6);
 const num=v=>parseFloat(String(v).replace(',','.'))||0;
-const area=o=>num(o.len)*num(o.wid)*num(o.fact)/1e6;
-const total=r=>r.orders.reduce((s,o)=>s+area(o),0);
 const fmt=n=>n.toLocaleString('ru-RU',{maximumFractionDigits:2});
-const dm=iso=>{const p=iso.split('-');return p[2]+'.'+p[1]};
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const today=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())};
-const sheet=$('#sheet'),ov=$('#ov');
-let S={},tt;
-
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+z2(d.getMonth()+1)+'-'+z2(d.getDate())};
+const dm=d=>d.slice(8)+'.'+d.slice(5,7);
+const MN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MI=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const dayTxt=d=>(+d.slice(8))+' '+MN[+d.slice(5,7)-1];
+const area=o=>num(o.len)*num(o.wid)*num(o.fact)/1e6;
+const shiftM=(ym,n)=>{let y=+ym.slice(0,4),m=+ym.slice(5)-1+n;y+=Math.floor(m/12);m=((m%12)+12)%12;return y+'-'+z2(m+1)};
+const range=(a,b,f)=>Array.from({length:b-a+1},(_,i)=>f(a+i));
 const STEPS=[
-{t:'Имя заказчика',f:[{k:'customer',l:'Заказчик',list:1}]},
+{t:'Имя заказчика',f:[{k:'customer',l:'Заказчик',m:'text'}]},
 {t:'Номера',f:[{k:'order',l:'Номер заказа',m:'numeric'},{k:'tech',l:'Номер техкарты (если нет — оставьте пустым)',m:'numeric'}]},
 {t:'Размеры заготовки, мм',f:[{k:'len',l:'Длина',m:'decimal'},{k:'wid',l:'Ширина',m:'decimal'}]},
 {t:'Количество по заказу',f:[{k:'plan',l:'Нужно по заказу, шт',m:'numeric'}]},
 {t:'Количество по факту',f:[{k:'fact',l:'Произведено, шт',m:'numeric'}]}];
+const MODES=[{v:'day',t:'Ежедневный отчёт'},{v:'mon',t:'Отчёт за месяц'}],TABS=[{v:'rep',t:'Отчёт'},{v:'his',t:'История'}];
+const IDX={rep:0,his:1,mon:2};
+const TH={A:4.75,B:3,E:1.8};
+const WN=range(1,40,v=>({v,t:v})),WS=range(1,20,v=>({v,t:v})),WF=['A','B','E'].map(v=>({v,t:v})),WH=range(10,220,v=>({v,t:v,u:'см'})),WL=[{v:0,t:'='}].concat(WH);
 
-function text(r){
- let t='План на '+dm(r.date)+':\n\n';
- r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.customer+' '+o.order+'/'+(o.tech||'-')+'\n        '+o.len+'×'+o.wid+'. '+o.plan+'шт\n\n'});
- t+='По факту:\n\n';
- r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.fact+'\n'});
- if(db.wa!==false)t+='\nПроизведено: '+fmt(total(r))+' м²';
- return t}
+function load(){let d=null;try{d=JSON.parse(localStorage.getItem(K))}catch(e){}
+ d=d&&typeof d==='object'?d:{};
+ d.reports=(d.reports||[]).map(r=>Object.assign({u:0},r));
+ d.days=(d.days||[]).map(x=>Object.assign({u:0},x));
+ d.customers=(d.customers||[]).map(c=>typeof c==='string'?{n:c,u:0}:c);
+ d.cur=d.cur||null;d.mode=d.mode==='mon'?'mon':'day';d.wa=d.wa!==false;return d}
+function mergeBy(L,R,key){
+ const rm=new Map((R||[]).map(x=>[x[key],x])),lm=new Map(L.map(x=>[x[key],x]));let pull=false,push=false;
+ for(const [k,r] of rm){const l=lm.get(k);if(!l||(r.u||0)>(l.u||0)){lm.set(k,r);pull=true}}
+ for(const [k,l] of lm){const r=rm.get(k);if(!r||(l.u||0)>(r.u||0))push=true}
+ return{list:pull?[...lm.values()]:null,push}}
 
-function renderRep(){
- const r=cur(),v=$('#v-rep');
- if(!r){v.innerHTML='<div class="g empty"><h1>Отчёт по смене</h1><p>Приложение спросит дату, а затем по шагам: заказчика, номера, размеры и количество.</p><button class="btn pri big" data-a="newrep">Начать отчёт</button></div>';return}
- v.innerHTML='<div class="head"><div><h1>План на '+dm(r.date)+'</h1><button class="dbtn" data-a="date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Изменить дату</button></div><button class="btn sm" data-a="newrep">Новый отчёт</button></div>'
- +'<div class="g total"><span>Произведено за смену</span><strong>'+fmt(total(r))+' <small>м²</small></strong></div>'
- +'<button class="btn pri big" data-a="add">Добавить заказ</button>'
- +(r.orders.map((o,i)=>'<button class="g oc" data-a="edit" data-id="'+o.id+'"><span class="n">'+(i+1)+'</span><span class="m"><b>'+esc(o.customer)+' '+esc(o.order)+'/'+esc(o.tech||'-')+'</b><small>'+esc(o.len)+'×'+esc(o.wid)+' · план '+esc(o.plan)+' · факт '+esc(o.fact)+'</small></span><span class="a">'+fmt(area(o))+' м²</span></button>').join('')||'<p class="mut">Заказов пока нет.</p>')
- +(r.orders.length?'<div class="g prev"><pre>'+esc(text(r))+'</pre><label class="chk"><input type="checkbox" id="wa" '+(db.wa!==false?'checked':'')+'> Добавить м² в конец списка</label><button class="btn pri big" data-a="copy">Скопировать список</button></div>':'')}
+const Pill={props:{items:Array,modelValue:String},emits:['update:modelValue'],
+ setup(p){const el=ref(null);let l0=null,w0=null;
+  function place(anim){const c=el.value;if(!c)return;const i=p.items.findIndex(x=>x.v===p.modelValue),b=c.querySelectorAll('button')[i],d=c.querySelector('.drop');
+   if(!b||!b.offsetWidth)return;const L=b.offsetLeft,W=b.offsetWidth;
+   if(anim&&l0!==null&&l0!==L&&d.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const lo=Math.min(l0,L),hi=Math.max(l0+w0,L+W),e='cubic-bezier(.4,0,.2,1)';
+    d.animate([{left:l0+'px',width:w0+'px',transform:'scale(1,1)',easing:e},{left:lo+'px',width:(hi-lo)+'px',transform:'scale(1,.88)',offset:.45,easing:e},{left:L+'px',width:W+'px',transform:'scale(1,1)'}],{duration:300})}
+   d.style.left=L+'px';d.style.width=W+'px';l0=L;w0=W}
+  watch(()=>p.modelValue,()=>nextTick(()=>place(true)));
+  onMounted(()=>{place(false);if(window.ResizeObserver)new ResizeObserver(()=>place(false)).observe(el.value)});
+  return{el}},
+ template:'<div class="g pill" ref="el"><span class="drop"></span><button v-for="it in items" :key="it.v" :class="{on:it.v===modelValue}" @click="$emit(\'update:modelValue\',it.v)">{{it.t}}</button></div>'};
 
-function renderHis(){
- const rs=[...db.reports].sort((a,b)=>b.date.localeCompare(a.date)),v=$('#v-his');
- v.innerHTML='<div class="head"><h1>История</h1></div>'+(rs.map(r=>'<div class="g item"><div class="t" data-a="open" data-id="'+r.id+'"><b>'+dm(r.date)+'.'+r.date.slice(0,4)+'</b><small>Заказов: '+r.orders.length+'</small></div><span class="a">'+fmt(total(r))+' м²</span><button class="btn sm dng" data-a="delrep" data-id="'+r.id+'">Удалить</button></div>').join('')||'<p class="mut">Здесь появятся прошлые отчёты.</p>')+'<h2>Сохранённые заказчики</h2>'+(db.customers.map(c=>'<div class="g item"><div class="t"><b>'+esc(c)+'</b></div><button class="btn sm dng" data-a="delcust" data-v="'+esc(c)+'">Удалить</button></div>').join('')||'<p class="mut">Имена появятся после первого заказа.</p>')}
+const Wheel={props:{items:Array,modelValue:null,label:String},emits:['update:modelValue'],
+ setup(p,{emit}){const el=ref(null),H=44;
+  const idx=()=>Math.max(0,p.items.findIndex(i=>i.v===p.modelValue));
+  onMounted(()=>{el.value.scrollTop=idx()*H});
+  function onScroll(){const i=Math.min(p.items.length-1,Math.max(0,Math.round(el.value.scrollTop/H))),v=p.items[i].v;if(v!==p.modelValue)emit('update:modelValue',v)}
+  return{el,onScroll}},
+ template:'<div class="wh"><div class="whl">{{label}}</div><div class="whs" ref="el" @scroll.passive="onScroll"><div class="whp"></div><div v-for="it in items" :key="it.v" class="whi" :class="{sel:it.v===modelValue}">{{it.t}}<small v-if="it.v===modelValue&&it.u">{{it.u}}</small></div><div class="whp"></div></div></div>'};
 
-function showSheet(h){sheet.innerHTML=h;sheet.dataset.k='';sheet.classList.add('open');ov.classList.add('open');const ins=[...sheet.querySelectorAll('input')];ins.forEach((i,k)=>{i.enterKeyHint=k<ins.length-1?'next':'done'});const f=sheet.querySelector('input:not([type=date])');if(f)f.focus({preventScroll:true});scheduleSync()}
-function closeSheet(){const a=document.activeElement;if(a&&sheet.contains(a))a.blur();sheet.classList.remove('open');ov.classList.remove('open');scheduleSync()}
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),3500)}
+const App={components:{Pill,Wheel},
+setup(){
+ const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
+ const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:''}),armed=ref('');
+ const tab=ref('rep'),tname=ref('sl'),scrollEl=ref(null),sheetEl=ref(null);
+ const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
+ const W=reactive({mode:'new',step:0,id:null,err:'',o:{}}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
+ const C=reactive({n:1,s:1,f:'B',h:100,l:0});
+ const mMonth=ref(null),mSel=ref(null),dp=ref(null),instOff=ref(false);
+ try{instOff.value=localStorage.getItem('gofro-inst-off')==='1'}catch(e){}
 
-function openDate(isNew){
- S={dateNew:isNew};
- showSheet('<div class="top"><button class="ghost" data-a="close">Отмена</button><b></b><span></span></div><h2>'+(isNew?'Дата нового отчёта':'Дата отчёта')+'</h2><label>Дата смены<input type="date" id="d" value="'+(isNew?today():cur().date)+'"></label><div class="row"><button class="btn pri" data-a="dateok">'+(isNew?'Далее':'Сохранить')+'</button></div>')}
+ const reports=computed(()=>db.reports.filter(r=>!r.del).sort((a,b)=>b.date.localeCompare(a.date)));
+ const cur=computed(()=>db.reports.find(r=>r.id===db.cur&&!r.del)||null);
+ const repTotal=r=>r.orders.reduce((s,o)=>s+area(o),0);
+ const total=computed(()=>cur.value?repTotal(cur.value):0);
+ const customers=computed(()=>db.customers.filter(c=>!c.del).map(c=>c.n));
+ const view=computed(()=>db.mode==='mon'?'mon':tab.value);
+ const repText=computed(()=>{const r=cur.value;if(!r||!r.orders.length)return'';let t='План на '+dm(r.date)+':\n\n';
+  r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.customer+' '+o.order+'/'+(o.tech||'-')+'\n        '+o.len+'×'+o.wid+'. '+o.plan+'шт\n\n'});
+  t+='По факту:\n\n';r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.fact+'\n'});
+  if(db.wa)t+='\nПроизведено: '+fmt(total.value)+' м²';return t});
+ const days=computed(()=>db.days.filter(x=>!x.del));
+ const monthKey=computed(()=>mMonth.value||(days.value.map(x=>x.date).sort().pop()||today()).slice(0,7));
+ const monthTitle=computed(()=>MI[+monthKey.value.slice(5)-1]+' '+monthKey.value.slice(0,4));
+ const mdays=computed(()=>days.value.filter(x=>x.date.indexOf(monthKey.value)===0).sort((a,b)=>a.date.localeCompare(b.date)));
+ const mdaysDesc=computed(()=>[...mdays.value].reverse());
+ const selDay=computed(()=>mdays.value.find(x=>x.date===mSel.value)||mdays.value[mdays.value.length-1]||null);
+ const cum=up=>mdays.value.filter(x=>x.date<=up).reduce((s,x)=>({m2:s.m2+num(x.m2),ord:s.ord+num(x.ord),sh:s.sh+num(x.sh),brak:s.brak+num(x.brak)}),{m2:0,ord:0,sh:0,brak:0});
+ const mTot=computed(()=>cum('9999'));
+ const mText=computed(()=>{const d=selDay.value;if(!d)return'';const ym=d.date.slice(0,7);
+  const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
+  return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))});
+ const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
 
-function openOrder(id){
- const r=cur(),ex=id&&r.orders.find(x=>x.id===id);
- S={mode:ex?'edit':'new',step:0,id:id,o:ex?Object.assign({},ex):{customer:'',order:'',tech:'',len:'',wid:'',plan:'',fact:''}};drawOrder()}
-function collect(){sheet.querySelectorAll('input[id^=f_]').forEach(i=>{S.o[i.id.slice(2)]=i.value;i.classList.remove('err')})}
-function calc(){collect();const c=$('#calc');if(c)c.innerHTML='Площадь: <b>'+fmt(area(S.o))+' м²</b> (длина × ширина × факт)'}
-function drawOrder(){
- const edit=S.mode==='edit',steps=edit?STEPS:[STEPS[S.step]],last=S.step===STEPS.length-1;
- let h='<div class="top"><button class="ghost" data-a="close">Отмена</button><b>'+(edit?'Изменить заказ':'Заказ №'+(cur().orders.length+1))+'</b><span class="dim">'+(edit?'':(S.step+1)+'/'+STEPS.length)+'</span></div>';
- if(!edit)h+='<div class="bar"><i style="width:'+(S.step+1)/STEPS.length*100+'%"></i></div>';
- steps.forEach(s=>{h+='<h2>'+s.t+'</h2>'+s.f.map(f=>'<label>'+f.l+'<input id="f_'+f.k+'" inputmode="'+(f.m||'text')+'" autocomplete="off" value="'+esc(S.o[f.k])+'"></label>'+(f.list?'<div class="sug" id="sug"></div>':'')).join('')});
- if(edit||last)h+='<div class="calc" id="calc"></div>';
- h+='<div class="row">'+(!edit&&S.step>0?'<button class="btn" data-a="back">Назад</button>':'')+'<button class="btn pri" data-a="next">'+(edit?'Сохранить':last?'Завершить заказ':'Далее')+'</button></div>';
- if(edit)h+='<div class="row"><button class="btn dng" data-a="del">Удалить заказ</button></div>';
- showSheet(h);sheet.dataset.k='wiz';sheet.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();suggest();const cf=$('#f_customer');if(cf)cf.addEventListener('input',suggest)}
-function suggest(){
- const i=$('#f_customer'),box=$('#sug');if(!i||!box)return;
- const q=i.value.trim().toLowerCase();
- let l=q?db.customers.filter(c=>{const s=c.toLowerCase();return s!==q&&s.includes(q)}).sort((a,b)=>(a.toLowerCase().startsWith(q)?0:1)-(b.toLowerCase().startsWith(q)?0:1)||a.localeCompare(b,'ru')):[...db.customers].reverse();
- box.innerHTML=l.slice(0,6).map(c=>'<button type="button" class="chip" data-a="pick" data-v="'+esc(c)+'">'+esc(c)+'</button>').join('')}
+ let tt;const say=m=>{toast.msg=m;clearTimeout(tt);tt=setTimeout(()=>{toast.msg=''},3500)};
+ async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
+ const sure=(k,fn)=>{if(armed.value===k){armed.value='';fn()}else{armed.value=k;setTimeout(()=>{if(armed.value===k)armed.value=''},3000)}};
 
-function next(){
- collect();
- const steps=S.mode==='edit'?STEPS:[STEPS[S.step]];
- const bad=steps.flatMap(s=>s.f).find(f=>f.k!=='tech'&&!String(S.o[f.k]).trim());
- if(bad){const el=$('#f_'+bad.k);el.classList.add('err');el.focus();return}
- if(S.mode==='new'&&S.step<STEPS.length-1){S.step++;drawOrder();return}
- S.o.customer=S.o.customer.trim().replace(/\s+/g,' ');
- const known=db.customers.find(c=>c.toLowerCase()===S.o.customer.toLowerCase());if(known)S.o.customer=known;addCust(S.o.customer);
- ['order','tech','len','wid','plan','fact'].forEach(k=>S.o[k]=String(S.o[k]).replace(/\s+/g,''));
- const r=cur();
- if(S.mode==='edit')Object.assign(r.orders.find(x=>x.id===S.id),S.o);else r.orders.push(Object.assign({id:uid()},S.o));
- save();closeSheet();renderRep();
- toast((S.mode==='edit'?'Сохранено: ':'Заказ завершён: ')+fmt(area(S.o))+' м²')}
+ const show=k=>{sheet.value=k;oc.value++;open.value=true};
+ const close=()=>{const a=document.activeElement;if(a&&a.blur)a.blur();open.value=false;calcOpen.value=false};
+ function addCust(n){const l=n.toLowerCase(),c=db.customers.find(x=>x.n.toLowerCase()===l);if(c){if(c.del){c.del=false;c.u=now()}}else db.customers.push({n,u:now()})}
+ const delCust=n=>{const c=db.customers.find(x=>x.n===n);if(c){c.del=true;c.u=now()}};
 
-async function copy(t){
- try{await navigator.clipboard.writeText(t);return true}catch(e){
- const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand('copy')}catch(x){}a.remove();return ok}}
+ function openDate(isNew){dateF.isNew=isNew;dateF.v=isNew?today():cur.value.date;dateF.err=false;show('date')}
+ function dateOk(){if(!dateF.v){dateF.err=true;return}
+  if(dateF.isNew){const r={id:uid(),date:dateF.v,orders:[],u:now()};db.reports.push(r);db.cur=r.id;tab.value='rep';db.mode='day';openOrder()}
+  else{cur.value.date=dateF.v;cur.value.u=now();close()}}
+ function openReport(id){db.cur=id;tab.value='rep'}
+ function delReport(id){const r=db.reports.find(x=>x.id===id);if(r){r.del=true;r.u=now()}if(db.cur===id)db.cur=null}
 
-function sure(b,fn){if(b.dataset.sure){fn();return}b.dataset.sure=1;const old=b.textContent;b.textContent='Нажмите ещё раз';setTimeout(()=>{delete b.dataset.sure;b.textContent=old},3000)}
-let curTab='rep';function tab(t,d){const prev=curTab;curTab=t;$('#v-rep').hidden=t!=='rep';$('#v-his').hidden=t!=='his';document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));const an=prev!==t&&!$('.nav').hidden;requestAnimationFrame(()=>setPill($('.nav'),t==='his'?1:0,an));if(t==='his')renderHis();else renderRep();enter($(t==='his'?'#v-his':'#v-rep'),d!==undefined?d:(prev===t?0:(t==='his'?1:-1)));window.scrollTo(0,0);scheduleSync()}
+ const shownSteps=computed(()=>W.mode==='edit'?STEPS:[STEPS[W.step]]);
+ const showArea=computed(()=>W.mode==='edit'||W.step===STEPS.length-1);
+ const nextLabel=computed(()=>W.mode==='edit'?'Сохранить':W.step===STEPS.length-1?'Завершить заказ':'Далее');
+ const sugs=computed(()=>{const q=(W.o.customer||'').trim().toLowerCase(),l=customers.value;
+  const r=q?l.filter(c=>{const s=c.toLowerCase();return s!==q&&s.indexOf(q)>-1}).sort((a,b)=>(a.toLowerCase().indexOf(q)===0?0:1)-(b.toLowerCase().indexOf(q)===0?0:1)||a.localeCompare(b,'ru')):[...l].reverse();return r.slice(0,6)});
+ function openOrder(id){const r=cur.value,ex=id&&r.orders.find(x=>x.id===id);
+  Object.assign(W,{mode:ex?'edit':'new',step:0,id:id||null,err:'',o:ex?Object.assign({},ex):{customer:'',order:'',tech:'',len:'',wid:'',plan:'',fact:''}});show('order')}
+ function next(){
+  const bad=shownSteps.value.flatMap(s=>s.f).find(f=>f.k!=='tech'&&!String(W.o[f.k]).trim());
+  if(bad){W.err=bad.k;nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
+  if(W.mode==='new'&&W.step<STEPS.length-1){W.step++;return}
+  const o=Object.assign({},W.o),r=cur.value;if(!r)return;
+  o.customer=o.customer.trim().replace(/\s+/g,' ');const kn=customers.value.find(c=>c.toLowerCase()===o.customer.toLowerCase());if(kn)o.customer=kn;
+  ['order','tech','len','wid','plan','fact'].forEach(k=>{o[k]=String(o[k]).replace(/\s+/g,'')});
+  const ex=W.mode==='edit'&&r.orders.find(x=>x.id===W.id);
+  if(ex)Object.assign(ex,o);else r.orders.push(Object.assign({id:uid()},o));
+  r.u=now();addCust(o.customer);close();say((ex?'Сохранено: ':'Заказ завершён: ')+fmt(area(o))+' м²')}
+ const back=()=>{if(W.step>0)W.step--};
+ const pick=c=>{W.o.customer=c;if(W.mode==='new')next()};
+ const delOrder=()=>{const r=cur.value;r.orders=r.orders.filter(x=>x.id!==W.id);r.u=now();close()};
 
-document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
- if(a==='close')closeSheet();
- else if(a==='tab')tab(b.dataset.t);
- else if(a==='newrep')openDate(true);
- else if(a==='date')openDate(false);
- else if(a==='dateok'){const d=$('#d').value;if(!d){$('#d').classList.add('err');return}
-  if(S.dateNew){const r={id:uid(),date:d,orders:[]};db.reports.push(r);db.cur=r.id;save();closeSheet();tab('rep');openOrder()}
-  else{cur().date=d;save();closeSheet();renderRep()}}
- else if(a==='add')openOrder();
- else if(a==='edit')openOrder(id);
- else if(a==='back'){collect();S.step--;drawOrder()}
- else if(a==='next')next();
- else if(a==='del')sure(b,()=>{const r=cur();r.orders=r.orders.filter(x=>x.id!==S.id);save();closeSheet();renderRep()});
- else if(a==='open'){db.cur=id;save();tab('rep')}
- else if(a==='delrep')sure(b,()=>{db.reports=db.reports.filter(x=>x.id!==id);if(db.cur===id)db.cur=null;save();renderHis()});
- else if(a==='mode')setMode(b.dataset.m);
- else if(a==='mprev'){mMonth=shift(mMonth,-1);mSel=null;renderMon()}
- else if(a==='mnext'){mMonth=shift(mMonth,1);mSel=null;renderMon()}
- else if(a==='selday'){mSel=id;renderMon()}
- else if(a==='addday')openDay();
- else if(a==='editday')openDay(id);
- else if(a==='dayok'){
-  const g=k=>$('#g_'+k).value.trim().replace(/\s+/g,'');
-  const o={date:g('date'),m2:g('m2'),ord:g('ord'),sh:g('sh'),brak:g('brak')||'0'};
-  const bad=['date','m2','ord','sh'].find(k=>!o[k]);
-  if(bad){const el=$('#g_'+bad);el.classList.add('err');el.focus();return}
-  if(S.orig!==o.date&&db.days.some(x=>x.date===o.date)){toast('За эту дату уже есть запись. Откройте её кнопкой «Изменить»');return}
-  db.days=db.days.filter(x=>x.date!==S.orig);db.days.push(o);save();mMonth=o.date.slice(0,7);mSel=o.date;closeSheet();renderMon();toast('День сохранён')}
- else if(a==='dayel')sure(b,()=>{db.days=db.days.filter(x=>x.date!==S.orig);save();closeSheet();renderMon()});
- else if(a==='mcopy')toast(await copy(mtext(db.days.find(x=>x.date===mSel)))?'Отчёт скопирован':'Не удалось скопировать — выделите текст вручную');
- else if(a==='pick'){$('#f_customer').value=b.dataset.v;if(S.mode==='edit'){calc();suggest()}else next()}
- else if(a==='delcust')sure(b,()=>{db.customers=db.customers.filter(c=>c!==b.dataset.v);save();renderHis()});
- else if(a==='copy')toast(await copy(text(cur()))?'Список скопирован':'Не удалось скопировать — выделите текст вручную')});
-document.addEventListener('change',e=>{if(e.target.id==='wa'){db.wa=e.target.checked;save();renderRep()}});
-sheet.addEventListener('keydown',e=>{
- if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT')return;e.preventDefault();
- const ins=[...sheet.querySelectorAll('input')],i=ins.indexOf(e.target);
- if(i<ins.length-1)ins[i+1].focus();else sheet.querySelector('.pri').click()});
-const MN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-const MI=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const dayTxt=d=>(+d.slice(8))+' '+MN[+d.slice(5,7)-1];
-const mdays=ym=>db.days.filter(x=>x.date.indexOf(ym)===0).sort((a,b)=>a.date.localeCompare(b.date));
-const cum=(ym,upTo)=>mdays(ym).filter(x=>x.date<=upTo).reduce((s,x)=>({m2:s.m2+num(x.m2),ord:s.ord+num(x.ord),sh:s.sh+num(x.sh),brak:s.brak+num(x.brak)}),{m2:0,ord:0,sh:0,brak:0});
-const shift=(ym,n)=>{let y=+ym.slice(0,4),m=+ym.slice(5)-1+n;y+=Math.floor(m/12);m=((m%12)+12)%12;return y+'-'+String(m+1).padStart(2,'0')};
-let mMonth=null,mSel=null;
-function mtext(d){
- const ym=d.date.slice(0,7),t=cum(ym,d.date);
- const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
- return 'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',t)}
-function renderMon(){
- const all=db.days.map(x=>x.date).sort();
- if(!mMonth)mMonth=(all.length?all[all.length-1]:today()).slice(0,7);
- const ds=mdays(mMonth);
- if(!mSel||!ds.some(x=>x.date===mSel))mSel=ds.length?ds[ds.length-1].date:null;
- const t=cum(mMonth,'9999');
- let h='<div class="head"><div class="mn"><button class="btn sm" data-a="mprev" aria-label="Предыдущий месяц">‹</button><h1>'+MI[+mMonth.slice(5)-1]+' '+mMonth.slice(0,4)+'</h1><button class="btn sm" data-a="mnext" aria-label="Следующий месяц">›</button></div></div>'
- +'<div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg"><span>'+fmt(t.m2)+'<small>м²</small></span><span>'+fmt(t.ord)+'<small>заказов</small></span><span>'+fmt(t.sh)+'<small>смен</small></span><span>'+fmt(t.brak)+'<small>кг брака</small></span></div></div>'
- +'<button class="btn pri big" data-a="addday">Добавить день</button>';
- if(mSel)h+='<div class="g prev"><pre>'+esc(mtext(ds.find(x=>x.date===mSel)))+'</pre><button class="btn pri big" data-a="mcopy">Скопировать отчёт</button></div><h2>Дни</h2>';
- h+=ds.length?[...ds].reverse().map(x=>'<div class="g dc'+(x.date===mSel?' sel':'')+'" data-a="selday" data-id="'+x.date+'"><div class="m"><b>'+dayTxt(x.date)+'</b><small>'+fmt(num(x.m2))+' м² · '+esc(x.ord)+' зак. · '+esc(x.sh)+' см. · брак '+fmt(num(x.brak))+' кг</small></div><button class="btn sm" data-a="editday" data-id="'+x.date+'">Изменить</button></div>').join(''):'<p class="mut">За этот месяц данных пока нет.</p>';
- $('#v-mon').innerHTML=h}
-function openDay(date){
- const ex=date&&db.days.find(x=>x.date===date);
- S={orig:ex?ex.date:null};
- const o=ex||{date:today(),m2:'',ord:'',sh:'',brak:''};
- showSheet('<div class="top"><button class="ghost" data-a="close">Отмена</button><b>'+(ex?'Изменить день':'Новый день')+'</b><span></span></div><h2>Гофроагрегат</h2><label>Дата<input type="date" id="g_date" value="'+o.date+'"></label>'
- +[['m2','Произведено, м²','decimal'],['ord','Количество заказов','numeric'],['sh','Количество смен','numeric'],['brak','Брак, кг','decimal']].map(f=>'<label>'+f[1]+'<input id="g_'+f[0]+'" inputmode="'+f[2]+'" autocomplete="off" value="'+esc(o[f[0]])+'"></label>').join('')
- +'<div class="row"><button class="btn pri" data-a="dayok">Сохранить</button></div>'+(ex?'<div class="row"><button class="btn dng" data-a="dayel">Удалить день</button></div>':''))}
-function enter(el,dir){el.hidden=false;el.classList.remove('pg-l','pg-r');if(!dir)return;void el.offsetWidth;el.classList.add(dir>0?'pg-l':'pg-r');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('pg-l','pg-r'),480)}
-function setPill(c,i,anim){
- const d=c.querySelector('.drop'),b=c.querySelectorAll('button')[i];if(!d||!b||!b.offsetWidth)return;
- const L=b.offsetLeft,W=b.offsetWidth;
- if(anim&&d._l!=null&&d._l!==L&&d.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-  const l0=d._l,w0=d._w,lo=Math.min(l0,L),hi=Math.max(l0+w0,L+W),e='cubic-bezier(.3,.7,.2,1)';
-  d.animate([{left:l0+'px',width:w0+'px',transform:'scale(1,1)',easing:e},{left:lo+'px',width:(hi-lo)+'px',transform:'scale(1,.86)',offset:.45,easing:e},{left:L+'px',width:W+'px',transform:'scale(1,1)'}],{duration:560})}
- d.style.left=L+'px';d.style.width=W+'px';d._l=L;d._w=W}
-function setMode(m,init){
- const prev=db.mode==='mon'?'mon':'day',dir=init||m===prev?0:(m==='mon'?1:-1);
- db.mode=m;save();
- document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
- setPill($('#seg'),m==='mon'?1:0,!!dir);
- $('.nav').hidden=m==='mon';
- if(m==='mon'){$('#v-rep').hidden=true;$('#v-his').hidden=true;renderMon();enter($('#v-mon'),dir)}
- else{$('#v-mon').hidden=true;tab(curTab,dir)}
- if(dir)window.scrollTo(0,0);
- scheduleSync()}
-const fixPills=()=>{setPill($('#seg'),db.mode==='mon'?1:0,false);setPill($('.nav'),curTab==='his'?1:0,false)};
-addEventListener('resize',fixPills);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fixPills);
+ function openDay(date){const ex=date&&days.value.find(x=>x.date===date);
+  Object.assign(D,{orig:ex?ex.date:null,err:''},ex?{date:ex.date,m2:ex.m2,ord:ex.ord,sh:ex.sh,brak:ex.brak}:{date:today(),m2:'',ord:'',sh:'',brak:''});show('day')}
+ function dayOk(){const g=k=>String(D[k]).trim().replace(/\s+/g,''),o={date:g('date'),m2:g('m2'),ord:g('ord'),sh:g('sh'),brak:g('brak')||'0',u:now()};
+  const bad=['date','m2','ord','sh'].find(k=>!o[k]);if(bad){D.err=bad;return}
+  if(D.orig!==o.date&&days.value.some(x=>x.date===o.date)){say('За эту дату уже есть запись. Откройте её кнопкой «Изменить»');return}
+  if(D.orig&&D.orig!==o.date){const old=db.days.find(x=>x.date===D.orig);if(old){old.del=true;old.u=now()}}
+  const i=db.days.findIndex(x=>x.date===o.date);if(i>-1)db.days[i]=o;else db.days.push(o);
+  mMonth.value=o.date.slice(0,7);mSel.value=o.date;close();say('День сохранён')}
+ const delDay=()=>{const x=db.days.find(y=>y.date===D.orig);if(x){x.del=true;x.u=now()}close()};
 
-let syncT,trapped=false,ignorePop=false;
-const isRoot=()=>!sheet.classList.contains('open')&&db.mode!=='mon'&&curTab==='rep';
-function scheduleSync(){clearTimeout(syncT);syncT=setTimeout(syncTrap,40)}
-function syncTrap(){try{
- if(!isRoot()&&!trapped){history.pushState({t:1},'');trapped=true}
- else if(isRoot()&&trapped){ignorePop=true;trapped=false;history.back();setTimeout(()=>{ignorePop=false},700)}}catch(e){}}
-function backStep(){
- if(sheet.classList.contains('open')){
-  if(sheet.dataset.k==='wiz'&&S.mode==='new'&&S.step>0){collect();S.step--;drawOrder()}else closeSheet();return}
- if(db.mode==='mon'){setMode('day');return}
- if(curTab==='his')tab('rep')}
-window.addEventListener('popstate',()=>{
- if(ignorePop){ignorePop=false;return}
- trapped=false;
- const a=document.activeElement;
- if(a&&a.tagName==='INPUT')a.blur();else backStep();
- scheduleSync()});
+ const calcTotal=computed(()=>{const per=h=>Math.floor(h*10/TH[C.f]),full=per(C.h),last=C.n>1&&C.l?per(C.l):full;return C.s*((C.n-1)*full+last)});
+ function openCalc(){const a=document.activeElement;if(a&&a.blur)a.blur();calcOpen.value=true}
+ const applyCalc=()=>{W.o.fact=String(calcTotal.value);calcOpen.value=false;nextTick(()=>{const e=sheetEl.value&&sheetEl.value.querySelector('input');e&&e.focus({preventScroll:true})})};
 
-const vv=window.visualViewport;let baseH=vv?vv.height:innerHeight,prevKb=0,blurT;
-function vvUpdate(){
- const h=vv?vv.height:innerHeight,r=document.documentElement,a=document.activeElement;
- if(!(a&&a.tagName==='INPUT')||h>baseH)baseH=h;
- const real=Math.max(0,baseH-h);
- let off=vv?Math.max(0,innerHeight-vv.height-vv.offsetTop):0;if(off<90)off=0;
- r.style.setProperty('--kb',off+'px');r.style.setProperty('--vh',h+'px');r.classList.toggle('kbd',real>90);
- if(prevKb>90&&real<=90){clearTimeout(blurT);blurT=setTimeout(()=>{const b=document.activeElement;if(b&&b.tagName==='INPUT'&&baseH-(vv?vv.height:innerHeight)<=90)b.blur()},160)}
- prevKb=real>90?real:0}
-if(vv){vv.addEventListener('resize',vvUpdate);vv.addEventListener('scroll',vvUpdate)}
-addEventListener('resize',vvUpdate);vvUpdate();
-sheet.addEventListener('focusin',e=>{if(e.target.tagName==='INPUT')setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}},280)});
+ const syncKey=computed(()=>cfg.url?'gofro:'+btoa(JSON.stringify({u:cfg.url,c:cfg.code})):'');
+ const syncTitle=computed(()=>!cfg.url?'Данные только на этом устройстве':sync.busy?'Синхронизация…':sync.status==='err'?'Ошибка синхронизации':'Данные синхронизируются');
+ const syncSub=computed(()=>!cfg.url?'Подключите облачную базу, чтобы отчёты были на всех устройствах':sync.status==='err'?sync.msg:cfg.last?'Последняя синхронизация: '+new Date(cfg.last).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'Ожидание');
+ function syncConnect(){const s=syncInp.value.trim();let u='',c='';
+  try{if(s.indexOf('gofro:')===0){const k=JSON.parse(atob(s.slice(6)));u=k.u;c=k.c}else if(/^https?:\/\//.test(s)){u=s;c=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(36).padStart(2,'0')).join('')}}catch(e){}
+  if(!u||!c){say('Введите адрес базы (https://…) или ключ подключения');return}
+  cfg.url=u.replace(/\/+$/,'');cfg.code=c;syncInp.value='';syncNow(true)}
+ const syncOff=()=>{cfg.url='';cfg.code='';cfg.last=0;sync.status='';close()};
+ async function syncNow(manual){
+  if(!cfg.url||!cfg.code||sync.busy)return;sync.busy=true;
+  try{const ep=cfg.url+'/'+cfg.code+'.json';
+   const r=await fetch(ep,{cache:'no-store'});if(!r.ok)throw new Error('Сервер ответил '+r.status);
+   const remote=await r.json();let push=!remote;
+   for(const [k,key] of [['reports','id'],['days','date'],['customers','n']]){const m=mergeBy(db[k],remote&&remote[k],key);if(m.list)db[k]=m.list;if(m.push)push=true}
+   if(!cur.value&&reports.value.length)db.cur=reports.value[0].id;
+   if(push){const w=await fetch(ep,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:db.reports,days:db.days,customers:db.customers,t:now()})});if(!w.ok)throw new Error('Не удалось записать: '+w.status)}
+   cfg.last=now();sync.status='ok';if(manual)say('Синхронизировано')}
+  catch(e){sync.status='err';sync.msg=String(e.message||e);if(manual)say('Ошибка синхронизации')}
+  finally{sync.busy=false}}
 
-let tx=0,ty=0,t0=0,tOK=false;
-document.addEventListener('touchstart',e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tOK=e.touches.length===1&&!sheet.classList.contains('open')&&!e.target.closest('input,pre')},{passive:true});
-document.addEventListener('touchend',e=>{
- if(!tOK)return;tOK=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
- if(Math.abs(dx)>70&&Math.abs(dy)<Math.abs(dx)*.6&&Date.now()-t0<800){
-  if(dx>0&&db.mode!=='mon')setMode('mon');else if(dx<0&&db.mode==='mon')setMode('day')}},{passive:true});
+ const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+ const showInst=computed(()=>!standalone&&!instOff.value&&location.protocol.indexOf('http')===0);
+ async function doInstall(){if(dp.value){dp.value.prompt();try{await dp.value.userChoice}catch(e){}dp.value=null}else show('inst')}
+ const offInst=()=>{instOff.value=true;try{localStorage.setItem('gofro-inst-off','1')}catch(e){}};
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp.value=e});
+ window.addEventListener('appinstalled',()=>{instOff.value=true;say('Приложение установлено')});
+ const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
-setMode(db.mode==='mon'?'mon':'day',true);
-requestAnimationFrame(fixPills);
-renderRep();
+ let tx=0,ty=0,t0=0,tok=false;
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('input')};
+ const tEnd=e=>{if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){if(dx<0&&db.mode!=='mon')db.mode='mon';else if(dx>0&&db.mode==='mon')db.mode='day'}};
+ watch(view,(n,o)=>{tname.value=IDX[n]>IDX[o]?'sl':'sr'});
+ watch(view,()=>{if(scrollEl.value)scrollEl.value.scrollTop=0},{flush:'post'});
+
+ const primary=()=>({date:dateOk,order:next,day:dayOk,sync:syncConnect})[sheet.value];
+ function onKey(e){if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT'||e.target.readOnly)return;e.preventDefault();
+  const ins=[...sheetEl.value.querySelectorAll('input:not([type=date])')],i=ins.indexOf(e.target);
+  if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
+ const onFocusIn=e=>{if(e.target.tagName==='INPUT'&&e.target.type!=='date')setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}},280)};
+
+ const isRoot=computed(()=>!open.value&&!calcOpen.value&&db.mode!=='mon'&&tab.value==='rep');
+ let syncT,trapped=false,ignorePop=false;
+ const schedule=()=>{clearTimeout(syncT);syncT=setTimeout(syncTrap,40)};
+ function syncTrap(){try{if(!isRoot.value&&!trapped){history.pushState({t:1},'');trapped=true}
+  else if(isRoot.value&&trapped){ignorePop=true;trapped=false;history.back();setTimeout(()=>{ignorePop=false},700)}}catch(e){}}
+ function backStep(){
+  if(calcOpen.value){calcOpen.value=false;return}
+  if(open.value){if(sheet.value==='order'&&W.mode==='new'&&W.step>0)W.step--;else close();return}
+  if(db.mode==='mon'){db.mode='day';return}
+  if(tab.value==='his')tab.value='rep'}
+ watch(isRoot,schedule);
+
+ let st,dt;
+ const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}};
+ watch(db,()=>{clearTimeout(st);st=setTimeout(save,150)},{deep:true});
+ watch(cfg,()=>{try{localStorage.setItem(KS,JSON.stringify(cfg))}catch(e){}},{deep:true});
+ watch(()=>[db.reports,db.days,db.customers],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
+ if(!cur.value&&reports.value.length)db.cur=reports.value[0].id;
+
+ onMounted(()=>{
+  const vv=window.visualViewport;let baseH=vv?vv.height:innerHeight,prev=0,bt;
+  const upd=()=>{const h=vv?vv.height:innerHeight,r=document.documentElement,a=document.activeElement;
+   if(!(a&&a.tagName==='INPUT')||h>baseH)baseH=h;const real=Math.max(0,baseH-h);
+   let off=vv?Math.max(0,innerHeight-vv.height-vv.offsetTop):0;if(off<90)off=0;
+   r.style.setProperty('--kb',off+'px');r.style.setProperty('--vh',h+'px');r.classList.toggle('kbd',real>90);
+   if(prev>90&&real<=90){clearTimeout(bt);bt=setTimeout(()=>{const b=document.activeElement;if(b&&b.tagName==='INPUT'&&baseH-(vv?vv.height:innerHeight)<=90)b.blur()},160)}
+   prev=real>90?real:0};
+  if(vv){vv.addEventListener('resize',upd);vv.addEventListener('scroll',upd)}addEventListener('resize',upd);upd();
+  window.addEventListener('popstate',()=>{if(ignorePop){ignorePop=false;return}trapped=false;const a=document.activeElement;if(a&&a.tagName==='INPUT')a.blur();else backStep();schedule()});
+  const go=()=>{if(document.visibilityState==='visible')syncNow(false)};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();go()});
+  addEventListener('online',go);setInterval(go,60000);syncNow(false);
+  if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
+
+ return{db,cfg,sync,toast,armed,tab,tname,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
+  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mText,shiftMonth,
+  copy,sure,show,close,delCust,openDate,dateOk,openReport,delReport,shownSteps,showArea,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
+  tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,TH,fmt,num,dm,dayTxt,area}},
+template:`
+<div class="shell" @touchstart.passive="tStart" @touchend.passive="tEnd">
+ <div class="top"><Pill :items="MODES" v-model="db.mode"/></div>
+ <main class="scroll" ref="scrollEl"><div class="wrap">
+  <div v-if="showInst" class="g inst"><span>Добавьте приложение на главный экран</span><button class="btn sm pri" @click="doInstall">Добавить</button><button class="x" @click="offInst" aria-label="Скрыть">×</button></div>
+  <Transition :name="tname" mode="out-in">
+   <section v-if="view==='rep'" key="rep">
+    <template v-if="cur">
+     <div class="head"><h1><button class="dt" @click="openDate(false)" aria-label="Изменить дату">План на {{ dm(cur.date) }}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></h1><button class="btn sm" @click="openDate(true)">Новый отчёт</button></div>
+     <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong></div>
+     <button class="btn pri big" @click="openOrder()">Добавить заказ</button>
+     <TransitionGroup name="li" tag="div">
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="openOrder(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}</small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
+     </TransitionGroup>
+     <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
+     <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² в конец списка</label><button class="btn pri big" @click="copy(repText)">Скопировать список</button></div>
+    </template>
+    <div v-else class="g empty"><h1>Отчёт по смене</h1><p>Приложение спросит дату, а затем по шагам: заказчика, номера, размеры и количество.</p><button class="btn pri big" @click="openDate(true)">Начать отчёт</button></div>
+   </section>
+   <section v-else-if="view==='his'" key="his">
+    <div class="head"><h1>История</h1></div>
+    <TransitionGroup name="li" tag="div">
+     <div v-for="r in reports" :key="r.id" class="g item"><div class="t" @click="openReport(r.id)"><b>{{ dm(r.date) }}.{{ r.date.slice(0,4) }}</b><small>Заказов: {{ r.orders.length }}</small></div><span class="a">{{ fmt(repTotal(r)) }} м²</span><button class="btn sm dng" @click="sure('r'+r.id,()=>delReport(r.id))">{{ armed==='r'+r.id?'Нажмите ещё раз':'Удалить' }}</button></div>
+    </TransitionGroup>
+    <p v-if="!reports.length" class="mut">Здесь появятся прошлые отчёты.</p>
+    <h2>Синхронизация</h2>
+    <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
+    <h2>Сохранённые заказчики</h2>
+    <TransitionGroup name="li" tag="div">
+     <div v-for="c in customers" :key="c" class="g item"><div class="t"><b>{{ c }}</b></div><button class="btn sm dng" @click="sure('c'+c,()=>delCust(c))">{{ armed==='c'+c?'Нажмите ещё раз':'Удалить' }}</button></div>
+    </TransitionGroup>
+    <p v-if="!customers.length" class="mut">Имена появятся после первого заказа.</p>
+   </section>
+   <section v-else key="mon">
+    <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
+    <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg"><span>{{ fmt(mTot.m2) }}<small>м²</small></span><span>{{ fmt(mTot.ord) }}<small>заказов</small></span><span>{{ fmt(mTot.sh) }}<small>смен</small></span><span>{{ fmt(mTot.brak) }}<small>кг брака</small></span></div></div>
+    <button class="btn pri big" @click="openDay()">Добавить день</button>
+    <div v-if="selDay" class="g prev"><pre>{{ mText }}</pre><button class="btn pri big" @click="copy(mText)">Скопировать отчёт</button></div>
+    <h2 v-if="mdays.length">Дни</h2>
+    <TransitionGroup name="li" tag="div">
+     <div v-for="x in mdaysDesc" :key="x.date" class="g dc" :class="{sel:selDay&&x.date===selDay.date}" @click="mSel=x.date"><div class="m"><b>{{ dayTxt(x.date) }}</b><small>{{ fmt(num(x.m2)) }} м² · {{ x.ord }} зак. · {{ x.sh }} см. · брак {{ fmt(num(x.brak)) }} кг</small></div><button class="btn sm" @click.stop="openDay(x.date)">Изменить</button></div>
+    </TransitionGroup>
+    <p v-if="!mdays.length" class="mut">За этот месяц данных пока нет.</p>
+   </section>
+  </Transition>
+ </div></main>
+ <div class="dock" v-show="db.mode==='day'"><Pill class="nav" :items="TABS" v-model="tab"/></div>
+</div>
+<Teleport to="body">
+ <div class="ov" :class="{open:open}" @click="close"></div>
+ <div class="g sheet" :class="{open:open}" ref="sheetEl" @focusin="onFocusIn" @keydown="onKey"><div :key="oc">
+  <template v-if="sheet==='date'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b></b><span></span></div>
+   <h2>{{ dateF.isNew?'Дата нового отчёта':'Дата отчёта' }}</h2>
+   <label>Дата смены<input type="date" v-model="dateF.v" :class="{err:dateF.err}"></label>
+   <div class="row"><button class="btn pri" @click="dateOk">{{ dateF.isNew?'Далее':'Сохранить' }}</button></div>
+  </template>
+  <template v-else-if="sheet==='order'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ W.mode==='edit'?'Изменить заказ':'Заказ №'+(cur?cur.orders.length+1:1) }}</b><span class="dim">{{ W.mode==='edit'?'':(W.step+1)+'/'+STEPS.length }}</span></div>
+   <div v-if="W.mode==='new'" class="bar"><i :style="{width:((W.step+1)/STEPS.length*100)+'%'}"></i></div>
+   <div v-for="(s,si) in shownSteps" :key="s.t">
+    <h2>{{ s.t }}</h2>
+    <label v-for="(f,i) in s.f" :key="f.k">{{ f.l }}
+     <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" :inputmode="f.m" :enterkeyhint="f.k==='fact'?'done':'next'" :autocapitalize="f.k==='customer'?'words':'off'" autocomplete="off" v-focus="si===0&&i===0" @input="W.err=''">
+     <button v-if="f.k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
+    </label>
+    <div v-if="s.f[0].k==='customer'" class="sug"><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
+   </div>
+   <div v-if="showArea" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b> (длина × ширина × факт)</div>
+   <div class="row"><button v-if="W.mode==='new'&&W.step>0" class="btn" @click="back">Назад</button><button class="btn pri" @click="next">{{ nextLabel }}</button></div>
+   <div v-if="W.mode==='edit'" class="row"><button class="btn dng" @click="sure('o',delOrder)">{{ armed==='o'?'Нажмите ещё раз':'Удалить заказ' }}</button></div>
+  </template>
+  <template v-else-if="sheet==='day'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ D.orig?'Изменить день':'Новый день' }}</b><span></span></div>
+   <h2>Гофроагрегат</h2>
+   <label>Дата<input type="date" v-model="D.date" :class="{err:D.err==='date'}"></label>
+   <label>Произведено, м²<input v-model="D.m2" inputmode="decimal" enterkeyhint="next" autocomplete="off" :class="{err:D.err==='m2'}" v-focus="true"></label>
+   <label>Количество заказов<input v-model="D.ord" inputmode="numeric" enterkeyhint="next" autocomplete="off" :class="{err:D.err==='ord'}"></label>
+   <label>Количество смен<input v-model="D.sh" inputmode="numeric" enterkeyhint="next" autocomplete="off" :class="{err:D.err==='sh'}"></label>
+   <label>Брак, кг<input v-model="D.brak" inputmode="decimal" enterkeyhint="done" autocomplete="off"></label>
+   <div class="row"><button class="btn pri" @click="dayOk">Сохранить</button></div>
+   <div v-if="D.orig" class="row"><button class="btn dng" @click="sure('d',delDay)">{{ armed==='d'?'Нажмите ещё раз':'Удалить день' }}</button></div>
+  </template>
+  <template v-else-if="sheet==='sync'">
+   <div class="top2"><button class="ghost" @click="close">Закрыть</button><b>Синхронизация</b><span></span></div>
+   <template v-if="!cfg.url">
+    <h2>Подключение</h2>
+    <label>Адрес базы Firebase или ключ подключения<input v-model="syncInp" autocomplete="off" autocapitalize="off" enterkeyhint="done" v-focus="true"></label>
+    <p class="hint">На втором устройстве вставьте ключ, который покажет первое. Пошаговая инструкция лежит в README.txt.</p>
+    <div class="row"><button class="btn pri" @click="syncConnect">Подключить</button></div>
+   </template>
+   <template v-else>
+    <h2>{{ syncTitle }}</h2><p class="hint">{{ syncSub }}</p>
+    <label style="margin-top:12px">Ключ подключения (вставьте его на другом устройстве)<input :value="syncKey" readonly></label>
+    <div class="row"><button class="btn" @click="copy(syncKey)">Скопировать ключ</button></div>
+    <div class="row"><button class="btn pri" @click="syncNow(true)">Синхронизировать сейчас</button></div>
+    <div class="row"><button class="btn dng" @click="sure('sy',syncOff)">{{ armed==='sy'?'Нажмите ещё раз':'Отключить синхронизацию' }}</button></div>
+   </template>
+  </template>
+  <template v-else-if="sheet==='inst'">
+   <div class="top2"><button class="ghost" @click="close">Закрыть</button><b>На главный экран</b><span></span></div>
+   <h2>{{ isIos?'Safari':'Chrome' }}</h2>
+   <ol v-if="isIos" class="steps"><li>Нажмите «Поделиться» внизу экрана.</li><li>Выберите «На экран Домой».</li><li>Нажмите «Добавить».</li></ol>
+   <ol v-else class="steps"><li>Откройте меню Chrome: три точки справа вверху.</li><li>Выберите «Установить приложение» или «Добавить на главный экран».</li><li>Подтвердите. Иконка появится на экране.</li></ol>
+  </template>
+ </div></div>
+ <div class="ov" style="z-index:11" :class="{open:calcOpen}" @click="calcOpen=false"></div>
+ <div class="g calc" :class="{open:calcOpen}">
+  <div class="top2"><button class="ghost" @click="calcOpen=false">Закрыть</button><b>Калькулятор</b><span class="dim"></span></div>
+  <div class="whr">
+   <Wheel label="Паддонов" :items="WN" v-model="C.n"/><Wheel label="Стопок" :items="WS" v-model="C.s"/><Wheel label="Формат" :items="WF" v-model="C.f"/><Wheel label="Высота" :items="WH" v-model="C.h"/><Wheel v-if="C.n>1" label="Последний" :items="WL" v-model="C.l"/>
+  </div>
+  <div class="info res">≈ <b>{{ fmt(calcTotal) }}</b> шт<small class="hint" style="display:block">Формат {{ C.f }} ≈ {{ String(TH[C.f]).replace('.',',') }} мм · высота стопки в см</small></div>
+  <div class="row"><button class="btn pri" @click="applyCalc">Подставить в «по факту»</button></div>
+ </div>
+ <div class="g toast" :class="{show:toast.msg}">{{ toast.msg }}</div>
+</Teleport>`};
+
+const app=createApp(App);
+app.directive('focus',{mounted(el,b){if(b.value&&el.type!=='date')el.focus({preventScroll:true})}});
+app.mount('#app');
 </script>
 </body>
 </html>
