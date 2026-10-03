@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#0d1820">
+<meta name="theme-color" content="#0d1820" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#dde6ec" media="(prefers-color-scheme: light)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Отчёт гофролинии</title>
@@ -18,13 +19,23 @@
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
 body{background:var(--bg);color:var(--ink);font:400 16px/1.4 Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(60% 40% at 15% 8%,#e3a857aa,transparent 70%),radial-gradient(55% 40% at 95% 35%,#4fb3a9aa,transparent 70%),radial-gradient(60% 45% at 20% 95%,#7d9bd1aa,transparent 70%)}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(var(--bg),transparent 12%,transparent 88%,var(--bg)),radial-gradient(60% 40% at 15% 8%,#e3a857aa,transparent 70%),radial-gradient(55% 40% at 95% 35%,#4fb3a9aa,transparent 70%),radial-gradient(60% 45% at 20% 95%,#7d9bd1aa,transparent 70%)}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(90deg,var(--flute) 0 7px,transparent 7px 14px)}
-.shell{position:fixed;inset:0;display:flex;flex-direction:column;touch-action:pan-y}
-.top,.wrap{width:100%;max-width:560px;margin:0 auto}
-.top{flex:none;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 0}
-.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px 18px}
-.dock{flex:none;display:flex;justify-content:center;padding:6px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.shell{position:fixed;inset:0;touch-action:pan-y}
+.wrap{width:100%;max-width:560px;margin:0 auto}
+.top,.dock{position:absolute;left:0;right:0;z-index:5;pointer-events:none}
+.top{top:0;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 0}
+.top .pill{max-width:560px;margin:0 auto;pointer-events:auto}
+.top::before,.dock::before{content:"";position:absolute;left:0;right:0;z-index:-1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);transition:opacity .3s ease}
+.top::before{top:0;height:calc(100px + env(safe-area-inset-top,0px));background:linear-gradient(color-mix(in srgb,var(--bg) 60%,transparent),transparent);-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:calc(84px + env(safe-area-inset-top,0px)) 16px calc(100px + env(safe-area-inset-bottom,0px))}
+.dock{bottom:0;display:flex;justify-content:center;padding:0 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.dock .pill{pointer-events:auto}
+.dock::before{bottom:0;height:calc(110px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,color-mix(in srgb,var(--bg) 60%,transparent));-webkit-mask-image:linear-gradient(transparent,#000 45%);mask-image:linear-gradient(transparent,#000 45%);opacity:0}
+.dock.on::before{opacity:1}
+.dock-enter-active,.dock-leave-active{transition:opacity .3s ease,transform .3s ease}
+.dock-enter-from,.dock-leave-to{opacity:0;transform:translateY(18px)}
+.fin{margin:4px 0 8px}
 h1{font-size:26px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
 h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .g{background:var(--noise),var(--glass);-webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);border:1px solid var(--edge);border-radius:24px;box-shadow:inset 0 1px 0 var(--hi),0 12px 32px var(--sh)}
@@ -66,9 +77,11 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .pill.nav button{padding:11px 26px;flex:none}
 .pill button.on{color:var(--ink)}
 .drop{position:absolute;top:5px;bottom:5px;left:0;width:0;border-radius:999px;background:var(--fld);border:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--hi),0 4px 14px var(--sh);pointer-events:none;z-index:0}
-.sl-enter-active,.sl-leave-active,.sr-enter-active,.sr-leave-active{transition:opacity .15s ease,transform .15s ease}
-.sl-leave-to,.sr-enter-from{opacity:0;transform:translateX(-28px)}
-.sl-enter-from,.sr-leave-to{opacity:0;transform:translateX(28px)}
+.sl-enter-active,.sl-leave-active,.sr-enter-active,.sr-leave-active{transition:transform .15s ease}
+.sl-enter-active :is(.g,.head,h2,p),.sl-leave-active :is(.g,.head,h2,p),.sr-enter-active :is(.g,.head,h2,p),.sr-leave-active :is(.g,.head,h2,p){transition:opacity .15s ease}
+.sl-enter-from :is(.g,.head,h2,p),.sl-leave-to :is(.g,.head,h2,p),.sr-enter-from :is(.g,.head,h2,p),.sr-leave-to :is(.g,.head,h2,p){opacity:0}
+.sl-leave-to,.sr-enter-from{transform:translateX(-28px)}
+.sl-enter-from,.sr-leave-to{transform:translateX(28px)}
 .li-enter-active,.li-leave-active{transition:opacity .3s ease,transform .3s ease}
 .li-enter-from,.li-leave-to{opacity:0;transform:translateY(10px)}
 .ov{position:fixed;inset:0;z-index:8;background:rgba(5,12,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .2s}
@@ -205,6 +218,12 @@ setup(){
   const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
   return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))});
  const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
+ const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+x.orders.length,0)}};
+ const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=days.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord?'ok':'stale'});
+ const finLabel=computed(()=>({new:'Закончить отчёт',stale:'Обновить в месячном отчёте',ok:'Сохранено в месячном отчёте ✓'})[finState.value]||'');
+ function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;const t=dayTotals(r),m2=String(t.m2),ord=String(t.ord),ex=db.days.find(x=>x.date===r.date);
+  if(ex&&!ex.del){ex.m2=m2;ex.ord=ord;ex.u=now()}else if(ex)Object.assign(ex,{m2,ord,sh:'1',brak:'0',del:false,u:now()});else db.days.push({date:r.date,m2,ord,sh:'1',brak:'0',u:now()});
+  mMonth.value=r.date.slice(0,7);mSel.value=r.date;say('В месячном отчёте: '+fmt(t.m2)+' м², заказов: '+t.ord)}
 
  let tt;const say=m=>{toast.msg=m;clearTimeout(tt);tt=setTimeout(()=>{toast.msg=''},3500)};
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
@@ -333,7 +352,7 @@ setup(){
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
  return{db,cfg,sync,toast,armed,tab,tname,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
-  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mText,shiftMonth,
+  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mText,shiftMonth,finState,finLabel,finishReport,
   copy,sure,show,close,delCust,openDate,dateOk,openReport,delReport,shownSteps,showArea,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,TH,fmt,num,dm,dayTxt,area}},
@@ -351,6 +370,7 @@ template:`
      <TransitionGroup name="li" tag="div">
       <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="openOrder(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}</small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
      </TransitionGroup>
+     <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
      <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² в конец списка</label><button class="btn pri big" @click="copy(repText)">Скопировать список</button></div>
     </template>
@@ -383,7 +403,7 @@ template:`
    </section>
   </Transition>
  </div></main>
- <div class="dock" v-show="db.mode==='day'"><Pill class="nav" :items="TABS" v-model="tab"/></div>
+ <div class="dock" :class="{on:db.mode==='day'}"><Transition name="dock"><Pill v-show="db.mode==='day'" class="nav" :items="TABS" v-model="tab"/></Transition></div>
 </div>
 <Teleport to="body">
  <div class="ov" :class="{open:open}" @click="close"></div>
