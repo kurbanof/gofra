@@ -38,6 +38,7 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 .dock-enter-active,.dock-leave-active{transition:opacity .3s ease,transform .3s ease}
 .dock-enter-from,.dock-leave-to{opacity:0;transform:translateY(18px)}
 .fin{margin:4px 0 8px}
+pre.full{max-height:none}
 .io{flex-wrap:wrap}.io .m{flex:1 1 100%}.io .btn{flex:1}
 h1{font-size:26px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
 h2{font-size:20px;margin:18px 0 10px;font-weight:700}
@@ -219,11 +220,13 @@ setup(){
  const mdays=computed(()=>days.value.filter(x=>x.date.indexOf(monthKey.value)===0).sort((a,b)=>a.date.localeCompare(b.date)));
  const mdaysDesc=computed(()=>[...mdays.value].reverse());
  const selDay=computed(()=>mdays.value.find(x=>x.date===mSel.value)||mdays.value[mdays.value.length-1]||null);
+ const selOrders=computed(()=>{const d=selDay.value;return d?db.reports.filter(r=>!r.del&&r.date===d.date).sort((a,b)=>(a.u||0)-(b.u||0)).flatMap(r=>r.orders):[]});
  const cum=up=>mdays.value.filter(x=>x.date<=up).reduce((s,x)=>({m2:s.m2+num(x.m2),ord:s.ord+num(x.ord),sh:s.sh+num(x.sh),brak:s.brak+num(x.brak)}),{m2:0,ord:0,sh:0,brak:0});
  const mTot=computed(()=>cum('9999'));
  const mText=computed(()=>{const d=selDay.value;if(!d)return'';const ym=d.date.slice(0,7);
   const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
-  return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))});
+  const ords=selOrders.value.length?'\n\nЗаказы:\n\n'+selOrders.value.map((o,i)=>(i+1)+'. '+o.customer+' '+o.order+'/'+(o.tech||'-')+'\n        '+o.len+'×'+o.wid+'. План '+o.plan+'шт, факт '+o.fact+'шт').join('\n\n'):'';
+  return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))+ords});
  const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
  const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+x.orders.length,0)}};
  const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=days.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord?'ok':'stale'});
@@ -264,10 +267,18 @@ setup(){
   catch(err){say('Не удалось прочитать файл: нужен файл экспорта (.json)')}}
 
  function openDate(isNew){dateF.isNew=isNew;dateF.v=isNew?today():cur.value.date;dateF.err=false;show('date')}
+ const dropEmpty=()=>{const r=cur.value;if(r&&!r.orders.length){r.del=true;r.u=now()}};
  function dateOk(){if(!dateF.v){dateF.err=true;return}
-  if(dateF.isNew){const r={id:uid(),date:dateF.v,orders:[],u:now()};db.reports.push(r);db.cur=r.id;tab.value='rep';db.mode='day';openOrder()}
-  else{cur.value.date=dateF.v;cur.value.u=now();close()}}
- function openReport(id){db.cur=id;tab.value='rep'}
+  dropEmpty();const r={id:uid(),date:dateF.v,orders:[],u:now()};db.reports.push(r);db.cur=r.id;tab.value='rep';db.mode='day';openOrder()}
+ function goDate(){const d=dateF.v;if(!d){dateF.err=true;return}
+  const same=reports.value.filter(r=>r.date===d).sort((a,b)=>(b.u||0)-(a.u||0));
+  if(same.length){if(!cur.value||same[0].id!==cur.value.id)dropEmpty();db.cur=same[0].id}
+  else{dropEmpty();const r={id:uid(),date:d,orders:[],u:now()};db.reports.push(r);db.cur=r.id}
+  tab.value='rep';db.mode='day';close()}
+ function renameDate(){const d=dateF.v,r=cur.value;if(!d){dateF.err=true;return}if(!r)return;
+  if(reports.value.some(x=>x.id!==r.id&&x.date===d)){say('За эту дату уже есть отчёт. Нажмите «Показать заказы»');return}
+  r.date=d;r.u=now();close()}
+ function openReport(id){if(!cur.value||cur.value.id!==id)dropEmpty();db.cur=id;tab.value='rep'}
  function delReport(id){const r=db.reports.find(x=>x.id===id);if(r){r.del=true;r.u=now()}if(db.cur===id)db.cur=null}
 
  const shownSteps=computed(()=>W.mode==='edit'?STEPS:[STEPS[W.step]]);
@@ -343,7 +354,7 @@ setup(){
   if(y<40){topHidden.value=false;lastY=y}else if(d>8){topHidden.value=true;lastY=y}else if(d<-8){topHidden.value=false;lastY=y}})}
  watch(view,()=>{topHidden.value=false;lastY=0;if(scrollEl.value)scrollEl.value.scrollTop=0},{flush:'post'});
 
- const primary=()=>({date:dateOk,order:next,day:dayOk,sync:syncConnect})[sheet.value];
+ const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect})[sheet.value];
  function onKey(e){if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT'||e.target.readOnly)return;e.preventDefault();
   const ins=[...sheetEl.value.querySelectorAll('input:not([type=date])')],i=ins.indexOf(e.target);
   if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
@@ -385,7 +396,7 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,tname,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mText,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  copy,sure,show,close,delCust,openDate,dateOk,openReport,delReport,shownSteps,showArea,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,showArea,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,TH,fmt,num,dm,dayTxt,area}},
 template:`
@@ -427,10 +438,10 @@ template:`
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
     <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg"><span>{{ fmt(mTot.m2) }}<small>м²</small></span><span>{{ fmt(mTot.ord) }}<small>заказов</small></span><span>{{ fmt(mTot.sh) }}<small>смен</small></span><span>{{ fmt(mTot.brak) }}<small>кг брака</small></span></div></div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
-    <div v-if="selDay" class="g prev"><pre>{{ mText }}</pre><button class="btn pri big" @click="copy(mText)">Скопировать отчёт</button></div>
+    <div v-if="selDay" class="g prev"><pre class="full">{{ mText }}</pre><button class="btn pri big" @click="copy(mText)">Скопировать отчёт</button></div>
     <h2 v-if="mdays.length">Дни</h2>
     <TransitionGroup name="li" tag="div">
-     <div v-for="x in mdaysDesc" :key="x.date" class="g dc" :class="{sel:selDay&&x.date===selDay.date}" @click="mSel=x.date"><div class="m"><b>{{ dayTxt(x.date) }}</b><small>{{ fmt(num(x.m2)) }} м² · {{ x.ord }} зак. · {{ x.sh }} см. · брак {{ fmt(num(x.brak)) }} кг</small></div><button class="btn sm" @click.stop="openDay(x.date)">Изменить</button></div>
+     <div v-for="x in mdaysDesc" :key="x.date" class="g dc" :class="{sel:selDay&&x.date===selDay.date}" @click="mSel=x.date"><div class="m"><b>{{ dayTxt(x.date) }}</b><small>{{ fmt(num(x.m2)) }} м² · {{ x.ord }} зак. · {{ x.sh }} см.</small><small>брак {{ fmt(num(x.brak)) }} кг</small></div><button class="btn sm" @click.stop="openDay(x.date)">Изменить</button></div>
     </TransitionGroup>
     <p v-if="!mdays.length" class="mut">За этот месяц данных пока нет.</p>
    </section>
@@ -443,9 +454,11 @@ template:`
  <div class="g sheet" :class="{open:open}" ref="sheetEl" @focusin="onFocusIn" @keydown="onKey"><div :key="oc">
   <template v-if="sheet==='date'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b></b><span></span></div>
-   <h2>{{ dateF.isNew?'Дата нового отчёта':'Дата отчёта' }}</h2>
+   <h2>{{ dateF.isNew?'Дата нового отчёта':'Выберите дату' }}</h2>
    <label>Дата смены<input type="date" v-model="dateF.v" :class="{err:dateF.err}"></label>
-   <div class="row"><button class="btn pri" @click="dateOk">{{ dateF.isNew?'Далее':'Сохранить' }}</button></div>
+   <p v-if="!dateF.isNew" class="hint">Откроется отчёт за выбранную дату. Если его ещё нет, начнётся новый.</p>
+   <div class="row"><button class="btn pri" @click="dateF.isNew?dateOk():goDate()">{{ dateF.isNew?'Далее':'Показать заказы' }}</button></div>
+   <div v-if="!dateF.isNew" class="row"><button class="btn" @click="renameDate">Изменить дату этого отчёта</button></div>
   </template>
   <template v-else-if="sheet==='order'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ W.mode==='edit'?'Изменить заказ':'Заказ №'+(cur?cur.orders.length+1:1) }}</b><span class="dim">{{ W.mode==='edit'?'':(W.step+1)+'/'+STEPS.length }}</span></div>
