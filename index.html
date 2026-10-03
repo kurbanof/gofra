@@ -416,7 +416,7 @@ template:`
     <p v-if="!reports.length" class="mut">Здесь появятся прошлые отчёты.</p>
     <h2>Синхронизация</h2>
     <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
-    <div class="g sy io"><div class="m"><b>Резервная копия</b><small>Файл с отчётами</small></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
+    <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
     <h2>Сохранённые заказчики</h2>
     <TransitionGroup name="li" tag="div">
      <div v-for="c in customers" :key="c" class="g item"><div class="t"><b>{{ c }}</b></div><button class="btn sm dng" @click="sure('c'+c,()=>delCust(c))">{{ armed==='c'+c?'Нажмите ещё раз':'Удалить' }}</button></div>
