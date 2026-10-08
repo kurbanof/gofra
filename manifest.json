@@ -5,10 +5,6 @@
  "start_url": "./index.html",
  "scope": "./",
  "display": "standalone",
- "display_override": [
-  "standalone",
-  "minimal-ui"
- ],
  "orientation": "portrait",
  "lang": "ru",
  "background_color": "#0d1820",
