@@ -126,6 +126,7 @@ input:not([type=checkbox]){display:block;width:100%;margin-top:6px;font:inherit;
 input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .calcb{position:absolute;right:8px;bottom:8px;width:46px;height:46px;border-radius:14px;background:var(--fld);border:1px solid var(--edge);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:inset 0 1px 0 var(--hi)}
 .sug{display:flex;flex-wrap:nowrap;gap:8px;margin:-4px -18px 0;padding:0 18px 2px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}.sug::-webkit-scrollbar{display:none}.sug .chip{flex:none;white-space:nowrap}
+.chip.paste{display:inline-flex;align-items:center;gap:7px;font-weight:600;border-color:#d8923a99}.chip.paste svg{color:#d8923a;flex:none}
 .chip{font:inherit;font-size:15px;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:999px;padding:10px 14px;cursor:pointer;text-align:left}
 .info{margin:6px 0 4px;padding:12px 14px;border-radius:16px;background:var(--fld);font-size:15px}
 .info .warn{display:block;margin-top:4px;font-size:13px;color:#c0392b}:root[data-theme=dark] .info .warn{color:#f1907b}
@@ -225,7 +226,7 @@ function impDate(str,nowD){const m=/(\d{1,2})\s*[.\-\/]\s*(\d{1,2})(?:\s*[.\-\/]
  if(!m[3]&&new Date(y,mo-1,d)-nowD>60*864e5)y--;
  const t=new Date(y,mo-1,d);if(t.getMonth()!==mo-1)return null;
  return y+'-'+z2(mo)+'-'+z2(d)}
-function impItem(t){
+function impItem(t,lax){
  const P=[...t.matchAll(/(\d+)\s*[\/:×xх*]\s*([A-Za-z]?\d+[A-Za-z]?|-)/gi)];if(!P.length)return null;
  const b=P[P.length-1];if(!/^\d+$/.test(b[2]))return null;
  let cust,ord,tech;
@@ -233,10 +234,9 @@ function impItem(t){
  else{const m=/^(.*?)\s*(\d{3,7})\s*$/.exec(t.slice(0,b.index));if(!m)return null;cust=m[1];ord=m[2];tech=''}
  const tk=t.slice(b.index+b[0].length).split(/\s+/).filter(x=>x&&!/^[.,;:·•-]+$/.test(x));
  if(tk.length&&/^(шт|штук)\.?$/i.test(tk[tk.length-1]))tk.pop();
- let last=tk.pop();if(last==null)return null;
- const q=/^(\d+)(?:шт|штук)?\.?$/i.exec(last);if(!q)return null;
- let plan=q[1];
- while(tk.length&&/^\d{1,3}$/.test(tk[tk.length-1])&&plan.length===3){plan=tk.pop()+plan}
+ const last=tk.pop(),q=last==null?null:/^(\d+)(?:шт|штук)?\.?$/i.exec(last);if(!q&&!lax)return null;
+ let plan=q?q[1]:'';
+ while(q&&tk.length&&/^\d{1,3}$/.test(tk[tk.length-1])&&plan.length===3){plan=tk.pop()+plan}
  cust=cust.replace(/^[\s.·•,;:-]+|[\s.·•,;:-]+$/g,'').replace(/\s+/g,' ');
  if(!cust)return null;
  return{customer:cust,order:ord,tech,len:b[1],wid:b[2],plan}}
@@ -257,6 +257,19 @@ function parseImport(text,nowD){
   if(o){o.n=it.n;o.fact=facts[it.n]!=null?facts[it.n]:'';R.items.push(o)}else R.bad.push({n:it.n,raw:t.slice(0,70)})}
  R.extraFacts=Object.keys(facts).map(Number).filter(n=>!raw.some(r=>r.n===n));
  return R}
+// one order out of free text: own "copy order" format, a line of the report list, or a message
+// "Денеб ООО 1085/574 / 1449×1279. 5200шт / Вес заготовки: 523,5 г"; the plan is read too, weight of one blank is optional
+function parseOne(text){
+ const raw=String(text||'').replace(/[   ]/g,' ').replace(/\r/g,'');let bw='';
+ const body=raw.replace(/(?<![A-Za-zА-Яа-яЁё])вес(?:\s+(?:одной|1)?\s*(?:заготовки|заготовка|шт))?\s*[:=\-–]?\s*(\d+(?:[.,]\d+)?)(?:\s*(кг|грамм[а-яё]*|гр|г)(?![а-яё]))?/i,(m,n,u)=>{
+  bw=/^кг/i.test(u||'')?String(Math.round(parseFloat(n.replace(',','.'))*1e5)/100).replace('.',','):n;return ' '});
+ const lines=body.split('\n').map(x=>x.replace(/\s+/g,' ').trim()).filter(x=>x&&!/^(план(?![а-яё])|по\s*факт|произведено|итого|брак)/i.test(x));
+ const first=[];let more=false;
+ for(const l of lines){const m=/^(\d{1,3})\s*[).]\s*(.*)$/.exec(l);
+  if(m&&first.length&&+m[1]>1){more=true;break}
+  first.push(m&&!first.length&&+m[1]===1?m[2]:l)}
+ const t=first.map(x=>x.replace(/^[\s.·•]+/,'').trim()).filter(Boolean).join(' '),o=t?impItem(t,true):null;
+ return o?{customer:o.customer,order:o.order,tech:o.tech,len:o.len,wid:o.wid,plan:o.plan,bw,more}:null}
 const nk=v=>String(v).toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9]+/g,'');
 function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m||!n)return m+n;let p=Array.from({length:n+1},(_,j)=>j);
  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
@@ -503,7 +516,7 @@ setup(){
   const bad=shownSteps.value.flatMap(s=>s.f).find(f=>!f.opt&&!S(W.o[f.k]).trim());
   if(bad){W.err=bad.k;nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
   const hasQ=!!S(W.o.bq).trim(),hasW=!!S(W.o.bw).trim();
-  if((W.mode==='edit'||W.step===STEPS.length-1)&&hasQ!==hasW){W.err=hasQ?'bw':'bq';nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
+  if((W.mode==='edit'||W.step===STEPS.length-1)&&hasQ&&!hasW){W.err='bw';nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
   if(W.mode==='new'&&W.step<STEPS.length-1){W.step++;return}
   const o=Object.assign({},W.o),r=cur.value;if(!r)return;
   o.customer=o.customer.trim().replace(/\s+/g,' ');const kn=customers.value.find(c=>c.toLowerCase()===o.customer.toLowerCase());if(kn)o.customer=kn;
@@ -512,6 +525,19 @@ setup(){
   if(ex){if(S(ex.fact)!==o.fact||S(ex.plan)!==o.plan)o.op='';Object.assign(ex,o)}else r.orders.push(Object.assign({id:uid()},o));
   r.u=now();addCust(o.customer);close();say((ex?'Сохранено: ':'Заказ завершён: ')+fmt(area(o))+' м²')}
  const back=()=>{if(W.step>0)W.step--};
+ const orderText=o=>{const g=k=>S(o[k]).trim(),bw=g('bw');return g('customer')+' '+g('order')+'/'+(g('tech')||'-')+'\n        '+g('len')+'×'+g('wid')+'. '+g('plan')+'шт'+(bw?'\nВес заготовки: '+bw+' г':'')};
+ const copyOrder=()=>copy(orderText(W.o));
+ function applyPaste(p){
+  const c=canonNames([p.customer],customers.value).get(p.customer)||p.customer;
+  Object.assign(W.o,{customer:c,order:p.order,tech:p.tech,len:p.len,wid:p.wid});if(p.bw)W.o.bw=p.bw;
+  W.err='';const i=STEPS.findIndex(st=>st.f.some(f=>!f.opt&&!S(W.o[f.k]).trim()));W.step=i<0?STEPS.length-1:i;
+  say('Вставлено: '+c+' '+p.order+'/'+(p.tech||'-')+', '+p.len+'×'+p.wid+(p.bw?', вес '+p.bw+' г':'')+(p.more?'. В тексте несколько заказов, взят первый':''))}
+ async function pasteOrder(){let t='';
+  try{t=await navigator.clipboard.readText()}catch(e){say('Нет доступа к буферу обмена. Нажмите в поле и вставьте текст долгим нажатием');return}
+  if(!open.value||sheet.value!=='order'||W.mode!=='new')return;
+  const p=parseOne(t);if(!p){say(String(t||'').trim()?'Не нашёл в тексте заказ: нужны имя, номер и размеры':'Буфер обмена пуст');return}
+  applyPaste(p)}
+ function onPaste(e){if(W.mode!=='new'||W.step!==0)return;const p=parseOne(e.clipboardData&&e.clipboardData.getData('text'));if(p){e.preventDefault();applyPaste(p)}}
  const pick=c=>{W.o.customer=c;if(W.mode==='new')next()};
  const delOrder=()=>{const r=cur.value;r.orders=r.orders.filter(x=>x.id!==W.id);r.u=now();close()};
 
@@ -612,7 +638,7 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,mText,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  lastOrd,unfLeft,isOpen,finAns,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  lastOrd,unfLeft,isOpen,finAns,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
@@ -707,18 +733,19 @@ template:`
     <div v-for="(s,si) in shownSteps" :key="s.t" class="stpi">
      <h2>{{ s.t }}</h2>
      <label v-for="(f,i) in s.f" :key="f.k">{{ f.l }}
-      <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="si===0&&i===0" @input="W.err=''">
+      <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="si===0&&i===0" @input="W.err=''" @paste="f.k==='customer'&&onPaste($event)">
       <button v-if="f.k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
      </label>
      <div class="slot">
       <div v-if="s.f[0].k==='fact'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
-      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Заполните оба поля или оставьте оба пустыми.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b></template></div>
-      <div v-if="s.f[0].k==='customer'" class="sug"><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
+      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b></template></div>
+      <div v-if="s.f[0].k==='customer'" class="sug"><button v-if="W.mode==='new'" type="button" class="chip paste" @click="pasteOrder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>Вставить</button><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
      </div>
      <label v-if="W.mode==='new'&&s.f.length<2" class="ph" aria-hidden="true">&nbsp;<span class="inw"><input tabindex="-1" disabled></span></label>
     </div>
    </TransitionGroup></div>
    <div class="row"><button v-if="W.mode==='new'" class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ nextLabel }}</button></div>
+   <div v-if="W.mode==='edit'" class="row"><button class="btn" @click="copyOrder">Скопировать заказ</button></div>
    <div v-if="W.mode==='edit'" class="row"><button class="btn dng" @click="sure('o',delOrder)">{{ armed==='o'?'Нажмите ещё раз':'Удалить заказ' }}</button></div>
   </template>
   <template v-else-if="sheet==='unf'">
