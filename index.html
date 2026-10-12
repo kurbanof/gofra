@@ -179,6 +179,8 @@ const MI=['Январь','Февраль','Март','Апрель','Май','И
 const dayTxt=d=>(+d.slice(8))+' '+MN[+d.slice(5,7)-1];
 const area=o=>num(o.len)*num(o.wid)*num(o.fact)/1e6;
 const brk=o=>num(o.bq)*num(o.bw)/1000;
+const openOrd=r=>{const o=r&&r.orders[r.orders.length-1];return o&&(o.op==='1'||o.op==='2')&&num(o.fact)<num(o.plan)?o:null};
+const ordN=r=>r.orders.length-(openOrd(r)?1:0);
 const r2=n=>Math.round(n*100)/100;
 const shiftM=(ym,n)=>{let y=+ym.slice(0,4),m=+ym.slice(5)-1+n;y+=Math.floor(m/12);m=((m%12)+12)%12;return y+'-'+z2(m+1)};
 const range=(a,b,f)=>Array.from({length:b-a+1},(_,i)=>f(a+i));
@@ -195,10 +197,10 @@ const TT={B:30,E:18};
 const WN=range(1,40,v=>({v,t:v})),WS=range(1,4,v=>({v,t:v})),WF=['A','B','E'].map(v=>({v,t:v})),WH=range(10,220,v=>({v,t:v})),WL=[{v:0,t:'='}].concat(WH),WT=range(40,50,v=>({v,t:(v/10).toFixed(1).replace('.',',')}));
 
 const D10=/^\d{4}-\d{2}-\d{2}$/,S=v=>v==null?'':String(v);
-const cleanRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))&&Array.isArray(r.orders)?{id:S(r.id),date:S(r.date),u:+r.u||0,orders:r.orders.filter(o=>o&&typeof o==='object').map(o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw)}))}:null;
+const cleanRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))&&Array.isArray(r.orders)?{id:S(r.id),date:S(r.date),u:+r.u||0,orders:r.orders.filter(o=>o&&typeof o==='object').map(o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)}))}:null;
 const cleanDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),ba:x.ba===true,u:+x.u||0}:null;
 const arr=v=>Array.isArray(v)?v:v&&typeof v==='object'?Object.values(v):[];
-const fixOrd=o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw)});
+const fixOrd=o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)});
 const fixRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))?Object.assign({},r,{id:S(r.id),date:S(r.date),u:+r.u||0,orders:arr(r.orders).filter(o=>o&&typeof o==='object').map(fixOrd)}):null;
 const fixDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?Object.assign({},x,{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),u:+x.u||0}):null;
 const fixCust=c=>{if(typeof c==='string')c={n:c,u:0};if(!c||typeof c!=='object')return null;const n=S(c.n).trim();return n?Object.assign({},c,{n,u:+c.u||0}):null};
@@ -371,15 +373,35 @@ setup(){
  const selOrders=computed(()=>{const d=selDay.value;return d?db.reports.filter(r=>!r.del&&r.date===d.date).sort((a,b)=>(a.u||0)-(b.u||0)).flatMap(r=>r.orders):[]});
  const cum=up=>mdays.value.filter(x=>x.date<=up).reduce((s,x)=>({m2:s.m2+num(x.m2),ord:s.ord+num(x.ord),sh:s.sh+num(x.sh),brak:s.brak+num(x.brak)}),{m2:0,ord:0,sh:0,brak:0});
  const mTot=computed(()=>cum('9999'));
- const mgN=computed(()=>{const L=v=>fmt(v).length,t=mTot.value;return Math.max(L(t.m2),L(t.sh))+Math.max(L(t.ord),L(t.brak))});
+ const mgN=computed(()=>{const L=v=>fmt(v).length,t=mTot.value;return Math.max(L(t.m2),L(t.brak),4)+Math.max(L(t.ord),L(t.sh),4)});
  const mText=computed(()=>{const d=selDay.value;if(!d)return'';const ym=d.date.slice(0,7);
   const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
   return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))});
  const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
- const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+x.orders.length,0),brak:r2(rs.reduce((s,x)=>s+repBrak(x),0))}};
+ const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+ordN(x),0),brak:r2(rs.reduce((s,x)=>s+repBrak(x),0))}};
  const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=days.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord&&(!e.ba||Math.abs(num(e.brak)-t.brak)<.005)?'ok':'stale'});
  const finLabel=computed(()=>({new:'Закончить отчёт',stale:'Обновить в месячном отчёте',ok:'Сохранено в месячном отчёте ✓'})[finState.value]||'');
- function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;const t=syncDay(r.date);say('В месячном отчёте: '+fmt(num(t.m2))+' м², заказов: '+t.ord+(t.brak?', брак: '+fmt(num(t.brak))+' кг':''))}
+ const lastOrd=computed(()=>{const r=cur.value;return r&&r.orders.length?r.orders[r.orders.length-1]:null});
+ const unfLeft=computed(()=>lastOrd.value?r2(Math.max(0,num(lastOrd.value.plan)-num(lastOrd.value.fact))):0);
+ const isOpen=o=>{const x=cur.value?openOrd(cur.value):null;return !!x&&x.id===o.id};
+ function doFinish(r){const t=syncDay(r.date),o=openOrd(r);
+  say('В месячном отчёте: '+fmt(num(t.m2))+' м², заказов: '+t.ord+(t.brak?', брак: '+fmt(num(t.brak))+' кг':'')+(o&&o.op==='1'?'. Остаток '+fmt(r2(num(o.plan)-num(o.fact)))+' шт перенесётся в новый отчёт':''))}
+ function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;const l=r.orders[r.orders.length-1];
+  if(num(l.fact)<num(l.plan)){show('unf');return}
+  if(l.op){l.op='';r.u=now()}
+  doFinish(r)}
+ function finAns(done){const r=cur.value;if(!r||!r.orders.length){close();return}const l=r.orders[r.orders.length-1];
+  if(done)l.op='';else if(l.op!=='2')l.op='1';
+  r.u=now();close();doFinish(r)}
+ // unfinished last order of an earlier report becomes the first order of a new report: plan = plan - fact
+ function carryIn(r){const out=[];if(r.orders.length)return out;
+  db.reports.filter(x=>!x.del&&x.id!==r.id).map(x=>({x,o:openOrd(x)})).filter(z=>z.o&&z.o.op==='1')
+   .sort((a,b)=>a.x.date.localeCompare(b.x.date)||(a.x.u||0)-(b.x.u||0)).forEach(({x,o})=>{
+    const left=r2(num(o.plan)-num(o.fact));
+    r.orders.push({id:uid(),customer:o.customer,order:o.order,tech:o.tech,len:o.len,wid:o.wid,plan:String(left),fact:'0',bq:'',bw:'',op:''});
+    o.op='2';x.u=now();out.push({customer:o.customer,order:o.order,left})});
+  if(out.length)r.u=now();return out}
+ const carryMsg=c=>c.length===1?'Перенесён заказ '+c[0].customer+' '+c[0].order+': осталось '+fmt(c[0].left)+' шт':'Перенесено заказов: '+c.length+' (остатки по плану)';
 
  let tt;const say=m=>{toast.msg=m;clearTimeout(tt);tt=setTimeout(()=>{toast.msg=''},3500)};
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
@@ -418,7 +440,7 @@ setup(){
  function openDate(isNew){dateF.isNew=isNew;dateF.v=isNew?today():viewDate.value;dateF.err=false;show('date')}
  const dropEmpty=()=>{const r=cur.value;if(r&&!r.orders.length){r.del=true;r.u=now()}};
  function dateOk(){if(!dateF.v){dateF.err=true;return}
-  dropEmpty();const r={id:uid(),date:dateF.v,orders:[],u:now()};db.reports.push(r);db.cur=r.id;pend.value=null;tab.value='rep';db.mode='day';openOrder()}
+  dropEmpty();const r={id:uid(),date:dateF.v,orders:[],u:now()};db.reports.push(r);db.cur=r.id;pend.value=null;tab.value='rep';db.mode='day';const c=carryIn(r);if(c.length){close();say(carryMsg(c))}else openOrder()}
  function goDate(){const d=dateF.v;if(!d){dateF.err=true;return}
   const c=cur.value,same=reports.value.filter(r=>r.date===d&&r.orders.length).sort((a,b)=>(b.u||0)-(a.u||0)),keep=c&&c.date===d&&c.orders.length?c:same[0];
   if(keep){if(!c||keep.id!==c.id)dropEmpty();db.cur=keep.id;pend.value=null}
@@ -443,7 +465,7 @@ setup(){
   catch(e){miss('Нет доступа к буферу обмена. Нажмите в поле и вставьте текст вручную.')}}
  function importGo(){if(!impOrders.value.length)return;
   if(reports.value.some(r=>r.date===impDateEff.value&&r.orders.length))show('impdup');else applyImport('replace')}
- function syncDay(date){const rs=db.reports.filter(x=>!x.del&&x.date===date),m2=String(r2(rs.reduce((t,x)=>t+repTotal(x),0))),ord=String(rs.reduce((t,x)=>t+x.orders.length,0)),bk=r2(rs.reduce((t,x)=>t+repBrak(x),0)),brak=bk>0?String(bk):'',ex=db.days.find(x=>x.date===date);
+ function syncDay(date){const rs=db.reports.filter(x=>!x.del&&x.date===date),m2=String(r2(rs.reduce((t,x)=>t+repTotal(x),0))),ord=String(rs.reduce((t,x)=>t+ordN(x),0)),bk=r2(rs.reduce((t,x)=>t+repBrak(x),0)),brak=bk>0?String(bk):'',ex=db.days.find(x=>x.date===date);
   if(ex&&!ex.del){ex.m2=m2;ex.ord=ord;if(ex.ba)ex.brak=brak;ex.u=now()}
   else if(ex)Object.assign(ex,{m2,ord,sh:'1',brak,ba:true,del:false,u:now()});
   else db.days.push({date,m2,ord,sh:'1',brak,ba:true,u:now()});
@@ -463,7 +485,7 @@ setup(){
   say(mode==='merge'?'Объединено: добавлено '+added+(skipped?', повторов пропущено '+skipped:'')+'. В месяце: '+fmt(+t.m2)+' м²':'Импорт: '+added+' зак., '+fmt(+t.m2)+' м²')}
  function startReport(){const d=viewDate.value;let r=db.reports.find(x=>!x.del&&x.date===d&&!x.orders.length);
   if(!r){r={id:uid(),date:d,orders:[],u:now()};db.reports.push(r)}
-  db.cur=r.id;pend.value=null;tab.value='rep';db.mode='day';openOrder()}
+  db.cur=r.id;pend.value=null;tab.value='rep';db.mode='day';const c=carryIn(r);if(c.length)say(carryMsg(c));else openOrder()}
  function renameDate(){const d=dateF.v,r=cur.value;if(!d){dateF.err=true;return}if(!r)return;
   if(reports.value.some(x=>x.id!==r.id&&x.date===d)){say('За эту дату уже есть отчёт. Нажмите «Показать заказы»');return}
   r.date=d;r.u=now();close()}
@@ -487,7 +509,7 @@ setup(){
   o.customer=o.customer.trim().replace(/\s+/g,' ');const kn=customers.value.find(c=>c.toLowerCase()===o.customer.toLowerCase());if(kn)o.customer=kn;
   ['order','tech','len','wid','plan','fact','bq','bw'].forEach(k=>{o[k]=S(o[k]).replace(/\s+/g,'')});o.tech=o.tech.toUpperCase();
   const ex=W.mode==='edit'&&r.orders.find(x=>x.id===W.id);
-  if(ex)Object.assign(ex,o);else r.orders.push(Object.assign({id:uid()},o));
+  if(ex){if(S(ex.fact)!==o.fact||S(ex.plan)!==o.plan)o.op='';Object.assign(ex,o)}else r.orders.push(Object.assign({id:uid()},o));
   r.u=now();addCust(o.customer);close();say((ex?'Сохранено: ':'Заказ завершён: ')+fmt(area(o))+' м²')}
  const back=()=>{if(W.step>0)W.step--};
  const pick=c=>{W.o.customer=c;if(W.mode==='new')next()};
@@ -590,7 +612,7 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,mText,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  lastOrd,unfLeft,isOpen,finAns,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
@@ -607,7 +629,7 @@ template:`
      <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену</span><b>{{ fmt(totalBrak) }} кг</b></div></div>
      <button class="btn pri big" @click="openOrder()">Добавить заказ</button>
      <TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="openOrder(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="openOrder(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
      </TransitionGroup>
      <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
@@ -632,7 +654,7 @@ template:`
    </section>
    <section v-else key="mon">
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
-    <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span></div></div>
+    <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div></div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
     <div v-if="selDay" class="g prev"><pre class="full">{{ mText }}</pre><button class="btn pri big" @click="copy(mText)">Скопировать отчёт</button></div>
     <h2 v-if="mdays.length">Дни</h2>
@@ -690,7 +712,7 @@ template:`
      </label>
      <div class="slot">
       <div v-if="s.f[0].k==='fact'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
-      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Заполните оба поля или оставьте оба пустыми.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b> (шт × вес ÷ 1000)</template></div>
+      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Заполните оба поля или оставьте оба пустыми.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b></template></div>
       <div v-if="s.f[0].k==='customer'" class="sug"><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
      </div>
      <label v-if="W.mode==='new'&&s.f.length<2" class="ph" aria-hidden="true">&nbsp;<span class="inw"><input tabindex="-1" disabled></span></label>
@@ -698,6 +720,13 @@ template:`
    </TransitionGroup></div>
    <div class="row"><button v-if="W.mode==='new'" class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ nextLabel }}</button></div>
    <div v-if="W.mode==='edit'" class="row"><button class="btn dng" @click="sure('o',delOrder)">{{ armed==='o'?'Нажмите ещё раз':'Удалить заказ' }}</button></div>
+  </template>
+  <template v-else-if="sheet==='unf'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Последний заказ</b><span></span></div>
+   <h2>Заказ завершён?</h2>
+   <div v-if="lastOrd" class="tot2"><b>{{ lastOrd.customer }} {{ lastOrd.order }}/{{ lastOrd.tech||'-' }}</b><br>План: <b>{{ fmt(num(lastOrd.plan)) }}</b> шт · сделано: <b>{{ fmt(num(lastOrd.fact)) }}</b> шт<br>Осталось: <b>{{ fmt(unfLeft) }}</b> шт</div>
+   <div class="row"><button class="btn" @click="finAns(false)">Нет, не завершён</button><button class="btn pri" @click="finAns(true)">Да, завершён</button></div>
+   <p class="hint" style="margin-top:12px">«Да» — всё как обычно. «Нет» — заказ не войдёт в количество заказов в месячном отчёте, а остаток ({{ fmt(unfLeft) }} шт) станет планом этого заказа в следующем новом отчёте.</p>
   </template>
   <template v-else-if="sheet==='day'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ D.orig?'Изменить день':'Новый день' }}</b><span></span></div>
