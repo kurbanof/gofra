@@ -51,6 +51,10 @@ pre.full{max-height:none}
 .io{flex-wrap:wrap}.io .m{flex:1 1 100%}.io .btn{flex:1}
 h1{font-size:26px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
 h2{font-size:20px;margin:18px 0 10px;font-weight:700}
+.sech{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;margin:18px 0 10px;padding:0;background:none;border:0;color:inherit;font:inherit;font-size:20px;font-weight:700;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sech .chev{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:var(--fld);border:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--hi)}
+.sech .chev svg{transition:transform .3s ease}.sech.on .chev svg{transform:rotate(180deg)}
+.fold{display:flow-root;padding:10px 14px 28px;margin:-10px -14px -38px}
 .g{background:var(--noise),var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--edge);border-radius:24px;box-shadow:inset 0 1px 0 var(--hi),0 12px 32px var(--sh)}
 .scroll .g{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--noise),var(--card);box-shadow:inset 0 1px 0 var(--hi),0 8px 22px var(--sh)}
 .mut{color:var(--mut)}
@@ -69,7 +73,8 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .tl{flex:1;min-width:0;font-size:15px;line-height:1.25}
 .tn{flex:none;white-space:nowrap;font-size:clamp(24px,8vw,34px);font-weight:700}
 .tn small{font-size:16px;font-weight:500;color:var(--mut);margin-left:5px}
-.oc{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer}
+.oc{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.scroll .oc.drag{box-shadow:inset 0 1px 0 var(--hi),0 18px 44px var(--sh),0 0 0 2px #d8923a99}
 .oc .n,.or .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206}
 .oc .m{flex:1;min-width:0}.oc .m b{display:block;overflow-wrap:anywhere}.oc small,.dc small,.item small,.sy small{display:block;color:var(--mut);font-size:13px}
 .oc .a,.item .a,.or .a{font-weight:700;white-space:nowrap}
@@ -156,7 +161,12 @@ input::placeholder{font-size:16px;font-weight:400;color:var(--mut);opacity:.75}
 .tk .cap{flex:none;font-size:13px;color:var(--mut)}
 @media(max-width:380px){.cl{width:68px;font-size:12px}.cr{gap:6px}.dr.fm{width:78px}}
 .res{text-align:center;font-size:18px}.res b{font-size:28px}
-.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:999px;font-weight:500;max-width:92vw;text-align:center;transition:transform .25s}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:22px;font-weight:500;width:max-content;max-width:min(92vw,460px);text-align:center;line-height:1.35;transition:transform .3s}
+.toast.big{width:min(92vw,440px);padding:16px 20px 14px;text-align:left;font-weight:400;font-size:16px}
+.toast.big{background:var(--noise),rgba(255,255,255,.7)}:root[data-theme=dark] .toast.big{background:var(--noise),rgba(52,66,78,.74)}
+.toast .tt{display:block;font-size:18px;font-weight:700;line-height:1.25;margin-bottom:8px}
+.toast .tr{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 0;border-top:1px solid var(--edge)}.toast .tr b{font-weight:700;white-space:nowrap}
+.toast .tnote{margin:8px 0 0;padding-top:10px;border-top:1px solid var(--edge);font-size:14px;line-height:1.4;color:var(--mut);white-space:pre-line}
 .toast.show{transform:translate(-50%,0)}
 .steps{padding-left:22px;margin:0 0 6px;line-height:1.7}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -192,17 +202,17 @@ const STEPS=[
 {t:'Количество по заказу',f:[{k:'plan',l:'Нужно по заказу, шт',m:'numeric'}]},
 {t:'Количество по факту',f:[{k:'fact',l:'Произведено, шт',m:'numeric'}]},
 {t:'Расчёт брака',f:[{k:'bq',l:'Брак, заготовок (шт)',m:'numeric',opt:1,ph:'необязательно'},{k:'bw',l:'Вес одной заготовки, г',m:'decimal',opt:1,ph:'необязательно'}]}];
-const MODES=[{v:'day',t:'Ежедневный'},{v:'mon',t:'Ежемесячный'}],TABS=[{v:'rep',t:'Отчёт'},{v:'his',t:'История'}];
+const MODES=[{v:'day',t:'Ежедневный'},{v:'mon',t:'Ежемесячный'}],TABS=[{v:'rep',t:'Отчёт'},{v:'his',t:'Ещё'}];
 const IDX={rep:0,his:1,mon:2};
 const TT={B:30,E:18};
 const WN=range(1,40,v=>({v,t:v})),WS=range(1,4,v=>({v,t:v})),WF=['A','B','E'].map(v=>({v,t:v})),WH=range(10,220,v=>({v,t:v})),WL=[{v:0,t:'='}].concat(WH),WT=range(40,50,v=>({v,t:(v/10).toFixed(1).replace('.',',')}));
 
 const D10=/^\d{4}-\d{2}-\d{2}$/,S=v=>v==null?'':String(v);
-const cleanRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))&&Array.isArray(r.orders)?{id:S(r.id),date:S(r.date),u:+r.u||0,orders:r.orders.filter(o=>o&&typeof o==='object').map(o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)}))}:null;
+const cleanRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))&&Array.isArray(r.orders)?{id:S(r.id),date:S(r.date),u:+r.u||0,waste:S(r.waste),orders:r.orders.filter(o=>o&&typeof o==='object').map(o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)}))}:null;
 const cleanDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),ba:x.ba===true,u:+x.u||0}:null;
 const arr=v=>Array.isArray(v)?v:v&&typeof v==='object'?Object.values(v):[];
 const fixOrd=o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)});
-const fixRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))?Object.assign({},r,{id:S(r.id),date:S(r.date),u:+r.u||0,orders:arr(r.orders).filter(o=>o&&typeof o==='object').map(fixOrd)}):null;
+const fixRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))?Object.assign({},r,{id:S(r.id),date:S(r.date),u:+r.u||0,waste:S(r.waste),orders:arr(r.orders).filter(o=>o&&typeof o==='object').map(fixOrd)}):null;
 const fixDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?Object.assign({},x,{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),u:+x.u||0}):null;
 const fixCust=c=>{if(typeof c==='string')c={n:c,u:0};if(!c||typeof c!=='object')return null;const n=S(c.n).trim();return n?Object.assign({},c,{n,u:+c.u||0}):null};
 const fixList=(v,f)=>arr(v).map(f).filter(Boolean);
@@ -298,6 +308,60 @@ function sheetSwipe(getEl,ok,close,setDrag){
    const v=e.timeStamp-h[h.length-1][0]>80?0:vel();
    if(!cancel&&(dy>110||(v>.6&&dy>30))){close();requestAnimationFrame(()=>el.style.removeProperty('--dy'))}
    else el.style.setProperty('--dy','0px')}}}
+// long-press drag & drop of list cards (touch): cards move with transforms only, the final move is handed over as onDrop(from,to)
+function listDrag(o){
+ const SLOP=8,HOLD=420,TOP=120,BOT=140,MAXV=18;
+ let st=null,timer=0,raf=0,last=0;
+ const cards=()=>[...o.root().querySelectorAll(o.sel)];
+ const clean=()=>{cards().forEach(c=>{c.classList.remove('drag');c.style.transform='';c.style.transition='';c.style.willChange='';c.style.zIndex=''});const r=o.root();if(r)r.classList.remove('dragging')};
+ function paint(){raf=0;if(!st||!st.on||st.end)return;const sc=st.sc,H=innerHeight;
+  st.v=st.y<TOP?-(TOP-st.y)/TOP*MAXV:st.y>H-BOT?(st.y-(H-BOT))/BOT*MAXV:0;
+  if(st.v)sc.scrollTop+=st.v;
+  const dy=st.y-st.y0+sc.scrollTop-st.s0,from=st.from,tops=st.tops,hs=st.hs,list=st.list;
+  st.el.style.transform='translate3d(0,'+dy+'px,0) scale(1.02)';
+  const mid=tops[from]+hs[from]/2+dy;let to=from;
+  if(dy>0){for(let i=from+1;i<list.length;i++){if(mid>tops[i]+hs[i]/2)to=i;else break}}
+  else{for(let i=from-1;i>=0;i--){if(mid<tops[i]+hs[i]/2)to=i;else break}}
+  if(to!==st.to){st.to=to;list.forEach((c,i)=>{if(i===from)return;const k=from<to&&i>from&&i<=to?-1:from>to&&i>=to&&i<from?1:0;c.style.transform=k?'translate3d(0,'+(k*st.shift)+'px,0)':''})}
+  if(st.v)raf=requestAnimationFrame(paint)}
+ function hold(){timer=0;if(!st||st.on||!o.ok())return;const list=cards(),el=st.el,from=list.indexOf(el);
+  if(from<0||list.length<2){st=null;return}
+  const sc=o.scroller(),rc=list.map(c=>c.getBoundingClientRect());
+  st.list=list;st.from=from;st.to=from;st.sc=sc;st.s0=sc.scrollTop;st.y0=st.y;
+  st.tops=rc.map(r=>r.top+st.s0);st.hs=rc.map(r=>r.height);
+  st.shift=st.hs[from]+Math.max(0,Math.min(40,st.tops[1]-st.tops[0]-st.hs[0]));
+  list.forEach(c=>{c.style.transition=c===el?'none':'transform .3s ease';c.style.willChange='transform'});
+  el.classList.add('drag');el.style.zIndex='6';o.root().classList.add('dragging');st.on=true;st.v=0;
+  try{if(navigator.vibrate)navigator.vibrate(15)}catch(e){}
+  if(o.onStart)o.onStart();paint()}
+ return{
+  start(e){if(st&&(st.on||st.end))return;clearTimeout(timer);timer=0;st=null;
+   if(e.touches.length!==1||!o.ok())return;const el=e.target.closest&&e.target.closest(o.sel);if(!el||!o.root().contains(el))return;
+   const t=e.touches[0];st={el,x0:t.clientX,y0:t.clientY,y:t.clientY,on:false,end:false};timer=setTimeout(hold,HOLD)},
+  move(e){if(!st||!e.touches.length)return;const t=e.touches[0];st.y=t.clientY;
+   if(!st.on){if(Math.abs(t.clientX-st.x0)>SLOP||Math.abs(t.clientY-st.y0)>SLOP){clearTimeout(timer);timer=0;st=null}return}
+   if(st.end)return;if(e.cancelable)e.preventDefault();if(!raf)raf=requestAnimationFrame(paint)},
+  end(e,cancel){clearTimeout(timer);timer=0;if(!st)return false;if(!st.on){st=null;return false}
+   if(st.end)return true;if(e&&e.cancelable)e.preventDefault();cancelAnimationFrame(raf);raf=0;st.end=true;
+   const from=st.from,tops=st.tops,hs=st.hs,to=cancel?from:st.to,el=st.el;
+   if(cancel)st.list.forEach((c,i)=>{if(i!==from)c.style.transform=''});
+   const ft=to>from?tops[to]+hs[to]-hs[from]:to<from?tops[to]:tops[from];
+   el.style.transition='transform .3s ease';el.style.transform='translate3d(0,'+(ft-tops[from])+'px,0)';
+   setTimeout(()=>{if(to!==from)o.onDrop(from,to);clean();last=Date.now();st=null;if(o.onEnd)o.onEnd()},310);
+   return true},
+  recent:()=>Date.now()-last<600,
+  get active(){return !!(st&&st.on)}}}
+// accordion for the "Ещё" page: only the height is animated (300 ms); a very long list is animated only up to FOLDMAX px, the rest is off screen anyway
+const FOLDMAX=800;
+function foldRun(el,from,to,done){
+ const p=el._fa;if(p){p.onfinish=p.oncancel=null;p.cancel();el._fa=null}
+ if(!el.animate||matchMedia('(prefers-reduced-motion: reduce)').matches||from===to){el.style.overflow='';done();return}
+ el.style.overflow='hidden';
+ const a=el._fa=el.animate([{height:from+'px'},{height:to+'px'}],{duration:300,easing:'cubic-bezier(.4,0,.2,1)'});
+ const fin=()=>{if(el._fa===a)el._fa=null;el.style.overflow='';done()};a.onfinish=fin;a.oncancel=fin}
+const foldPad=el=>{const c=getComputedStyle(el);return(parseFloat(c.paddingTop)||0)+(parseFloat(c.paddingBottom)||0)};
+function foldIn(el,done){foldRun(el,0,Math.min(Math.max(el.scrollHeight-foldPad(el),0),FOLDMAX),done)}
+function foldOut(el,done){foldRun(el,Math.min(Math.max(el.clientHeight-foldPad(el),0),FOLDMAX),0,done)}
 const Pill={props:{items:Array,modelValue:String},emits:['update:modelValue'],
  setup(p){const el=ref(null);let l0=null,w0=null;
   function place(anim){const c=el.value;if(!c)return;const i=p.items.findIndex(x=>x.v===p.modelValue),b=c.querySelectorAll('button')[i],d=c.querySelector('.drop');
@@ -345,7 +409,8 @@ const Wheel={props:{items:Array,modelValue:null,w:{type:Number,default:52},speed
 const App={components:{Pill,Wheel},
 setup(){
  const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
- const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:''}),armed=ref('');
+ const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:''}),armed=ref('');
+ const fold=reactive({sync:false,hist:false}),toggleFold=k=>{fold[k]=!fold[k]};
  const tab=ref('rep'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
  const W=reactive({mode:'new',step:0,id:null,err:'',o:{}}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
@@ -368,7 +433,7 @@ setup(){
  const reports=computed(()=>db.reports.filter(r=>!r.del).sort((a,b)=>b.date.localeCompare(a.date)));
  const cur=computed(()=>db.reports.find(r=>r.id===db.cur&&!r.del)||null);
  const repTotal=r=>r.orders.reduce((s,o)=>s+area(o),0);
- const repBrak=r=>r.orders.reduce((s,o)=>s+brk(o),0);
+ const repBrak=r=>r.orders.reduce((s,o)=>s+brk(o),0)+num(r.waste);
  const total=computed(()=>cur.value?repTotal(cur.value):0);
  const totalBrak=computed(()=>cur.value?r2(repBrak(cur.value)):0);
  const customers=computed(()=>db.customers.filter(c=>!c.del).map(c=>c.n));
@@ -397,15 +462,28 @@ setup(){
  const lastOrd=computed(()=>{const r=cur.value;return r&&r.orders.length?r.orders[r.orders.length-1]:null});
  const unfLeft=computed(()=>lastOrd.value?r2(Math.max(0,num(lastOrd.value.plan)-num(lastOrd.value.fact))):0);
  const isOpen=o=>{const x=cur.value?openOrd(cur.value):null;return !!x&&x.id===o.id};
- function doFinish(r){const t=syncDay(r.date),o=openOrd(r);
-  say('В месячном отчёте: '+fmt(num(t.m2))+' м², заказов: '+t.ord+(t.brak?', брак: '+fmt(num(t.brak))+' кг':'')+(o&&o.op==='1'?'. Остаток '+fmt(r2(num(o.plan)-num(o.fact)))+' шт перенесётся в новый отчёт':''))}
+ const WA=reactive({v:'',q:false,done:null,err:false});
+ const curWaste=computed(()=>cur.value?num(cur.value.waste):0);
+ const ordBrak=computed(()=>cur.value?r2(cur.value.orders.reduce((s,o)=>s+brk(o),0)):0);
+ const wasteSum=computed(()=>r2(ordBrak.value+num(WA.v)));
+ function doFinish(r){const t=syncDay(r.date),o=openOrd(r),d=db.days.find(x=>x.date===r.date&&!x.del),
+   w=r2(db.reports.filter(x=>!x.del&&x.date===r.date).reduce((s,x)=>s+num(x.waste),0)),notes=[];
+  const rows=[['Произведено',fmt(num(t.m2))+' м²'],['Заказов',fmt(num(t.ord))],['Смен',fmt(num(d&&d.sh))],['Брак',fmt(num(d&&d.brak))+' кг']];
+  if(w>0&&d&&d.ba)rows.push(['в том числе отходы',fmt(w)+' кг']);
+  if(d&&!d.ba)notes.push('Брак за день в месячном отчёте введён вручную, он не изменён.');
+  if(o&&o.op==='1')notes.push('Заказ «'+o.customer+' '+o.order+'» не завершён: остаток '+fmt(r2(num(o.plan)-num(o.fact)))+' шт перенесётся в новый отчёт.');
+  sayBig('Отчёт за '+dayTxt(r.date)+' сохранён в месячном отчёте',rows,notes.join('\n'))}
  function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;const l=r.orders[r.orders.length-1];
-  if(num(l.fact)<num(l.plan)){show('unf');return}
-  if(l.op){l.op='';r.u=now()}
-  doFinish(r)}
- function finAns(done){const r=cur.value;if(!r||!r.orders.length){close();return}const l=r.orders[r.orders.length-1];
-  if(done)l.op='';else if(l.op!=='2')l.op='1';
-  r.u=now();close();doFinish(r)}
+  Object.assign(WA,{v:S(r.waste),q:false,done:null,err:false});
+  if(num(l.fact)<num(l.plan)){WA.q=true;show('unf');return}
+  show('waste')}
+ function finAns(done){WA.done=done;show('waste')}
+ function wasteOk(){const r=cur.value;if(!r||!r.orders.length){close();return}
+  let v=S(WA.v).replace(/\s+/g,'');if(v&&!/^\d+([.,]\d+)?$/.test(v)){WA.err=true;return}
+  if(num(v)===0)v='';
+  const l=r.orders[r.orders.length-1];
+  if(WA.done===false){if(l.op!=='2')l.op='1'}else if(l.op)l.op='';
+  r.waste=v;r.u=now();close();doFinish(r)}
  // unfinished last order of an earlier report becomes the first order of a new report: plan = plan - fact
  function carryIn(r){const out=[];if(r.orders.length)return out;
   db.reports.filter(x=>!x.del&&x.id!==r.id).map(x=>({x,o:openOrd(x)})).filter(z=>z.o&&z.o.op==='1')
@@ -416,7 +494,11 @@ setup(){
   if(out.length)r.u=now();return out}
  const carryMsg=c=>c.length===1?'Перенесён заказ '+c[0].customer+' '+c[0].order+': осталось '+fmt(c[0].left)+' шт':'Перенесено заказов: '+c.length+' (остатки по плану)';
 
- let tt;const say=m=>{toast.msg=m;clearTimeout(tt);tt=setTimeout(()=>{toast.msg=''},3500)};
+ let tt,tc;
+ const hideToast=()=>{clearTimeout(tt);toast.show=false;clearTimeout(tc);tc=setTimeout(()=>{if(!toast.show){toast.msg='';toast.big=false;toast.title='';toast.rows=[];toast.note=''}},400)};
+ const showToast=(o,ms)=>{clearTimeout(tt);clearTimeout(tc);Object.assign(toast,{msg:'',big:false,title:'',rows:[],note:''},o,{show:true});tt=setTimeout(hideToast,ms)};
+ const say=m=>showToast({msg:m},3500);
+ const sayBig=(title,rows,note)=>showToast({msg:title,big:true,title,rows,note:note||''},9000);
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
  const sure=(k,fn)=>{if(armed.value===k){armed.value='';fn()}else{armed.value=k;setTimeout(()=>{if(armed.value===k)armed.value=''},3000)}};
 
@@ -590,12 +672,16 @@ setup(){
  const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('input')};
  const tEnd=e=>{if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){if(dx<0&&db.mode!=='mon')db.mode='mon';else if(dx>0&&db.mode==='mon')db.mode='day'}};
+  const olistEl=ref(null);
+ function moveOrder(a,b){const r=cur.value;if(!r||a===b||a<0||b<0||a>=r.orders.length||b>=r.orders.length)return;r.orders.splice(b,0,r.orders.splice(a,1)[0]);r.u=now()}
+ const dr=listDrag({root:()=>olistEl.value,sel:'.oc',scroller:()=>scrollEl.value,ok:()=>!open.value&&!calcOpen.value&&!!cur.value,onStart:()=>{tok=false},onDrop:moveOrder});
+ const onCard=id=>{if(dr.recent())return;openOrder(id)};
   let lastY=0,tick=false;
  function onScroll(){if(tick)return;tick=true;requestAnimationFrame(()=>{tick=false;const el=scrollEl.value;if(!el)return;const y=el.scrollTop,d=y-lastY;
   if(y<40){topHidden.value=false;lastY=y}else if(d>8){topHidden.value=true;lastY=y}else if(d<-8){topHidden.value=false;lastY=y}})}
  const resetScroll=()=>{topHidden.value=false;lastY=0;if(scrollEl.value)scrollEl.value.scrollTop=0};
 
- const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect})[sheet.value];
+ const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect,waste:wasteOk})[sheet.value];
  function onKey(e){if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT'||e.target.readOnly)return;e.preventDefault();
   const ins=[...sheetEl.value.querySelectorAll('input:not([type=date]):not([disabled])')].filter(x=>!x.closest('.stp-leave-active')),i=ins.indexOf(e.target);
   if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
@@ -608,7 +694,7 @@ setup(){
   else if(isRoot.value&&trapped){ignorePop=true;trapped=false;history.back();setTimeout(()=>{ignorePop=false},700)}}catch(e){}}
  function backStep(){
   if(calcOpen.value){calcOpen.value=false;return}
-  if(open.value){if(sheet.value==='impdup'){show('imp');return}if(sheet.value==='order'&&W.mode==='new'&&W.step>0)W.step--;else close();return}
+  if(open.value){if(sheet.value==='impdup'){show('imp');return}if(sheet.value==='waste'&&WA.q){show('unf');return}if(sheet.value==='order'&&W.mode==='new'&&W.step>0)W.step--;else close();return}
   if(db.mode==='mon'){db.mode='day';return}
   if(tab.value==='his')tab.value='rep'}
  watch(isRoot,schedule);
@@ -636,9 +722,9 @@ setup(){
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
- return{db,cfg,sync,toast,armed,tab,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
+ return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,mText,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  lastOrd,unfLeft,isOpen,finAns,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
@@ -652,11 +738,11 @@ template:`
    <section v-if="view==='rep'" key="rep">
     <div class="head"><h1><button class="dt" @click="openDate(false)" aria-label="Изменить дату">План на {{ dm(viewDate) }}</button></h1><button v-if="cur" class="btn sm" @click="openDate(true)">Новый отчёт</button></div>
     <template v-if="cur">
-     <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену</span><b>{{ fmt(totalBrak) }} кг</b></div></div>
+     <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak) }} кг</b></div></div>
      <button class="btn pri big" @click="openOrder()">Добавить заказ</button>
-     <TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="openOrder(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
-     </TransitionGroup>
+     <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
+     </TransitionGroup></div>
      <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
      <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² и брак в конец списка</label><button class="btn pri big" @click="copy(repText)">Скопировать список</button></div>
@@ -664,14 +750,19 @@ template:`
     <div v-else class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button><button class="btn big" @click="openImport">Импорт из буфера обмена</button></div>
    </section>
    <section v-else-if="view==='his'" key="his">
-    <div class="head"><h1>История</h1></div>
+    <div class="head"><h1>Ещё</h1></div>
+    <button type="button" class="sech" :class="{on:fold.sync}" :aria-expanded="fold.sync" @click="toggleFold('sync')"><span>Синхронизация</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+    <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.sync" class="fold">
+    <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
+    <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
+    </div></Transition>
+    <button type="button" class="sech" :class="{on:fold.hist}" :aria-expanded="fold.hist" @click="toggleFold('hist')"><span>История</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+    <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.hist" class="fold">
     <TransitionGroup name="li" tag="div">
      <div v-for="r in reports" :key="r.id" class="g item"><div class="t" @click="openReport(r.id)"><b>{{ dm(r.date) }}.{{ r.date.slice(0,4) }}</b><small>Заказов: {{ r.orders.length }}</small></div><span class="a">{{ fmt(repTotal(r)) }} м²</span><button class="btn sm dng" @click="sure('r'+r.id,()=>delReport(r.id))">{{ armed==='r'+r.id?'Нажмите ещё раз':'Удалить' }}</button></div>
     </TransitionGroup>
     <p v-if="!reports.length" class="mut">Здесь появятся прошлые отчёты.</p>
-    <h2>Синхронизация</h2>
-    <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
-    <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
+    </div></Transition>
     <h2>Сохранённые заказчики</h2>
     <TransitionGroup name="li" tag="div">
      <div v-for="c in customers" :key="c" class="g item"><div class="t"><b>{{ c }}</b></div><button class="btn sm dng" @click="sure('c'+c,()=>delCust(c))">{{ armed==='c'+c?'Нажмите ещё раз':'Удалить' }}</button></div>
@@ -755,6 +846,14 @@ template:`
    <div class="row"><button class="btn" @click="finAns(false)">Нет, не завершён</button><button class="btn pri" @click="finAns(true)">Да, завершён</button></div>
    <p class="hint" style="margin-top:12px">«Да» — всё как обычно. «Нет» — заказ не войдёт в количество заказов в месячном отчёте, а остаток ({{ fmt(unfLeft) }} шт) станет планом этого заказа в следующем новом отчёте.</p>
   </template>
+  <template v-else-if="sheet==='waste'">
+   <div class="top2"><button class="ghost" @click="WA.q?show('unf'):close()">{{ WA.q?'Назад':'Отмена' }}</button><b>Завершение отчёта</b><span></span></div>
+   <h2>Отходы</h2>
+   <label>Отходы, кг<span class="inw"><input v-model="WA.v" :class="{err:WA.err}" inputmode="decimal" enterkeyhint="done" placeholder="необязательно" autocomplete="off" v-focus="true" @input="WA.err=false"></span></label>
+   <div class="info brk" :class="{bad:WA.err}"><template v-if="WA.err">Введите число, например 12,5</template><template v-else>Брак за смену: <b>{{ fmt(wasteSum) }} кг</b><small class="hint" style="display:block">по заказам {{ fmt(ordBrak) }} кг + отходы {{ fmt(num(WA.v)) }} кг</small></template></div>
+   <div class="row"><button class="btn pri" @click="wasteOk">Закончить отчёт</button></div>
+   <p class="hint" style="margin-top:12px">Число прибавится к браку за день и попадёт в месячный отчёт. Можно оставить пустым.</p>
+  </template>
   <template v-else-if="sheet==='day'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ D.orig?'Изменить день':'Новый день' }}</b><span></span></div>
    <h2>Гофроагрегат</h2>
@@ -810,7 +909,7 @@ template:`
   <div class="info res">≈ <b>{{ fmt(calcTotal) }}</b> шт<small class="hint" style="display:block">Формат {{ C.f }} · толщина {{ thTxt }} мм</small></div>
   <div class="row"><button class="btn pri" @click="applyCalc">Подставить в «по факту»</button></div>
  </div>
- <div class="g toast" :class="{show:toast.msg}">{{ toast.msg }}</div>
+ <div class="g toast" :class="{show:toast.show,big:toast.big}" @click="hideToast" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p></template><template v-else>{{ toast.msg }}</template></div>
 </Teleport>`};
 
 const app=createApp(App);
