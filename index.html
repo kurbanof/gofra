@@ -755,7 +755,7 @@ setup(){
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
-  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
+  reports,cur,repTotal,total,customers,view,repText,monthTitle,days,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
   toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
