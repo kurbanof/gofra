@@ -55,6 +55,12 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .sech .chev{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:var(--fld);border:1px solid var(--edge);box-shadow:inset 0 1px 0 var(--hi)}
 .sech .chev svg{transition:transform .3s ease}.sech.on .chev svg{transform:rotate(180deg)}
 .blk>h2,.blk>.sech{margin-top:8px}.blk+.blk{margin-top:18px;border-top:2px solid var(--div)}
+.srch{position:relative;margin:0 0 12px}
+.srch input[type=search]{font-size:17px;font-weight:400;padding:12px 46px 12px 16px;margin-top:0;-webkit-appearance:none;appearance:none}
+.srch input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.srch .clr{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:0;background:none;color:var(--mut);font:inherit;font-size:26px;line-height:1;cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+.hcnt{margin:-2px 0 10px;font-size:13px}
+.dc small.hit{color:var(--ink);opacity:.85;overflow-wrap:anywhere}
 .fold{display:flow-root;padding:10px 14px 28px;margin:-10px -14px -38px}
 .g{background:var(--noise),var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--edge);border-radius:24px;box-shadow:inset 0 1px 0 var(--hi),0 12px 32px var(--sh)}
 .scroll .g{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--noise),var(--card);box-shadow:inset 0 1px 0 var(--hi),0 8px 22px var(--sh)}
@@ -162,7 +168,7 @@ input::placeholder{font-size:16px;font-weight:400;color:var(--mut);opacity:.75}
 .tk .cap{flex:none;font-size:13px;color:var(--mut)}
 @media(max-width:380px){.cl{width:68px;font-size:12px}.cr{gap:6px}.dr.fm{width:78px}}
 .res{text-align:center;font-size:18px}.res b{font-size:28px}
-.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:22px;font-weight:500;width:max-content;max-width:min(92vw,460px);text-align:center;line-height:1.35;transition:transform .3s}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:22px;font-weight:500;width:max-content;max-width:min(92vw,460px);text-align:center;line-height:1.35;transition:transform .3s;touch-action:none}
 .toast.big{width:min(92vw,440px);padding:16px 20px 14px;text-align:left;font-weight:400;font-size:16px}
 .toast.big{background:var(--noise),rgba(255,255,255,.7)}:root[data-theme=dark] .toast.big{background:var(--noise),rgba(52,66,78,.74)}
 .toast .tt{display:block;font-size:18px;font-weight:700;line-height:1.25;margin-bottom:8px}
@@ -292,6 +298,10 @@ function canonNames(names,known){const cnt=new Map();names.forEach(n=>cnt.set(n,
   if(!c){c=n;canon.push(n)}map.set(n,c)}
  return map}
 
+// history search: every word has to be found in the customer, the order number (also "order/tech") or the sizes (L×W or W×L)
+const lcq=v=>String(v==null?'':v).toLowerCase().replace(/ё/g,'е');
+const hTok=q=>lcq(q).replace(/(\d)\s*[x×х*]\s*(\d)/g,'$1×$2').split(/\s+/).filter(Boolean);
+function ordHit(o,tk){const f=[lcq(o.customer),lcq(o.order),lcq(o.len)+'×'+lcq(o.wid),lcq(o.wid)+'×'+lcq(o.len)],ot=lcq(o.order)+'/'+(lcq(o.tech)||'-');return tk.every(t=>t.includes('/')?ot.includes(t):f.some(x=>x.includes(t)))}
 function sheetSwipe(getEl,ok,close,setDrag){
  let y0=0,dy=0,arm=false,on=false,h=[];
  const vel=()=>{const a=h[0],b=h[h.length-1];return a&&b&&b[0]>a[0]?(b[1]-a[1])/(b[0]-a[0]):0};
@@ -309,6 +319,20 @@ function sheetSwipe(getEl,ok,close,setDrag){
    const v=e.timeStamp-h[h.length-1][0]>80?0:vel();
    if(!cancel&&(dy>110||(v>.6&&dy>30))){close();requestAnimationFrame(()=>el.style.removeProperty('--dy'))}
    else el.style.setProperty('--dy','0px')}}}
+// swipe up to dismiss the top popup: follows the finger (transform only), a touch pauses the auto-hide, a short pull snaps back
+function toastSwipe(getEl,o){
+ let y0=0,dy=0,on=false,h=[];
+ return{
+  start(e){on=false;const el=getEl();if(!el||e.touches.length!==1||!o.ok())return;
+   y0=e.touches[0].clientY;dy=0;on=true;h=[[e.timeStamp,y0]];el.style.transition='none';o.hold()},
+  move(e){if(!on||e.touches.length!==1)return;const el=getEl();if(!el)return;
+   const y=e.touches[0].clientY;dy=Math.min(0,y-y0);h.push([e.timeStamp,y]);while(h.length>2&&e.timeStamp-h[0][0]>100)h.shift();
+   el.style.transform='translate(-50%,'+dy+'px)'},
+  end(e,cancel){if(!on)return;on=false;const el=getEl();if(!el)return;
+   const a=h[0],b=h[h.length-1],v=e.timeStamp-b[0]>80||b[0]<=a[0]?0:(b[1]-a[1])/(b[0]-a[0]);
+   const gone=!cancel&&(dy<-44||(v<-.5&&dy<-12));
+   el.style.transition='';el.style.transform='';
+   if(gone)o.hide();else o.release()}}}
 // long-press drag & drop of list cards (touch): cards move with transforms only, the final move is handed over as onDrop(from,to)
 function listDrag(o){
  const SLOP=8,HOLD=420,TOP=120,BOT=140,MAXV=18;
@@ -411,7 +435,7 @@ const App={components:{Pill,Wheel},
 setup(){
  const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
  const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:''}),armed=ref('');
- const fold=reactive({hist:false,cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
+ const fold=reactive({cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
  const tab=ref('rep'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
  const W=reactive({mode:'new',step:0,id:null,err:'',o:{}}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
@@ -452,10 +476,16 @@ setup(){
  const selOrders=computed(()=>{const d=selDay.value;return d?db.reports.filter(r=>!r.del&&r.date===d.date).sort((a,b)=>(a.u||0)-(b.u||0)).flatMap(r=>r.orders):[]});
  const cum=up=>mdays.value.filter(x=>x.date<=up).reduce((s,x)=>({m2:s.m2+num(x.m2),ord:s.ord+num(x.ord),sh:s.sh+num(x.sh),brak:s.brak+num(x.brak)}),{m2:0,ord:0,sh:0,brak:0});
  const mTot=computed(()=>cum('9999'));
- const mgN=computed(()=>{const L=v=>fmt(v).length,t=mTot.value;return Math.max(L(t.m2),L(t.brak),4)+Math.max(L(t.ord),L(t.sh),4)});
- const mText=computed(()=>{const d=selDay.value;if(!d)return'';const ym=d.date.slice(0,7);
-  const blk=(h,o)=>h+'\nКоличество: '+fmt(num(o.m2))+' м²\nЗаказов: '+fmt(num(o.ord))+'\nСмен: '+fmt(num(o.sh))+'\nБрак: '+fmt(num(o.brak))+' кг';
-  return'Гофроагрегат\n\n'+blk((d.date===today()?'За сегодня, ':'За ')+dayTxt(d.date)+':',d)+'\n\n'+blk('За '+MI[+ym.slice(5)-1].toLowerCase()+' '+ym.slice(0,4)+':',cum(d.date))});
+ const mgW=t=>{const L=v=>fmt(v).length;return Math.max(L(t.m2),L(t.brak),4)+Math.max(L(t.ord),L(t.sh),4)};
+ const mgN=computed(()=>mgW(mTot.value));
+ const dTot=computed(()=>{const d=selDay.value;return d?{m2:num(d.m2),ord:num(d.ord),sh:num(d.sh),brak:num(d.brak)}:null});
+ const dgN=computed(()=>dTot.value?mgW(dTot.value):8);
+ const dTitle=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Гофроагрегат за сегодня':'Гофроагрегат за '+dayTxt(d.date)):''});
+ const hq=ref('');
+ const hRes=computed(()=>{const tk=hTok(hq.value);if(!tk.length)return null;const by=new Map();
+  db.reports.forEach(r=>{if(r.del)return;const a=by.get(r.date);if(a)a.push(...r.orders);else by.set(r.date,[...r.orders])});
+  return days.value.map(d=>({d,hit:(by.get(d.date)||[]).filter(o=>ordHit(o,tk))})).filter(x=>x.hit.length).sort((a,b)=>b.d.date.localeCompare(a.d.date))});
+ const hRows=computed(()=>hRes.value||mdaysDesc.value.map(d=>({d,hit:[]})));
  const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
  const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+ordN(x),0),brak:r2(rs.reduce((s,x)=>s+repBrak(x),0))}};
  const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=days.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord&&(!e.ba||Math.abs(num(e.brak)-t.brak)<.005)?'ok':'stale'});
@@ -495,18 +525,19 @@ setup(){
   if(out.length)r.u=now();return out}
  const carryMsg=c=>c.length===1?'Перенесён заказ '+c[0].customer+' '+c[0].order+': осталось '+fmt(c[0].left)+' шт':'Перенесено заказов: '+c.length+' (остатки по плану)';
 
- let tt,tc;
+ let tt,tc,tms=3500;
  const hideToast=()=>{clearTimeout(tt);toast.show=false;clearTimeout(tc);tc=setTimeout(()=>{if(!toast.show){toast.msg='';toast.big=false;toast.title='';toast.rows=[];toast.note=''}},400)};
- const showToast=(o,ms)=>{clearTimeout(tt);clearTimeout(tc);Object.assign(toast,{msg:'',big:false,title:'',rows:[],note:''},o,{show:true});tt=setTimeout(hideToast,ms)};
+ const showToast=(o,ms)=>{clearTimeout(tt);clearTimeout(tc);Object.assign(toast,{msg:'',big:false,title:'',rows:[],note:''},o,{show:true});tms=ms;tt=setTimeout(hideToast,ms)};
  const say=m=>showToast({msg:m},3500);
- const sayBig=(title,rows,note)=>showToast({msg:title,big:true,title,rows,note:note||''},9000);
+ const toastEl=ref(null),ts=toastSwipe(()=>toastEl.value,{ok:()=>toast.show,hold:()=>clearTimeout(tt),release:()=>{clearTimeout(tt);tt=setTimeout(hideToast,tms)},hide:hideToast});
+ const sayBig=(title,rows,note)=>showToast({msg:title,big:true,title,rows,note:note||''},3000);
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
  const sure=(k,fn)=>{if(armed.value===k){armed.value='';fn()}else{armed.value=k;setTimeout(()=>{if(armed.value===k)armed.value=''},3000)}};
 
  const show=k=>{sheet.value=k;oc.value++;open.value=true};
  const close=()=>{const a=document.activeElement;if(a&&a.blur)a.blur();open.value=false;calcOpen.value=false};
  const sw=sheetSwipe(()=>sheetEl.value,()=>open.value&&sheet.value==='dayord',close,v=>{dragging.value=v});
- const onDay=d=>{if(selDay.value&&selDay.value.date===d)show('dayord');else mSel.value=d};
+ const onDay=d=>{if(d.slice(0,7)!==monthKey.value){mMonth.value=d.slice(0,7);mSel.value=d;return}if(selDay.value&&selDay.value.date===d)show('dayord');else mSel.value=d};
  function addCust(n){const l=n.toLowerCase(),c=db.customers.find(x=>x.n.toLowerCase()===l);if(c){if(c.del){c.del=false;c.u=now()}}else db.customers.push({n,u:now()})}
  const delCust=n=>{const c=db.customers.find(x=>x.n===n);if(c){c.del=true;c.u=now()}};
  function exportData(){
@@ -724,8 +755,8 @@ setup(){
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
-  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,mText,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  reports,cur,repTotal,total,customers,view,repText,monthTitle,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
+  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
@@ -758,15 +789,6 @@ template:`
     <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
     </div>
     <div class="blk">
-     <button type="button" class="sech" :class="{on:fold.hist}" :aria-expanded="fold.hist" @click="toggleFold('hist')"><span>История</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
-     <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.hist" class="fold">
-    <TransitionGroup name="li" tag="div">
-     <div v-for="r in reports" :key="r.id" class="g item"><div class="t" @click="openReport(r.id)"><b>{{ dm(r.date) }}.{{ r.date.slice(0,4) }}</b><small>Заказов: {{ r.orders.length }}</small></div><span class="a">{{ fmt(repTotal(r)) }} м²</span><button class="btn sm dng" @click="sure('r'+r.id,()=>delReport(r.id))">{{ armed==='r'+r.id?'Нажмите ещё раз':'Удалить' }}</button></div>
-    </TransitionGroup>
-    <p v-if="!reports.length" class="mut">Здесь появятся прошлые отчёты.</p>
-    </div></Transition>
-    </div>
-    <div class="blk">
      <button type="button" class="sech" :class="{on:fold.cust}" :aria-expanded="fold.cust" @click="toggleFold('cust')"><span>Сохранённые заказчики</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
      <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.cust" class="fold">
     <TransitionGroup name="li" tag="div">
@@ -779,13 +801,18 @@ template:`
    <section v-else key="mon">
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
     <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div></div>
+    <div v-if="selDay" class="g mtot"><b>{{ dTitle }}</b><div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div></div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
-    <div v-if="selDay" class="g prev"><pre class="full">{{ mText }}</pre><button class="btn pri big" @click="copy(mText)">Скопировать отчёт</button></div>
-    <h2 v-if="mdays.length">Дни</h2>
-    <TransitionGroup name="li" tag="div">
-     <div v-for="x in mdaysDesc" :key="x.date" class="g dc" :class="{sel:selDay&&x.date===selDay.date}" @click="onDay(x.date)"><div class="m"><b>{{ dayTxt(x.date) }}</b><small>{{ fmt(num(x.m2)) }} м² · {{ x.ord }} зак. · {{ x.sh }} см.</small><small>брак {{ fmt(num(x.brak)) }} кг</small></div><button class="btn sm" @click.stop="openDay(x.date)">Изменить</button></div>
+    <template v-if="days.length">
+     <h2>История</h2>
+     <div class="srch"><input type="search" v-model="hq" placeholder="Заказчик, заказ, размер" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" @keydown.enter.prevent="$event.target.blur()"><button v-if="hq" type="button" class="clr" aria-label="Очистить поиск" @click="hq=''">×</button></div>
+     <p v-if="hRes&&hRows.length" class="mut hcnt">Найдено дней: {{ hRows.length }}</p>
+    </template>
+    <TransitionGroup :name="hq?'nolist':'li'" tag="div">
+     <div v-for="x in hRows" :key="x.d.date" class="g dc" :class="{sel:selDay&&x.d.date===selDay.date}" @click="onDay(x.d.date)"><div class="m"><b>{{ dayTxt(x.d.date) }}<template v-if="hRes"> {{ x.d.date.slice(0,4) }}</template></b><small>{{ fmt(num(x.d.m2)) }} м² · {{ x.d.ord }} зак. · {{ x.d.sh }} см.</small><small>брак {{ fmt(num(x.d.brak)) }} кг</small><small v-for="o in x.hit.slice(0,3)" :key="o.id" class="hit">{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }} · {{ o.len }}×{{ o.wid }}</small><small v-if="x.hit.length>3" class="hit">и ещё {{ x.hit.length-3 }}</small></div><button class="btn sm" @click.stop="openDay(x.d.date)">Изменить</button></div>
     </TransitionGroup>
-    <p v-if="!mdays.length" class="mut">За этот месяц данных пока нет.</p>
+    <p v-if="hRes&&!hRows.length" class="mut">Ничего не найдено.</p>
+    <p v-else-if="!hRes&&!mdays.length" class="mut">За этот месяц данных пока нет.</p>
    </section>
   </Transition>
  </div></main>
@@ -916,7 +943,7 @@ template:`
   <div class="info res">≈ <b>{{ fmt(calcTotal) }}</b> шт<small class="hint" style="display:block">Формат {{ C.f }} · толщина {{ thTxt }} мм</small></div>
   <div class="row"><button class="btn pri" @click="applyCalc">Подставить в «по факту»</button></div>
  </div>
- <div class="g toast" :class="{show:toast.show,big:toast.big}" @click="hideToast" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p></template><template v-else>{{ toast.msg }}</template></div>
+ <div class="g toast" :class="{show:toast.show,big:toast.big}" ref="toastEl" @click="hideToast" @touchstart.stop.passive="tsStart" @touchmove.stop.passive="tsMove" @touchend.stop.passive="tsEnd" @touchcancel.stop.passive="tsCancel" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p></template><template v-else>{{ toast.msg }}</template></div>
 </Teleport>`};
 
 const app=createApp(App);
