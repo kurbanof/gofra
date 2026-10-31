@@ -139,6 +139,26 @@ input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .calcb{position:absolute;right:8px;bottom:8px;width:46px;height:46px;border-radius:14px;background:var(--fld);border:1px solid var(--edge);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:inset 0 1px 0 var(--hi)}
 .sug{display:flex;flex-wrap:nowrap;gap:8px;margin:-4px -18px 0;padding:0 18px 2px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}.sug::-webkit-scrollbar{display:none}.sug .chip{flex:none;white-space:nowrap}
 .chip.paste{display:inline-flex;align-items:center;gap:7px;font-weight:600;border-color:#d8923a99}.chip.paste svg{color:#d8923a;flex:none}
+.chip.on{border-color:#d8923a;box-shadow:0 0 0 1px #d8923a inset;font-weight:600}
+.addrow{display:flex;gap:10px}.addrow .btn{flex:1;min-width:0}.addrow .btn.pri{flex:2}
+.frow.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.frow.two label{min-width:0}.frow.two .inw input{padding-right:14px;font-size:22px}
+.gf h2{margin:12px 0 8px;font-size:18px}.gf h2 small{font-size:14px;font-weight:400}
+.flat .gf{transition:opacity .3s ease}
+.flat.st{display:grid;grid-template-columns:minmax(0,1fr)}.flat.st>.gf{grid-area:1/1}
+.flat.st>.gf.off{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility 0s linear .3s}
+.flat.fm>.gf.off{display:none}
+.flat.one>.gf.fd{display:grid;grid-template-rows:1fr;transition:grid-template-rows .3s ease,opacity .3s ease}
+.flat.one>.gf.fd>.gi{overflow:hidden;min-height:0;padding:6px 6px 8px;margin:-6px -6px -8px}
+.flat.one>.gf.fd.off{grid-template-rows:0fr;opacity:0;pointer-events:none}
+.sech.mini{font-size:16px;margin:4px 0 6px;font-weight:600}.sech.mini small{font-weight:400;color:var(--mut);font-size:14px;margin-left:8px}
+.btn.skip{width:100%;margin:2px 0 0}
+.fsum{margin:2px 0 8px}.fsum small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.opts{padding:12px 12px 8px}.opts .oh{font-size:14px;color:var(--mut);margin:0 4px 8px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 8px;padding:12px 14px;text-align:left;font:inherit;color:inherit;background:var(--fld);border:1px solid var(--edge);border-radius:16px;cursor:pointer;transition:border-color .3s ease,box-shadow .3s ease}
+.opt .m{flex:1;min-width:0}.opt b{display:block;font-weight:600}.opt small{display:block;color:var(--mut);font-size:13px;margin-top:2px}
+.opt .rd{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--mut);position:relative;transition:border-color .3s ease}
+.opt .rd::after{content:'';position:absolute;inset:3px;border-radius:50%;background:#d8923a;transform:scale(0);transition:transform .3s ease}
+.opt.on{border-color:#d8923a;box-shadow:0 0 0 1px #d8923a inset}.opt.on .rd{border-color:#d8923a}.opt.on .rd::after{transform:scale(1)}.sug .cl{flex:none;align-self:center;font-size:14px;color:var(--mut)}
 .chip{font:inherit;font-size:15px;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:999px;padding:10px 14px;cursor:pointer;text-align:left}
 .info{margin:6px 0 4px;padding:12px 14px;border-radius:16px;background:var(--fld);font-size:15px}
 .info .warn{display:block;margin-top:4px;font-size:13px;color:#c0392b}:root[data-theme=dark] .info .warn{color:#f1907b}
@@ -211,6 +231,21 @@ const STEPS=[
 {t:'Расчёт брака',f:[{k:'bq',l:'Брак, заготовок (шт)',m:'numeric',opt:1,ph:'необязательно'},{k:'bw',l:'Вес одной заготовки, г',m:'decimal',opt:1,ph:'необязательно'}]}];
 const MODES=[{v:'day',t:'Ежедневный'},{v:'mon',t:'Ежемесячный'}],TABS=[{v:'rep',t:'Отчёт'},{v:'his',t:'Ещё'}];
 const IDX={rep:0,his:1,mon:2};
+// order form: layouts 'one' (one screen, fact and defect folded), 'three' (3 steps), 'six' (the old 6-step wizard); chosen in «Ещё → Настройки»
+const FL={customer:'Заказчик',order:'Номер заказа',tech:'Техкарта',len:'Длина, мм',wid:'Ширина, мм',plan:'Нужно по заказу, шт',fact:'Произведено, шт',bq:'Брак, шт',bw:'Вес заготовки, г'};
+const GROUPS=[
+ {id:'a',t:'Заказ',rows:[{f:['customer'],x:'cust'},{f:['order','tech'],x:'tech'}]},
+ {id:'b',t:'Размер и план',rows:[{f:['len','wid'],x:'size'},{f:['plan']}]},
+ {id:'c',t:'Факт и брак',rows:[{f:['fact'],x:'area'},{f:['bq','bw'],x:'brk'}]}];
+const REQ=new Set(['customer','order','len','wid','plan']);
+const INPUTS=[
+ {v:'one',t:'Один экран',d:'Все поля сразу. Факт и брак можно добавить позже'},
+ {v:'three',t:'Три шага',d:'Заказ, размер и план, затем факт и брак (можно пропустить)'},
+ {v:'six',t:'Шесть шагов',d:'Как раньше: по одному полю на шаг, факт обязателен'}];
+const PK='gofro-ui-v1';
+const loadPrefs=()=>{let d=null;try{d=JSON.parse(localStorage.getItem(PK))}catch(e){}return{input:d&&['one','three','six'].includes(d.input)?d.input:'one'}};
+const prefs=reactive(loadPrefs());
+const blankO=()=>({customer:'',order:'',tech:'',len:'',wid:'',plan:'',fact:'',bq:'',bw:''});
 const TT={B:30,E:18};
 const WN=range(1,40,v=>({v,t:v})),WS=range(1,4,v=>({v,t:v})),WF=['A','B','E'].map(v=>({v,t:v})),WH=range(10,220,v=>({v,t:v})),WL=[{v:0,t:'='}].concat(WH),WT=range(40,50,v=>({v,t:(v/10).toFixed(1).replace('.',',')}));
 
@@ -302,6 +337,37 @@ function canonNames(names,known){const cnt=new Map();names.forEach(n=>cnt.set(n,
 const lcq=v=>String(v==null?'':v).toLowerCase().replace(/ё/g,'е');
 const hTok=q=>lcq(q).replace(/(\d)\s*[x×х*]\s*(\d)/g,'$1×$2').split(/\s+/).filter(Boolean);
 function ordHit(o,tk){const f=[lcq(o.customer),lcq(o.order),lcq(o.len)+'×'+lcq(o.wid),lcq(o.wid)+'×'+lcq(o.len)],ot=lcq(o.order)+'/'+(lcq(o.tech)||'-');return tk.every(t=>t.includes('/')?ot.includes(t):f.some(x=>x.includes(t)))}
+// order memory for auto-fill: sizes, tech cards and blank weights seen in earlier reports, newest first
+const LATIN={'А':'A','В':'B','Е':'E','К':'K','М':'M','Н':'H','О':'O','Р':'P','С':'C','Т':'T','Х':'X','У':'Y'};
+const techK=t=>S(t).toUpperCase().replace(/[АВЕКМНОРСТХУ]/g,c=>LATIN[c]).replace(/[^A-Z0-9]/g,'');
+const sizeK=(l,w)=>num(l)+'×'+num(w);
+function memBuild(reports){
+ const M={ord:new Map(),techs:new Map(),tech:new Map(),bwTS:new Map(),bwS:new Map(),freq:new Map()};
+ const rs=reports.filter(r=>r&&!r.del&&r.orders&&r.orders.length).sort((a,b)=>S(b.date).localeCompare(S(a.date))||(b.u||0)-(a.u||0));
+ for(const r of rs)for(let i=r.orders.length-1;i>=0;i--){
+  const o=r.orders[i];if(!num(o.len)||!num(o.wid))continue;
+  const tk=techK(o.tech),sk=sizeK(o.len,o.wid),ck=nk(o.customer)+'|'+nk(o.order),rec={date:r.date,tech:S(o.tech).trim(),len:S(o.len).trim(),wid:S(o.wid).trim()};
+  if(nk(o.order)){if(!M.ord.has(ck+'|'+tk))M.ord.set(ck+'|'+tk,rec);if(tk){let l=M.techs.get(ck);if(!l)M.techs.set(ck,l=new Map());if(!l.has(tk))l.set(tk,rec)}}
+  if(tk){let t=M.tech.get(tk);if(!t)M.tech.set(tk,t=new Map());if(!t.has(sk))t.set(sk,rec)}
+  if(num(o.bw)>0){const bw=S(o.bw).trim(),v=num(o.bw);
+   for(const [m,k] of [[M.bwTS,tk&&tk+'|'+sk],[M.bwS,sk]]){if(!k)continue;const e=m.get(k);if(e){e.lo=Math.min(e.lo,v);e.hi=Math.max(e.hi,v)}else m.set(k,{bw,date:r.date,lo:v,hi:v})}}
+  const f=M.freq.get(sk);if(f)f.n++;else M.freq.set(sk,{len:rec.len,wid:rec.wid,n:1,date:r.date})}
+ return M}
+// o = the order being typed. techs: tech cards this customer+order had before (newest first, to pick from, never filled silently);
+// size: from the same customer+order+tech, else from the tech card itself; list: every size that tech card had (only when several);
+// top: most frequent sizes when nothing matched
+function memFind(M,o){
+ const hasO=!!nk(o.order),ck=nk(o.customer)+'|'+nk(o.order),tk=techK(o.tech),out={techs:[],size:null,list:[],top:[]};
+ if(hasO){const l=M.techs.get(ck);if(l)out.techs=[...l.values()].slice(0,5).map(x=>({v:x.tech,date:x.date}))}
+ const ex=hasO?M.ord.get(ck+'|'+tk):null,T=tk?M.tech.get(tk):null;
+ if(ex)out.size={len:ex.len,wid:ex.wid,date:ex.date,src:'order'};
+ else if(T){const f=T.values().next().value;out.size={len:f.len,wid:f.wid,date:f.date,src:'tech'}}
+ if(T&&T.size>1)out.list=[...T.values()].slice(0,4).map(x=>({len:x.len,wid:x.wid}));
+ if(!out.size)out.top=[...M.freq.values()].sort((a,b)=>b.n-a.n||b.date.localeCompare(a.date)).slice(0,4).map(x=>({len:x.len,wid:x.wid}));
+ return out}
+function memBw(M,o){
+ if(!num(o.len)||!num(o.wid))return null;const sk=sizeK(o.len,o.wid),tk=techK(o.tech),a=tk&&M.bwTS.get(tk+'|'+sk);
+ if(a)return{bw:a.bw,date:a.date,src:'tech',lo:a.lo,hi:a.hi};const b=M.bwS.get(sk);return b?{bw:b.bw,date:b.date,src:'size',lo:b.lo,hi:b.hi}:null}
 function sheetSwipe(getEl,ok,close,setDrag){
  let y0=0,dy=0,arm=false,on=false,h=[];
  const vel=()=>{const a=h[0],b=h[h.length-1];return a&&b&&b[0]>a[0]?(b[1]-a[1])/(b[0]-a[0]):0};
@@ -438,7 +504,7 @@ setup(){
  const fold=reactive({cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
  const tab=ref('rep'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
- const W=reactive({mode:'new',step:0,id:null,err:'',o:{}}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
+ const W=reactive({mode:'new',layout:'one',more:false,q:[],qi:0,step:0,id:null,err:'',o:{},auto:{size:null,bw:null,list:[],top:[]},bwTry:false}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
  const C=reactive({n:1,s:1,f:'B',h:100,l:0,t:45});
  const mMonth=ref(null),mSel=ref(null),dp=ref(null),instOff=ref(false),pend=ref(null);
  const impText=ref(''),impDt=ref(null),impErr=ref(''),impEl=ref(null);
@@ -504,7 +570,8 @@ setup(){
   if(d&&!d.ba)notes.push('Брак за день в месячном отчёте введён вручную, он не изменён.');
   if(o&&o.op==='1')notes.push('Заказ «'+o.customer+' '+o.order+'» не завершён: остаток '+fmt(r2(num(o.plan)-num(o.fact)))+' шт перенесётся в новый отчёт.');
   sayBig('Отчёт за '+dayTxt(r.date)+' сохранён в месячном отчёте',rows,notes.join('\n'))}
- function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;const l=r.orders[r.orders.length-1];
+ function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;if(r.orders.some(o=>S(o.fact).trim()===''))show('nofact');else finishNow()}
+ function finishNow(){const r=cur.value;if(!r||!r.orders.length)return;const l=r.orders[r.orders.length-1];
   Object.assign(WA,{v:S(r.waste),q:false,done:null,err:false});
   if(num(l.fact)<num(l.plan)){WA.q=true;show('unf');return}
   show('waste')}
@@ -625,26 +692,103 @@ setup(){
  const sugs=computed(()=>{const q=(W.o.customer||'').trim().toLowerCase(),l=customers.value;
   const r=q?l.filter(c=>{const s=c.toLowerCase();return s!==q&&s.indexOf(q)>-1}).sort((a,b)=>(a.toLowerCase().indexOf(q)===0?0:1)-(b.toLowerCase().indexOf(q)===0?0:1)||a.localeCompare(b,'ru')):[...l].reverse();return r.slice(0,6)});
  function openOrder(id){const r=cur.value,ex=id&&r.orders.find(x=>x.id===id);
-  Object.assign(W,{mode:ex?'edit':'new',step:0,id:id||null,err:'',o:ex?Object.assign({bq:'',bw:''},ex):{customer:'',order:'',tech:'',len:'',wid:'',plan:'',fact:'',bq:'',bw:''}});show('order')}
- function next(){
+  Object.assign(W,{mode:ex?'edit':'new',layout:ex?'one':prefs.input,more:!!ex,q:[],qi:0,step:0,id:id||null,err:'',auto:{size:null,bw:null,list:[],top:[]},bwTry:false,o:ex?Object.assign({bq:'',bw:''},ex):blankO()});
+  if(!ex&&W.layout==='one')fillSize();show('order')}
+ // ---- order form (layouts one / three / six; modes new / edit / fact)
+ const three=computed(()=>W.layout==='three'&&W.mode==='new');
+ const oneNew=computed(()=>W.layout==='one'&&W.mode==='new');
+ const gOn=computed(()=>W.mode==='fact'?{a:false,b:false,c:true}:three.value?{a:W.step===0,b:W.step===1,c:W.step===2}:{a:true,b:true,c:W.mode==='edit'||W.more});
+ const gHead=computed(()=>({a:three.value,b:three.value,c:three.value||W.mode==='edit'}));
+ const lastK=computed(()=>three.value?['tech','plan','bw'][W.step]:oneNew.value&&!W.more?'plan':'bw');
+ const focusK0=computed(()=>W.mode==='fact'?'fact':'customer');
+ const orderTitle=computed(()=>W.mode==='edit'?'Изменить заказ':W.mode==='fact'?'Ввод факта':'Заказ №'+(cur.value?cur.value.orders.length+1:1));
+ const orderCnt=computed(()=>W.mode==='fact'?(W.qi+1)+' из '+W.q.length:W.mode!=='new'?'':W.layout==='six'?(W.step+1)+'/'+STEPS.length:three.value?(W.step+1)+'/3':'');
+ const barOn=computed(()=>W.mode==='fact'?W.q.length>1:W.mode==='new'&&(W.layout==='six'||three.value));
+ const barPct=computed(()=>W.mode==='fact'?(W.qi+1)/Math.max(1,W.q.length):(W.step+1)/(W.layout==='six'?STEPS.length:3));
+ const focusSel=sel=>nextTick(()=>{const e=sheetEl.value&&sheetEl.value.querySelector(sel);if(e){try{e.focus({preventScroll:true})}catch(x){}}});
+ const focusK=k=>focusSel('.gf:not(.off) input[data-k="'+k+'"]');
+ const focusG=()=>focusSel('.gf:not(.off) input');
+ const badField=k=>{W.err=k;nextTick(()=>{const e=sheetEl.value&&sheetEl.value.querySelector('input.err');e&&e.focus()})};
+ const keysOf=gs=>gs.flatMap(g=>g.rows.flatMap(r=>r.f));
+ const groupOf=k=>GROUPS.findIndex(g=>g.rows.some(r=>r.f.includes(k)));
+ function next(){if(W.mode==='fact')return factNext(1);if(W.layout==='six')return nextSix();nextFlat()}
+ function nextSix(){
   const bad=shownSteps.value.flatMap(s=>s.f).find(f=>!f.opt&&!S(W.o[f.k]).trim());
   if(bad){W.err=bad.k;nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
   const hasQ=!!S(W.o.bq).trim(),hasW=!!S(W.o.bw).trim();
   if((W.mode==='edit'||W.step===STEPS.length-1)&&hasQ&&!hasW){W.err='bw';nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
-  if(W.mode==='new'&&W.step<STEPS.length-1){W.step++;return}
+  if(W.mode==='new'&&W.step<STEPS.length-1){W.step++;if(W.step===2)fillSize();return}
+  commitOrder(false)}
+ function nextFlat(){
+  if(three.value&&W.step<2){const m=keysOf([GROUPS[W.step]]).find(k=>REQ.has(k)&&!S(W.o[k]).trim());if(m){badField(m);return}
+   W.step++;if(W.step===1)fillSize();focusG();return}
+  saveFlat(false)}
+ function saveFlat(keep){
+  const m=keysOf(GROUPS).find(k=>REQ.has(k)&&!S(W.o[k]).trim());
+  if(m){if(three.value)W.step=groupOf(m);badField(m);return}
+  if(S(W.o.bq).trim()&&!S(W.o.bw).trim()){if(three.value)W.step=2;else if(oneNew.value)W.more=true;badField('bw');return}
+  commitOrder(keep)}
+ const saveNow=()=>saveFlat(false),saveMore=()=>saveFlat(true);
+ function commitOrder(keep){
   const o=Object.assign({},W.o),r=cur.value;if(!r)return;
   o.customer=o.customer.trim().replace(/\s+/g,' ');const kn=customers.value.find(c=>c.toLowerCase()===o.customer.toLowerCase());if(kn)o.customer=kn;
-  ['order','tech','len','wid','plan','fact','bq','bw'].forEach(k=>{o[k]=S(o[k]).replace(/\s+/g,'')});o.tech=o.tech.toUpperCase();
+  ['order','tech','len','wid','plan','fact','bq','bw'].forEach(k=>{o[k]=S(o[k]).replace(/\s+/g,'')});o.tech=o.tech.toUpperCase();if(!o.bq&&W.auto.bw)o.bw='';
   const ex=W.mode==='edit'&&r.orders.find(x=>x.id===W.id);
   if(ex){if(S(ex.fact)!==o.fact||S(ex.plan)!==o.plan)o.op='';Object.assign(ex,o)}else r.orders.push(Object.assign({id:uid()},o));
-  r.u=now();addCust(o.customer);close();say((ex?'Сохранено: ':'Заказ завершён: ')+fmt(area(o))+' м²')}
- const back=()=>{if(W.step>0)W.step--};
+  r.u=now();addCust(o.customer);
+  const msg=W.layout==='six'?(ex?'Сохранено: ':'Заказ завершён: ')+fmt(area(o))+' м²':(ex?'Сохранено':'Добавлен')+(o.fact?': '+fmt(area(o))+' м²':': '+o.customer+' '+o.order);
+  if(keep){Object.assign(W,{step:0,id:null,err:'',auto:{size:null,bw:null,list:[],top:[]},bwTry:false,o:blankO()});fillSize();focusK('customer')}else close();
+  say(msg)}
+ // fact entry: walks through the orders that have no fact yet (empty or 0), saves each one on "Далее"
+ const pendN=computed(()=>cur.value?cur.value.orders.filter(o=>num(o.fact)===0).length:0);
+ const nfN=computed(()=>cur.value?cur.value.orders.filter(o=>S(o.fact).trim()==='').length:0);
+ function loadFact(i){const o=cur.value&&cur.value.orders.find(x=>x.id===W.q[i]);if(!o)return false;
+  Object.assign(W,{qi:i,id:o.id,err:'',auto:{size:null,bw:null,list:[],top:[]},bwTry:false,o:Object.assign({bq:'',bw:''},o)});return true}
+ function openFacts(){const r=cur.value;if(!r)return;const q=r.orders.filter(o=>num(o.fact)===0).map(o=>o.id);
+  if(!q.length){close();say('У всех заказов уже указан факт');return}
+  Object.assign(W,{mode:'fact',layout:'one',more:true,step:0,q});loadFact(0);show('order')}
+ function factSave(){const r=cur.value,ex=r&&r.orders.find(x=>x.id===W.id);if(!ex)return true;
+  const g=k=>S(W.o[k]).replace(/\s+/g,'');const f=g('fact'),bq=g('bq');let bw=g('bw');
+  if(bq&&!bw){badField('bw');return false}
+  if(!bq&&W.auto.bw)bw='';
+  if(S(ex.fact)!==f)ex.op='';
+  if(S(ex.fact)!==f||S(ex.bq)!==bq||S(ex.bw)!==bw){Object.assign(ex,{fact:f,bq,bw});r.u=now()}
+  return true}
+ function factNext(d){if(!factSave())return;const i=W.qi+d;if(i<0)return;
+  if(i>=W.q.length){const r=cur.value,n=r?r.orders.filter(o=>W.q.includes(o.id)&&num(o.fact)>0).length:0;close();say(n?'Факт сохранён: '+n+' из '+W.q.length+' зак.':'Факт не введён');return}
+  loadFact(i);focusK('fact')}
+ const toggleMore=()=>{W.more=!W.more;if(W.more)focusK('fact')};
+ const onCommit=k=>{if(W.layout==='one'&&W.mode==='new'&&(k==='order'||k==='tech'))fillSize()};
+ const back=()=>{if(W.step>0){W.step--;if(W.layout==='three')focusG()}};
+ const setInput=v=>{prefs.input=v;try{localStorage.setItem(PK,JSON.stringify({input:v}))}catch(e){}};
+ const mem=computed(()=>memBuild(db.reports));
+ // tech cards the same customer+order had before: chips under the order field (never filled silently: half of such orders have several)
+ const techChips=computed(()=>W.mode==='new'&&S(W.o.order).trim()?memFind(mem.value,W.o).techs:[]);
+ const pickTech=c=>{W.o.tech=c.v;if(W.mode!=='new')return;if(W.layout==='one'){fillSize();focusK(S(W.o.len).trim()&&S(W.o.wid).trim()?'plan':'len')}else next()};
+ // size on entering the size step: only into empty fields, or over an earlier auto-fill the user has not touched
+ function fillSize(){if(W.mode!=='new')return;const none=!S(W.o.len).trim()&&!S(W.o.wid).trim();if(!none&&!W.auto.size)return;
+  const f=memFind(mem.value,W.o);
+  if(f.size){W.o.len=f.size.len;W.o.wid=f.size.wid;W.auto.size={date:f.size.date,src:f.size.src}}
+  else if(W.auto.size){W.o.len='';W.o.wid='';W.auto.size=null}
+  W.auto.list=f.list;W.auto.top=f.size?[]:f.top}
+ const pickSize=z=>{W.o.len=z.len;W.o.wid=z.wid;W.auto.size={date:'',src:'chip'}};
+ const sizeChips=computed(()=>{const a=W.auto;if(a.list.length)return a.list;return !a.size&&!S(W.o.len).trim()&&!S(W.o.wid).trim()?a.top:[]});
+ const sizeNote=computed(()=>{const a=W.auto.size;if(!a||a.src==='chip')return'';const d=a.date?' · '+dayTxt(a.date):'';
+  return a.src==='order'?'Размер как в заказе '+S(W.o.order).trim()+d:'Размер техкарты '+S(W.o.tech).trim().toUpperCase()+d});
+ // blank weight appears when the number of defective blanks is typed (once per form); an edit by hand wins
+ function fillBw(){if(W.bwTry||!S(W.o.bq).trim()||S(W.o.bw).trim())return;W.bwTry=true;
+  const m=memBw(mem.value,W.o);if(m){W.o.bw=m.bw;W.auto.bw={date:m.date,src:m.src,lo:m.lo,hi:m.hi}}}
+ const bwNote=computed(()=>{const a=W.auto.bw;if(!a)return'';const rg=a.hi>a.lo?' '+fmt(a.lo)+'–'+fmt(a.hi):'';return a.src==='tech'?(rg?'вес был'+rg:'вес как раньше'):'вес по размеру'+rg});
+ function onType(k){W.err='';
+  if(k==='len'||k==='wid')W.auto.size=null;else if(k==='bw')W.auto.bw=null;else if(k==='bq')fillBw()}
  const orderText=o=>{const g=k=>S(o[k]).trim(),bw=g('bw');return g('customer')+' '+g('order')+'/'+(g('tech')||'-')+'\n        '+g('len')+'×'+g('wid')+'. '+g('plan')+'шт'+(bw?'\nВес заготовки: '+bw+' г':'')};
  const copyOrder=()=>copy(orderText(W.o));
  function applyPaste(p){
   const c=canonNames([p.customer],customers.value).get(p.customer)||p.customer;
-  Object.assign(W.o,{customer:c,order:p.order,tech:p.tech,len:p.len,wid:p.wid});if(p.bw)W.o.bw=p.bw;
-  W.err='';const i=STEPS.findIndex(st=>st.f.some(f=>!f.opt&&!S(W.o[f.k]).trim()));W.step=i<0?STEPS.length-1:i;
+  Object.assign(W.o,{customer:c,order:p.order,tech:p.tech,len:p.len,wid:p.wid});if(p.bw)W.o.bw=p.bw;Object.assign(W.auto,{size:null,list:[],top:[]});
+  W.err='';
+  if(W.layout==='six'){const i=STEPS.findIndex(st=>st.f.some(f=>!f.opt&&!S(W.o[f.k]).trim()));W.step=i<0?STEPS.length-1:i}
+  else{const m=keysOf(GROUPS).find(k=>REQ.has(k)&&!S(W.o[k]).trim())||'plan';if(three.value)W.step=groupOf(m);focusK(m)}
   say('Вставлено: '+c+' '+p.order+'/'+(p.tech||'-')+', '+p.len+'×'+p.wid+(p.bw?', вес '+p.bw+' г':'')+(p.more?'. В тексте несколько заказов, взят первый':''))}
  async function pasteOrder(){let t='';
   try{t=await navigator.clipboard.readText()}catch(e){say('Нет доступа к буферу обмена. Нажмите в поле и вставьте текст долгим нажатием');return}
@@ -652,7 +796,7 @@ setup(){
   const p=parseOne(t);if(!p){say(String(t||'').trim()?'Не нашёл в тексте заказ: нужны имя, номер и размеры':'Буфер обмена пуст');return}
   applyPaste(p)}
  function onPaste(e){if(W.mode!=='new'||W.step!==0)return;const p=parseOne(e.clipboardData&&e.clipboardData.getData('text'));if(p){e.preventDefault();applyPaste(p)}}
- const pick=c=>{W.o.customer=c;if(W.mode==='new')next()};
+ const pick=c=>{W.o.customer=c;if(W.mode!=='new')return;if(W.layout==='six')next();else focusK('order')};
  const delOrder=()=>{const r=cur.value;r.orders=r.orders.filter(x=>x.id!==W.id);r.u=now();close()};
 
  function openDay(date){const ex=date&&days.value.find(x=>x.date===date);
@@ -669,7 +813,7 @@ setup(){
  const t10=computed(()=>C.f==='A'?C.t:TT[C.f]),thTxt=computed(()=>String(t10.value/10).replace('.',','));
  const calcTotal=computed(()=>{const per=h=>Math.floor(h*100/t10.value),full=per(C.h),last=C.n>1&&C.l?per(C.l):full;return C.s*((C.n-1)*full+last)});
  function openCalc(){const a=document.activeElement;if(a&&a.blur)a.blur();calcOpen.value=true}
- const applyCalc=()=>{W.o.fact=String(calcTotal.value);calcOpen.value=false;nextTick(()=>{const e=sheetEl.value&&sheetEl.value.querySelector('input');e&&e.focus({preventScroll:true})})};
+ const applyCalc=()=>{W.o.fact=String(calcTotal.value);calcOpen.value=false;nextTick(()=>{const e=sheetEl.value&&(sheetEl.value.querySelector('input[data-k="fact"]')||sheetEl.value.querySelector('input'));e&&e.focus({preventScroll:true})})};
 
  const syncKey=computed(()=>cfg.url?'gofro:'+btoa(JSON.stringify({u:cfg.url,c:cfg.code})):'');
  const syncTitle=computed(()=>!cfg.url?'Данные только на этом устройстве':sync.busy?'Синхронизация…':sync.status==='err'?'Ошибка синхронизации':'Данные синхронизируются');
@@ -715,7 +859,7 @@ setup(){
 
  const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect,waste:wasteOk})[sheet.value];
  function onKey(e){if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT'||e.target.readOnly)return;e.preventDefault();
-  const ins=[...sheetEl.value.querySelectorAll('input:not([type=date]):not([disabled])')].filter(x=>!x.closest('.stp-leave-active')),i=ins.indexOf(e.target);
+  const ins=[...sheetEl.value.querySelectorAll('input:not([type=date]):not([disabled])')].filter(x=>!x.closest('.stp-leave-active')&&!x.closest('[inert]')),i=ins.indexOf(e.target);
   if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
  const onFocusIn=e=>{if(e.target.tagName==='INPUT'&&e.target.type!=='date')setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}},280)};
 
@@ -726,7 +870,7 @@ setup(){
   else if(isRoot.value&&trapped){ignorePop=true;trapped=false;history.back();setTimeout(()=>{ignorePop=false},700)}}catch(e){}}
  function backStep(){
   if(calcOpen.value){calcOpen.value=false;return}
-  if(open.value){if(sheet.value==='impdup'){show('imp');return}if(sheet.value==='waste'&&WA.q){show('unf');return}if(sheet.value==='order'&&W.mode==='new'&&W.step>0)W.step--;else close();return}
+  if(open.value){if(sheet.value==='impdup'){show('imp');return}if(sheet.value==='waste'&&WA.q){show('unf');return}if(sheet.value==='order'&&W.mode==='new'&&W.step>0)back();else if(sheet.value==='order'&&W.mode==='fact'&&W.qi>0)factNext(-1);else close();return}
   if(db.mode==='mon'){db.mode='day';return}
   if(tab.value==='his')tab.value='rep'}
  watch(isRoot,schedule);
@@ -756,7 +900,8 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,delOrder,
+  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  bwNote,prefs,setInput,INPUTS,GROUPS,FL,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
@@ -771,9 +916,9 @@ template:`
     <div class="head"><h1><button class="dt" @click="openDate(false)" aria-label="Изменить дату">План на {{ dm(viewDate) }}</button></h1><button v-if="cur" class="btn sm" @click="openDate(true)">Новый отчёт</button></div>
     <template v-if="cur">
      <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak) }} кг</b></div></div>
-     <button class="btn pri big" @click="openOrder()">Добавить заказ</button>
+     <div class="addrow"><button class="btn pri big" @click="openOrder()">Добавить заказ</button><button v-if="pendN" class="btn big" @click="openFacts">Факт ({{ pendN }})</button></div>
      <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></button>
      </TransitionGroup></div>
      <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
@@ -787,6 +932,12 @@ template:`
      <h2>Синхронизация</h2>
     <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
     <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
+    </div>
+    <div class="blk">
+     <h2>Настройки</h2>
+     <div class="g opts" role="radiogroup" aria-label="Ввод заказа"><div class="oh">Ввод заказа</div>
+      <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b><small>{{ m.d }}</small></span></button>
+     </div>
     </div>
     <div class="blk">
      <button type="button" class="sech" :class="{on:fold.cust}" :aria-expanded="fold.cust" @click="toggleFold('cust')"><span>Сохранённые заказчики</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
@@ -852,26 +1003,67 @@ template:`
    <p class="hint" style="margin-top:12px">Заменить: прежний отчёт за эту дату удалится. Объединить: новые заказы добавятся к нему, одинаковые пропустятся.</p>
   </template>
   <template v-else-if="sheet==='order'">
-   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ W.mode==='edit'?'Изменить заказ':'Заказ №'+(cur?cur.orders.length+1:1) }}</b><span class="dim">{{ W.mode==='edit'?'':(W.step+1)+'/'+STEPS.length }}</span></div>
-   <div v-if="W.mode==='new'" class="bar"><i :style="{transform:'scaleX('+((W.step+1)/STEPS.length)+')'}"></i></div>
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ orderTitle }}</b><span class="dim">{{ orderCnt }}</span></div>
+   <div v-if="barOn" class="bar"><i :style="{transform:'scaleX('+barPct+')'}"></i></div>
+   <template v-if="W.layout==='six'">
    <div class="stpw" :class="{wiz:W.mode==='new'}"><TransitionGroup name="stp" tag="div" class="stp">
     <div v-for="(s,si) in shownSteps" :key="s.t" class="stpi">
      <h2>{{ s.t }}</h2>
      <label v-for="(f,i) in s.f" :key="f.k">{{ f.l }}
-      <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="si===0&&i===0" @input="W.err=''" @paste="f.k==='customer'&&onPaste($event)">
+      <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="si===0&&i===0" @input="onType(f.k)" @paste="f.k==='customer'&&onPaste($event)">
       <button v-if="f.k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
      </label>
      <div class="slot">
       <div v-if="s.f[0].k==='fact'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
-      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b></template></div>
+      <div v-if="s.f[0].k==='bq'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b><span v-if="W.auto.bw" class="mut"> · {{ bwNote }}</span></template></div>
       <div v-if="s.f[0].k==='customer'" class="sug"><button v-if="W.mode==='new'" type="button" class="chip paste" @click="pasteOrder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>Вставить</button><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
+      <div v-if="s.f[0].k==='order'&&techChips.length" class="sug"><span class="cl">Техкарты</span><button v-for="c in techChips" :key="c.v" type="button" class="chip" :class="{on:techK(c.v)===techK(W.o.tech)}" @click="pickTech(c)">{{ c.v }}</button></div>
+      <div v-if="s.f[0].k==='len'&&sizeChips.length" class="sug"><span v-if="!W.auto.list.length" class="cl">Частые</span><button v-for="z in sizeChips" :key="z.len+'×'+z.wid" type="button" class="chip" :class="{on:z.len===W.o.len&&z.wid===W.o.wid}" @click="pickSize(z)">{{ z.len }}×{{ z.wid }}</button></div>
+      <div v-else-if="s.f[0].k==='len'&&sizeNote" class="info">{{ sizeNote }}</div>
      </div>
      <label v-if="W.mode==='new'&&s.f.length<2" class="ph" aria-hidden="true">&nbsp;<span class="inw"><input tabindex="-1" disabled></span></label>
     </div>
    </TransitionGroup></div>
    <div class="row"><button v-if="W.mode==='new'" class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ nextLabel }}</button></div>
+   </template>
+   <template v-else>
+    <div v-if="W.mode==='fact'" class="info fsum"><b>{{ W.o.customer }} {{ W.o.order }}/{{ W.o.tech||'-' }}</b><small>{{ W.o.len }}×{{ W.o.wid }} · план {{ W.o.plan }} шт</small></div>
+    <div class="flat" :class="{st:three,one:oneNew,fm:W.mode==='fact'}">
+     <template v-for="g in GROUPS" :key="g.id">
+      <button v-if="g.id==='c'&&oneNew" type="button" class="sech mini" :class="{on:W.more}" :aria-expanded="W.more" @click="toggleMore"><span>Факт и брак<small>{{ !W.more&&W.o.fact?'факт '+W.o.fact:'можно позже' }}</small></span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+      <div class="gf" :class="{off:!gOn[g.id],fd:g.id==='c'}" :data-g="g.id" :inert="gOn[g.id]?null:''"><div class="gi">
+       <h2 v-if="gHead[g.id]">{{ g.t }}<small v-if="g.id==='c'&&three" class="mut"> · можно пропустить</small></h2>
+       <template v-for="(rw,ri) in g.rows" :key="ri">
+        <div class="frow" :class="{two:rw.f.length>1}">
+         <label v-for="k in rw.f" :key="k">{{ FL[k] }}
+          <span class="inw"><input v-model="W.o[k]" :data-k="k" :class="{err:W.err===k}" inputmode="text" :enterkeyhint="k===lastK?'done':'next'" :autocapitalize="k==='customer'?'words':k==='tech'?'characters':'off'" :placeholder="k==='tech'?'можно пусто':''" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="k===focusK0" @input="onType(k)" @change="onCommit(k)" @paste="k==='customer'&&onPaste($event)">
+          <button v-if="k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
+         </label>
+        </div>
+        <div v-if="rw.x==='cust'" class="sug"><button v-if="W.mode==='new'" type="button" class="chip paste" @click="pasteOrder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>Вставить</button><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
+        <div v-else-if="rw.x==='tech'&&techChips.length" class="sug"><span class="cl">Техкарты</span><button v-for="c in techChips" :key="c.v" type="button" class="chip" :class="{on:techK(c.v)===techK(W.o.tech)}" @click="pickTech(c)">{{ c.v }}</button></div>
+        <div v-else-if="rw.x==='size'&&sizeChips.length" class="sug"><span v-if="!W.auto.list.length" class="cl">Частые</span><button v-for="z in sizeChips" :key="z.len+'×'+z.wid" type="button" class="chip" :class="{on:z.len===W.o.len&&z.wid===W.o.wid}" @click="pickSize(z)">{{ z.len }}×{{ z.wid }}</button></div>
+        <div v-else-if="rw.x==='size'&&sizeNote" class="info">{{ sizeNote }}</div>
+        <div v-else-if="rw.x==='area'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
+        <div v-else-if="rw.x==='brk'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b><span v-if="W.auto.bw" class="mut"> · {{ bwNote }}</span></template></div>
+       </template>
+       <button v-if="g.id==='b'&&three" type="button" class="btn skip" @click="saveNow">Добавить без факта и брака</button>
+      </div></div>
+     </template>
+    </div>
+    <div v-if="three" class="row"><button class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ W.step===2?'Добавить заказ':'Далее' }}</button></div>
+    <div v-if="oneNew" class="row"><button class="btn" @click="saveMore">Добавить и ещё</button><button class="btn pri" @click="next">Добавить</button></div>
+    <div v-if="W.mode==='edit'" class="row"><button class="btn pri" @click="next">Сохранить</button></div>
+    <div v-if="W.mode==='fact'" class="row"><button class="btn" :class="{inv:W.qi===0}" :tabindex="W.qi===0?-1:0" :aria-hidden="W.qi===0" @click="factNext(-1)">Назад</button><button class="btn pri" @click="next">{{ W.qi===W.q.length-1?'Готово':'Далее' }}</button></div>
+   </template>
    <div v-if="W.mode==='edit'" class="row"><button class="btn" @click="copyOrder">Скопировать заказ</button></div>
    <div v-if="W.mode==='edit'" class="row"><button class="btn dng" @click="sure('o',delOrder)">{{ armed==='o'?'Нажмите ещё раз':'Удалить заказ' }}</button></div>
+  </template>
+  <template v-else-if="sheet==='nofact'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Завершение отчёта</b><span></span></div>
+   <h2>Нет факта</h2>
+   <div class="tot2">Заказов без факта: <b>{{ nfN }}</b>. В отчёт они войдут как 0 м².</div>
+   <div class="row"><button class="btn" @click="finishNow">Закончить так</button><button class="btn pri" @click="openFacts">Ввести факт</button></div>
   </template>
   <template v-else-if="sheet==='unf'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Последний заказ</b><span></span></div>
@@ -920,7 +1112,7 @@ template:`
    <div class="top2"><button class="ghost" @click="close">Закрыть</button><b>{{ selDay?dayTxt(selDay.date):'' }}</b><span></span></div>
    <h2>Заказы за день</h2>
    <template v-if="selOrders.length">
-    <div v-for="(o,i) in selOrders" :key="o.id" class="or"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт {{ o.fact }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></div>
+    <div v-for="(o,i) in selOrders" :key="o.id" class="or"><span class="n">{{ i+1 }}</span><span class="m"><b>{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }}</b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></div>
     <div class="tot2">Итого: <b>{{ fmt(selOrders.reduce((t,o)=>t+area(o),0)) }} м²</b> · заказов: {{ selOrders.length }}</div>
    </template>
    <p v-else class="hint">За этот день заказов нет. Они берутся из ежедневных отчётов за эту дату.</p>
