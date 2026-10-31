@@ -101,6 +101,30 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .mg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;container-type:inline-size}
 .mg span{background:var(--fld);border-radius:16px;padding:12px 14px}
 .mg b{display:block;font-size:20px;font-size:min(26px,calc((100cqw - 66px) / (var(--tn,8) * .64)));font-weight:700;line-height:1.15;white-space:nowrap}.mg small{display:block;font-size:13px;font-weight:400;color:var(--mut)}
+.pl{display:block;width:100%;margin-top:14px;padding:12px 14px;text-align:left;font:inherit;color:inherit;background:var(--fld);border:1px solid var(--edge);border-radius:16px;cursor:pointer}
+.pl .phd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px}.pl .phd b{font-weight:600}.pl .phd>span{font-size:20px;font-weight:700}
+.pm{display:block;height:10px;margin:8px 0 6px;border-radius:5px;background:rgba(216,146,58,.2);overflow:hidden}
+.pm i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#f0b967,#d8923a);transition:width .3s ease}
+.pt{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;font-size:13px;color:var(--mut)}.pt>span{white-space:nowrap}
+.pf{display:block;margin-top:4px;font-size:13px;color:var(--mut)}.pf b{color:var(--ink);font-weight:600}
+.plb{width:100%;margin-top:14px}
+.prev .addrow{flex-wrap:wrap}.prev .addrow .btn,.prev .addrow .btn.pri{flex:1 1 140px;padding-left:12px;padding-right:12px;font-size:17px}
+.bkn{margin:8px 0 0}
+.bro{min-height:20px;margin:14px 0 0;font-size:14px}.bro b{font-weight:600}
+.bch{position:relative;height:120px;margin:16px 0 0 34px;touch-action:pan-y;cursor:pointer;-webkit-user-select:none;user-select:none;outline-offset:6px}
+.bgl{position:absolute;left:0;right:0;height:1px;background:var(--mut);opacity:.22;pointer-events:none}
+.by{position:absolute;right:100%;margin-right:6px;font-style:normal;font-size:11px;line-height:1;color:var(--mut);transform:translateY(50%);pointer-events:none}
+.bcols{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--dn),minmax(0,1fr));column-gap:2px;align-items:end}
+.bcols i{display:block;width:100%;max-width:24px;justify-self:center;border-radius:4px 4px 0 0;background:#d8923a;opacity:.6;transition:opacity .3s ease}
+.bcols i.on{opacity:1}
+.bav{position:absolute;left:0;right:0;border-top:1px solid var(--ink);opacity:.55;pointer-events:none}
+.bx{display:grid;grid-template-columns:repeat(var(--dn),minmax(0,1fr));column-gap:2px;margin:6px 0 0 34px}
+.bx span{display:flex;justify-content:center;min-width:0;font-size:11px;color:var(--mut)}.bx em{flex:none;font-style:normal;white-space:nowrap}
+.bkey{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-size:13px;color:var(--mut)}.bkey i{display:block;width:14px;border-top:1px solid var(--ink);opacity:.55}
+.seg{display:flex;gap:8px;margin:16px 0 12px}.seg .btn{flex:1;transition:border-color .3s ease,box-shadow .3s ease}.seg .btn.on{border-color:#d8923a;box-shadow:0 0 0 1px #d8923a inset}
+.rk{margin:0 0 12px}.rk .rh{display:flex;justify-content:space-between;gap:10px;font-size:15px}.rk .rn{min-width:0;overflow-wrap:anywhere;font-weight:500}.rk .rh b{white-space:nowrap}
+.rb{display:block;height:6px;margin:5px 0 3px;border-radius:3px;background:rgba(216,146,58,.18);overflow:hidden}.rb i{display:block;height:100%;border-radius:0 3px 3px 0;background:#d8923a}
+.rk small{display:block;font-size:13px;color:var(--mut)}.nb{white-space:nowrap}
 .inst{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;margin-bottom:12px}.inst span{flex:1;font-size:14px;line-height:1.3}
 .inst .x{background:none;border:0;color:var(--mut);font-size:22px;line-height:1;padding:6px 10px;cursor:pointer}
 .pill{position:relative;display:flex;gap:2px;padding:3px;border-radius:999px}
@@ -257,6 +281,10 @@ const fixOrd=o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech
 const fixRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))?Object.assign({},r,{id:S(r.id),date:S(r.date),u:+r.u||0,waste:S(r.waste),orders:arr(r.orders).filter(o=>o&&typeof o==='object').map(fixOrd)}):null;
 const fixDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?Object.assign({},x,{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),u:+x.u||0}):null;
 const fixCust=c=>{if(typeof c==='string')c={n:c,u:0};if(!c||typeof c!=='object')return null;const n=S(c.n).trim();return n?Object.assign({},c,{n,u:+c.u||0}):null};
+const PM=/^\d{4}-\d{2}$/;
+const fixPlan=x=>x&&typeof x==='object'&&PM.test(S(x.month))&&num(x.m2)>0?Object.assign({},x,{month:S(x.month),m2:S(x.m2),u:+x.u||0}):null;
+const cleanPlan=x=>x&&typeof x==='object'&&PM.test(S(x.month))&&num(x.m2)>0?{month:S(x.month),m2:S(x.m2),u:+x.u||0}:null;
+const dimOf=ym=>new Date(+ym.slice(0,4),+ym.slice(5),0).getDate();
 const fixList=(v,f)=>arr(v).map(f).filter(Boolean);
 const cleanCust=c=>{const n=S(typeof c==='string'?c:c&&c.n).trim().replace(/\s+/g,' ');return n?{n,u:c&&typeof c==='object'?+c.u||0:0}:null};
 function load(){let d=null;try{d=JSON.parse(localStorage.getItem(K))}catch(e){}
@@ -264,6 +292,7 @@ function load(){let d=null;try{d=JSON.parse(localStorage.getItem(K))}catch(e){}
  d.reports=fixList(d.reports,fixRep);
  d.days=fixList(d.days,fixDay);
  d.customers=fixList(d.customers,fixCust);
+ d.plans=fixList(d.plans,fixPlan);
  d.cur=d.cur||null;d.mode=d.mode==='mon'?'mon':'day';d.wa=d.wa!==false;return d}
 function mergeBy(L,R,key){
  const rm=new Map((R||[]).map(x=>[x[key],x])),lm=new Map(L.map(x=>[x[key],x]));let pull=false,push=false;
@@ -547,6 +576,50 @@ setup(){
  const dTot=computed(()=>{const d=selDay.value;return d?{m2:num(d.m2),ord:num(d.ord),sh:num(d.sh),brak:num(d.brak)}:null});
  const dgN=computed(()=>dTot.value?mgW(dTot.value):8);
  const dTitle=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Гофроагрегат за сегодня':'Гофроагрегат за '+dayTxt(d.date)):''});
+ // plan of the month (db.plans: {month:'YYYY-MM', m2, u, del}); forecast = pace per calendar day up to the last day with data
+ const plan=computed(()=>{const p=db.plans.find(x=>x.month===monthKey.value&&!x.del);return p&&num(p.m2)>0?num(p.m2):0});
+ const planI=computed(()=>{const pl=plan.value;if(!pl)return null;
+  const mk=monthKey.value,t=today(),tm=t.slice(0,7),done=mTot.value.m2,dim=dimOf(mk),
+   last=mdays.value.reduce((m,x)=>Math.max(m,+x.date.slice(8)),0),worked=mdays.value.filter(x=>num(x.m2)>0).length,
+   el=mk<tm?dim:mk===tm?Math.min(dim,Math.max(last,+t.slice(8)-1)):last,closed=mk<tm,rest=Math.max(0,pl-done),
+   fc=!closed&&done>0&&el>0?done/el*dim:null,ew=worked&&el>0?worked/el*(dim-el):0,need=!closed&&rest>0&&ew>=1?rest/ew:null;
+  const pc=v=>v>=100?Math.round(v):Math.round(v*10)/10;
+  return{pl,done,pct:pc(done/pl*100),bar:Math.min(100,done/pl*100),rest,ok:done>=pl,closed,
+   fc:fc==null?null:Math.round(fc),fpct:fc==null?null:pc(fc/pl*100),need:need==null?null:Math.round(need),now:worked?Math.round(done/worked):null}});
+ const PL=reactive({v:'',err:false,from:false});
+ function openPlan(){const p=plan.value;let v='',from=false;
+  if(p)v=String(p);else{const q=db.plans.find(x=>x.month===shiftM(monthKey.value,-1)&&!x.del);if(q&&num(q.m2)>0){v=String(num(q.m2));from=true}}
+  Object.assign(PL,{v,err:false,from});show('plan')}
+ function planOk(){const v=S(PL.v).replace(/\s+/g,'');if(!/^\d+([.,]\d+)?$/.test(v)||num(v)<=0){PL.err=true;return}
+  const mk=monthKey.value,m2=String(num(v)),l=db.plans.find(x=>x.month===mk);
+  if(l)Object.assign(l,{m2,del:false,u:now()});else db.plans.push({month:mk,m2,u:now()});close()}
+ function planDel(){const l=db.plans.find(x=>x.month===monthKey.value);if(l){l.del=true;l.u=now()}close()}
+ // defects of the month: kg per 1000 m² (all defects + waste, from the days), % of pieces and top lists (from the orders of the reports)
+ const bkTab=ref('tech'),chEl=ref(null);
+ const bk=computed(()=>{const t=mTot.value,per=t.m2>0?t.brak/t.m2*1000:null,reps=db.reports.filter(r=>!r.del&&r.date.indexOf(monthKey.value)===0);
+  let prod=0,bad=0,wst=0,ob=0;const T=new Map(),C=new Map();
+  const add=(M,k,name,a,b)=>{let g=M.get(k);if(!g)M.set(k,g={name,kg:0,m2:0,n:0});g.kg+=b;g.m2+=a;g.n++};
+  reps.forEach(r=>{wst+=num(r.waste);r.orders.forEach(o=>{const s=num(o.len)*num(o.wid)/1e6,a=s*num(o.fact),b=brk(o),tk=techK(o.tech);prod+=a;bad+=s*num(o.bq);ob+=b;
+   add(T,tk,tk?S(o.tech).trim():'',a,b);add(C,nk(o.customer),S(o.customer).trim()||'—',a,b)})});
+  const top=(M,skip)=>{const l=[...M.values()].filter(g=>g.kg>0&&g!==skip).sort((a,b)=>b.kg-a.kg||b.m2-a.m2).slice(0,5),mx=l.length?l[0].kg:1;
+   return l.map(g=>({name:g.name,kg:r2(g.kg),m2:r2(g.m2),n:g.n,per:g.m2>0?Math.round(g.kg/g.m2*10000)/10:null,w:Math.max(3,g.kg/mx*100)}))};
+  const pk=shiftM(monthKey.value,-1),pt=days.value.filter(x=>x.date.indexOf(pk)===0).reduce((a,x)=>({m2:a.m2+num(x.m2),brak:a.brak+num(x.brak)}),{m2:0,brak:0}),
+   prev=pt.m2>0&&pt.brak>0?pt.brak/pt.m2*1000:null,pr=per==null?null:Math.round(per*10)/10;
+  return{per:pr,pct:prod>0?Math.round(bad/prod*10000)/100:null,ob:r2(ob),wst:r2(wst),prev:prev==null?null:Math.round(prev*10)/10,
+   cmp:prev!=null&&pr!=null?Math.round((pr-prev)/prev*100):null,tech:top(T,T.get('')),cust:top(C),nt:T.get('')&&T.get('').kg>0?{kg:r2(T.get('').kg),n:T.get('').n}:null}});
+ const bkList=computed(()=>bkTab.value==='cust'?bk.value.cust:bk.value.tech);
+ const bkCols=computed(()=>{const mk=monthKey.value,mp=new Map(mdays.value.map(d=>[d.date,d]));
+  return Array.from({length:dimOf(mk)},(_,i)=>{const dt=mk+'-'+z2(i+1),d=mp.get(dt);return{n:i+1,date:dt,kg:d?num(d.brak):0}})});
+ const bkAvg=computed(()=>{const l=mdays.value;return l.length?r2(l.reduce((a,d)=>a+num(d.brak),0)/l.length):0});
+ const bkY=computed(()=>{const v=Math.max(bkAvg.value,...bkCols.value.map(c=>c.kg),0);let mx=1;
+  if(v>0){const e=Math.pow(10,Math.floor(Math.log10(v)));mx=[1,2,2.5,5,10].map(m=>m*e).find(x=>v<=x+1e-9)}return{mx,ticks:[0,mx/2,mx]}});
+ const bkRead=computed(()=>{const d=selDay.value;if(!d)return'Нет данных';const k=num(d.brak),m=num(d.m2);
+  return dayTxt(d.date)+': '+fmt(k)+' кг'+(m>0?' · '+fmt(Math.round(k/m*10000)/10)+' кг на 1000 м²':'')});
+ function chPick(e){const el=chEl.value;if(!el||!mdays.value.length)return;const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*dimOf(monthKey.value);
+  let b=null,bd=1e9;mdays.value.forEach(d=>{const dd=Math.abs(+d.date.slice(8)-.5-x);if(dd<bd){bd=dd;b=d}});if(b&&mSel.value!==b.date)mSel.value=b.date}
+ const chMove=e=>{if(e.buttons)chPick(e)};
+ function bkKey(e){const k=e.key==='ArrowLeft'?-1:e.key==='ArrowRight'?1:0;if(!k)return;e.preventDefault();
+  const l=mdays.value,i=l.findIndex(d=>selDay.value&&d.date===selDay.value.date),j=Math.min(l.length-1,Math.max(0,i+k));if(l[j])mSel.value=l[j].date}
  const hq=ref('');
  const hRes=computed(()=>{const tk=hTok(hq.value);if(!tk.length)return null;const by=new Map();
   db.reports.forEach(r=>{if(r.del)return;const a=by.get(r.date);if(a)a.push(...r.orders);else by.set(r.date,[...r.orders])});
@@ -599,6 +672,8 @@ setup(){
  const toastEl=ref(null),ts=toastSwipe(()=>toastEl.value,{ok:()=>toast.show,hold:()=>clearTimeout(tt),release:()=>{clearTimeout(tt);tt=setTimeout(hideToast,tms)},hide:hideToast});
  const sayBig=(title,rows,note)=>showToast({msg:title,big:true,title,rows,note:note||''},3000);
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
+ const canShare=typeof navigator!=='undefined'&&typeof navigator.share==='function';
+ async function share(t){try{await navigator.share({text:t})}catch(e){if(e&&e.name==='AbortError')return;copy(t)}}
  const sure=(k,fn)=>{if(armed.value===k){armed.value='';fn()}else{armed.value=k;setTimeout(()=>{if(armed.value===k)armed.value=''},3000)}};
 
  const show=k=>{sheet.value=k;oc.value++;open.value=true};
@@ -608,13 +683,13 @@ setup(){
  function addCust(n){const l=n.toLowerCase(),c=db.customers.find(x=>x.n.toLowerCase()===l);if(c){if(c.del){c.del=false;c.u=now()}}else db.customers.push({n,u:now()})}
  const delCust=n=>{const c=db.customers.find(x=>x.n===n);if(c){c.del=true;c.u=now()}};
  function exportData(){
-  const data={app:'gofro-otchet',v:1,t:now(),reports:db.reports.filter(r=>!r.del),days:db.days.filter(x=>!x.del),customers:db.customers.filter(c=>!c.del)};
-  if(!data.reports.length&&!data.days.length&&!data.customers.length){say('Пока нечего экспортировать');return}
+  const data={app:'gofro-otchet',v:1,t:now(),reports:db.reports.filter(r=>!r.del),days:db.days.filter(x=>!x.del),customers:db.customers.filter(c=>!c.del),plans:db.plans.filter(p=>!p.del)};
+  if(!data.reports.length&&!data.days.length&&!data.customers.length&&!data.plans.length){say('Пока нечего экспортировать');return}
   const name='otchet-backup-'+today()+'.json';
   try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);say('Экспорт: '+name)}catch(e){say('Не удалось создать файл')}}
  function importData(d){
-  const cnt={reports:0,days:0,customers:0};
-  for(const [k,key,clean] of [['reports','id',cleanRep],['days','date',cleanDay],['customers','n',cleanCust]]){
+  const cnt={reports:0,days:0,customers:0,plans:0};
+  for(const [k,key,clean] of [['reports','id',cleanRep],['days','date',cleanDay],['customers','n',cleanCust],['plans','month',cleanPlan]]){
    for(const raw of (Array.isArray(d[k])?d[k]:[])){
     if(raw&&raw.del)continue;const r=clean(raw);if(!r)continue;
     const l=db[k].find(x=>k==='customers'?x.n.toLowerCase()===r.n.toLowerCase():x[key]===r[key]);
@@ -625,9 +700,9 @@ setup(){
  const pickFile=()=>{if(fileEl.value)fileEl.value.click()};
  async function onFile(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
   try{const d=JSON.parse(await f.text());
-   if(!d||typeof d!=='object'||Array.isArray(d)||!(Array.isArray(d.reports)||Array.isArray(d.days)||Array.isArray(d.customers)))throw new Error('format');
+   if(!d||typeof d!=='object'||Array.isArray(d)||!(Array.isArray(d.reports)||Array.isArray(d.days)||Array.isArray(d.customers)||Array.isArray(d.plans)))throw new Error('format');
    const c=importData(d);
-   say(c.reports+c.days+c.customers?'Импорт: отчётов '+c.reports+', дней '+c.days+', заказчиков '+c.customers:'В файле нет новых данных')}
+   say(c.reports+c.days+c.customers+c.plans?'Импорт: отчётов '+c.reports+', дней '+c.days+', заказчиков '+c.customers+(c.plans?', планов '+c.plans:''):'В файле нет новых данных')}
   catch(err){say('Не удалось прочитать файл: нужен файл экспорта (.json)')}}
 
  const viewDate=computed(()=>cur.value?cur.value.date:(pend.value||today()));
@@ -828,10 +903,10 @@ setup(){
   try{const ep=cfg.url+'/'+cfg.code+'.json';
    const r=await fetch(ep,{cache:'no-store'});if(!r.ok)throw new Error('Сервер ответил '+r.status);
    const remote=await r.json();let push=!remote;
-   const norm={reports:fixList(remote&&remote.reports,fixRep),days:fixList(remote&&remote.days,fixDay),customers:fixList(remote&&remote.customers,fixCust)};
-   for(const [k,key] of [['reports','id'],['days','date'],['customers','n']]){const m=mergeBy(db[k],norm[k],key);if(m.list)db[k]=m.list;if(m.push)push=true}
+   const norm={reports:fixList(remote&&remote.reports,fixRep),days:fixList(remote&&remote.days,fixDay),customers:fixList(remote&&remote.customers,fixCust),plans:fixList(remote&&remote.plans,fixPlan)};
+   for(const [k,key] of [['reports','id'],['days','date'],['customers','n'],['plans','month']]){const m=mergeBy(db[k],norm[k],key);if(m.list)db[k]=m.list;if(m.push)push=true}
    if(!cur.value&&!pend.value&&reports.value.length)db.cur=reports.value[0].id;
-   if(push){const w=await fetch(ep,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:db.reports,days:db.days,customers:db.customers,t:now()})});if(!w.ok)throw new Error('Не удалось записать: '+w.status)}
+   if(push){const w=await fetch(ep,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:db.reports,days:db.days,customers:db.customers,plans:db.plans,t:now()})});if(!w.ok)throw new Error('Не удалось записать: '+w.status)}
    cfg.last=now();sync.status='ok';if(manual)say('Синхронизировано')}
   catch(e){sync.status='err';sync.msg=String(e.message||e);if(manual)say('Ошибка синхронизации')}
   finally{sync.busy=false}}
@@ -845,7 +920,7 @@ setup(){
  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
  let tx=0,ty=0,t0=0,tok=false;
- const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('input')};
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('input')&&!e.target.closest('.bch')};
  const tEnd=e=>{if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){if(dx<0&&db.mode!=='mon')db.mode='mon';else if(dx>0&&db.mode==='mon')db.mode='day'}};
   const olistEl=ref(null);
@@ -857,7 +932,7 @@ setup(){
   if(y<40){topHidden.value=false;lastY=y}else if(d>8){topHidden.value=true;lastY=y}else if(d<-8){topHidden.value=false;lastY=y}})}
  const resetScroll=()=>{topHidden.value=false;lastY=0;if(scrollEl.value)scrollEl.value.scrollTop=0};
 
- const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect,waste:wasteOk})[sheet.value];
+ const primary=()=>({date:()=>dateF.isNew?dateOk():goDate(),order:next,day:dayOk,sync:syncConnect,waste:wasteOk,plan:planOk})[sheet.value];
  function onKey(e){if((e.key!=='Enter'&&e.keyCode!==13)||e.target.tagName!=='INPUT'||e.target.readOnly)return;e.preventDefault();
   const ins=[...sheetEl.value.querySelectorAll('input:not([type=date]):not([disabled])')].filter(x=>!x.closest('.stp-leave-active')&&!x.closest('[inert]')),i=ins.indexOf(e.target);
   if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
@@ -879,7 +954,7 @@ setup(){
  const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}};
  watch(db,()=>{clearTimeout(st);st=setTimeout(()=>{if(window.requestIdleCallback)requestIdleCallback(save,{timeout:2000});else save()},500)},{deep:true});
  watch(cfg,()=>{try{localStorage.setItem(KS,JSON.stringify(cfg))}catch(e){}},{deep:true});
- watch(()=>[db.reports,db.days,db.customers],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
+ watch(()=>[db.reports,db.days,db.customers,db.plans],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
  if(!cur.value&&reports.value.length)db.cur=reports.value[0].id;
 
  onMounted(()=>{
@@ -905,7 +980,7 @@ setup(){
   openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
-  tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,WT,fmt,num,dm,dayTxt,area}},
+  canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,bkCols,bkAvg,bkY,bkRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,WT,fmt,num,dm,dayTxt,area}},
 template:`
 <div class="shell" @touchstart.passive="tStart" @touchend.passive="tEnd">
  <div class="top" :class="{hide:topHidden}"><span></span><Pill :items="MODES" v-model="db.mode"/><button class="g tg" type="button" @click="toggleTheme" :aria-label="theme==='dark'?'Включить светлую тему':'Включить тёмную тему'"><svg class="su" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="mo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
@@ -922,7 +997,7 @@ template:`
      </TransitionGroup></div>
      <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
-     <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² и брак в конец списка</label><button class="btn pri big" @click="copy(repText)">Скопировать список</button></div>
+     <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² и брак в конец списка</label><div class="addrow"><button class="btn pri big" @click="copy(repText)">{{ canShare?'Скопировать':'Скопировать список' }}</button><button v-if="canShare" class="btn big" @click="share(repText)">Отправить</button></div></div>
     </template>
     <div v-else class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button><button class="btn big" @click="openImport">Импорт из буфера обмена</button></div>
    </section>
@@ -951,9 +1026,35 @@ template:`
    </section>
    <section v-else key="mon">
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
-    <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div></div>
+    <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
+     <button v-if="planI" type="button" class="pl" @click="openPlan" aria-label="План на месяц. Нажмите, чтобы изменить">
+      <span class="phd"><b>План на месяц</b><span>{{ fmt(planI.pct) }} %</span></span>
+      <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(planI.bar)"><i :style="{width:planI.bar+'%'}"></i></span>
+      <span class="pt"><span>{{ fmt(Math.round(planI.done)) }} из {{ fmt(planI.pl) }} м²</span><span>{{ planI.ok?'План выполнен ✓':'осталось '+fmt(Math.round(planI.rest))+' м²' }}</span></span>
+      <span v-if="planI.fc!==null" class="pf">Прогноз на конец месяца: <b>{{ fmt(planI.fc) }} м²</b> ({{ fmt(planI.fpct) }} % плана)</span>
+      <span v-if="planI.need!==null" class="pf">Нужно в рабочий день: <b>{{ fmt(planI.need) }} м²</b> (сейчас {{ fmt(planI.now) }})</span>
+     </button>
+     <button v-else type="button" class="btn sm plb" @click="openPlan">Задать план на месяц</button>
+    </div>
     <div v-if="selDay" class="g mtot"><b>{{ dTitle }}</b><div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div></div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
+    <div v-if="mdays.length" class="g mtot bk"><b>Брак за месяц</b>
+     <div class="mg"><span><b>{{ bk.per===null?'—':fmt(bk.per) }}</b><small>кг на 1000 м²</small></span><span><b>{{ bk.pct===null?'—':fmt(bk.pct)+' %' }}</b><small>доля брака в штуках</small></span></div>
+     <p v-if="bk.prev!==null" class="hint bkn">Прошлый месяц: {{ fmt(bk.prev) }} кг на 1000 м²<template v-if="bk.cmp"> · сейчас на {{ Math.abs(bk.cmp) }} % {{ bk.cmp>0?'выше':'ниже' }}</template></p>
+     <div class="bro" aria-live="polite"><b>{{ bkRead }}</b></div>
+     <div class="bch" ref="chEl" tabindex="0" role="img" :aria-label="'Брак по дням, кг. '+bkRead" :style="{'--dn':bkCols.length}" @pointerdown="chPick" @pointermove="chMove" @keydown="bkKey">
+      <template v-for="t in bkY.ticks" :key="t"><i class="bgl" :style="{bottom:(t/bkY.mx*100)+'%'}"></i><em class="by" :style="{bottom:(t/bkY.mx*100)+'%'}">{{ fmt(t) }}</em></template>
+      <div class="bcols"><i v-for="c in bkCols" :key="c.n" :class="{on:selDay&&c.date===selDay.date}" :style="{height:(c.kg/bkY.mx*100)+'%'}"></i></div>
+      <i v-if="bkAvg>0" class="bav" :style="{bottom:(bkAvg/bkY.mx*100)+'%'}"></i>
+     </div>
+     <div class="bx" :style="{'--dn':bkCols.length}"><span v-for="c in bkCols" :key="c.n"><em v-if="c.n===1||c.n%5===0">{{ c.n }}</em></span></div>
+     <div v-if="bkAvg>0" class="bkey"><i></i>в среднем за день: {{ fmt(bkAvg) }} кг</div>
+     <div class="seg"><button type="button" class="btn sm" :class="{on:bkTab==='tech'}" @click="bkTab='tech'">Техкарты</button><button type="button" class="btn sm" :class="{on:bkTab==='cust'}" @click="bkTab='cust'">Заказчики</button></div>
+     <div v-for="g in bkList" :key="bkTab+g.name" class="rk"><span class="rh"><span class="rn">{{ g.name }}</span><b>{{ fmt(g.kg) }} кг</b></span><span class="rb"><i :style="{width:g.w+'%'}"></i></span><small><template v-if="g.per!==null"><span class="nb">{{ fmt(g.per) }} кг на 1000 м²</span> · </template><span class="nb">{{ fmt(Math.round(g.m2)) }} м²</span> · <span class="nb">{{ g.n }} зак.</span></small></div>
+     <p v-if="bkTab==='tech'&&bk.nt" class="hint">Без номера техкарты: {{ fmt(bk.nt.kg) }} кг ({{ bk.nt.n }} зак.), в список не входят.</p>
+     <p v-if="!bkList.length&&!(bkTab==='tech'&&bk.nt)" class="hint">В заказах за этот месяц брак в штуках не введён.</p>
+     <p v-if="bk.ob>0||bk.wst>0" class="hint">Брак по заказам {{ fmt(bk.ob) }} кг, отходы {{ fmt(bk.wst) }} кг (отходы между заказами не делятся).</p>
+    </div>
     <template v-if="days.length">
      <h2>История</h2>
      <div class="srch"><input type="search" v-model="hq" placeholder="Заказчик, заказ, размер" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" @keydown.enter.prevent="$event.target.blur()"><button v-if="hq" type="button" class="clr" aria-label="Очистить поиск" @click="hq=''">×</button></div>
@@ -1079,6 +1180,16 @@ template:`
    <div class="info brk" :class="{bad:WA.err}"><template v-if="WA.err">Введите число, например 12,5</template><template v-else>Брак за смену: <b>{{ fmt(wasteSum) }} кг</b><small class="hint" style="display:block">по заказам {{ fmt(ordBrak) }} кг + отходы {{ fmt(num(WA.v)) }} кг</small></template></div>
    <div class="row"><button class="btn pri" @click="wasteOk">Закончить отчёт</button></div>
    <p class="hint" style="margin-top:12px">Число прибавится к браку за день и попадёт в месячный отчёт. Можно оставить пустым.</p>
+  </template>
+  <template v-else-if="sheet==='plan'">
+   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>План на месяц</b><span></span></div>
+   <h2>{{ monthTitle }}</h2>
+   <label>План, м²<input v-model="PL.v" :class="{err:PL.err}" inputmode="decimal" enterkeyhint="done" placeholder="например 120000" autocomplete="off" v-focus="true" @input="PL.err=false"></label>
+   <p v-if="PL.err" class="hint err">Введите число больше нуля, например 120000</p>
+   <p v-else-if="PL.from" class="hint">Подставлен план прошлого месяца. Измените, если нужно.</p>
+   <div class="row"><button class="btn pri" @click="planOk">Сохранить</button></div>
+   <div v-if="plan" class="row"><button class="btn dng" @click="sure('p',planDel)">{{ armed==='p'?'Нажмите ещё раз':'Убрать план' }}</button></div>
+   <p class="hint" style="margin-top:12px">Прогноз считается по темпу с начала месяца. План хранится для каждого месяца отдельно и синхронизируется.</p>
   </template>
   <template v-else-if="sheet==='day'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ D.orig?'Изменить день':'Новый день' }}</b><span></span></div>
