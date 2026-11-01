@@ -165,7 +165,7 @@ input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .chip.paste{display:inline-flex;align-items:center;gap:7px;font-weight:600;border-color:#d8923a99}.chip.paste svg{color:#d8923a;flex:none}
 .chip.on{border-color:#d8923a;box-shadow:0 0 0 1px #d8923a inset;font-weight:600}
 .addrow{display:flex;gap:10px}.addrow .btn{flex:1;min-width:0}.addrow .btn.pri{flex:2}
-.frow.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.frow.two label{min-width:0}.frow.two .inw input{padding-right:14px;font-size:22px}
+.frow.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.frow.two label{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}.frow.two .inw input{padding-right:14px;font-size:22px}
 .gf h2{margin:12px 0 8px;font-size:18px}.gf h2 small{font-size:14px;font-weight:400}
 .flat .gf{transition:opacity .3s ease}
 .flat.st{display:grid;grid-template-columns:minmax(0,1fr)}.flat.st>.gf{grid-area:1/1}
@@ -197,21 +197,19 @@ input::placeholder{font-size:16px;font-weight:400;color:var(--mut);opacity:.75}
 .hint{font-size:13px;color:var(--mut);margin:0}
 .calc{position:fixed;left:50%;top:50%;z-index:12;width:min(94vw,440px);max-height:calc(var(--vh,100dvh) - 20px);overflow-y:auto;padding:16px 14px;transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .calc.open{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
-.cr{display:flex;align-items:center;gap:8px;margin:8px 0}
+.kd{margin:8px 0 12px;padding:10px 14px 8px;border-radius:16px;background:var(--fld);text-align:right;overflow:hidden}
+.ke{min-height:20px;font-size:15px;line-height:1.3;color:var(--mut);overflow-wrap:anywhere}
+.kr{font-size:38px;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kr.bad{color:#c0392b}
+.kh{min-height:18px;margin-top:2px;font-size:13px;color:var(--mut)}
+.kp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kb{display:grid;place-items:center;min-height:54px;padding:0;font:inherit;font-size:24px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:16px;box-shadow:inset 0 1px 0 var(--hi);cursor:pointer;touch-action:manipulation;transition:transform .12s ease}
+.kb:active{transform:scale(.95)}
+.kb.fn{color:var(--mut)}
+.kb.op{font-size:28px;color:#8a5410;background:rgba(216,146,58,.2);border-color:#d8923a77}:root[data-theme=dark] .kb.op{color:#f3c887}
+.kb.eq{grid-column:4;grid-row:4/span 2;background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206;border-color:#f6cf90;font-weight:700;font-size:30px;box-shadow:inset 0 1px 0 #fff8,0 6px 18px #d8923a55}
+.kb.zero{grid-column:span 2}
 .cl{flex:none;width:76px;font-size:13px;line-height:1.15;color:var(--mut)}
-.dr{position:relative;flex:1;min-width:0;height:50px;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;cursor:grab;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
-.dr:active{cursor:grabbing}
-.dr.dis{touch-action:pan-y;cursor:default}
-.cr,.tk{transition:opacity .2s ease}
-.cr.off,.tk.off{opacity:.5}
-.dr::before{content:"";position:absolute;left:50%;top:3px;bottom:3px;width:calc(var(--w) - 4px);margin-left:calc(var(--w)/-2 + 2px);border-radius:14px;background:var(--fld);border:1px solid var(--edge)}
-.dr.fm{flex:none;width:84px}
-.di{position:absolute;left:50%;top:0;height:100%;width:var(--w);margin-left:calc(var(--w)/-2);display:flex;align-items:center;justify-content:center;font-size:21px;color:var(--mut);white-space:nowrap;will-change:transform,opacity;pointer-events:none}
-.di.sel{color:var(--ink);font-weight:500}
-.tk{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
-.tk .cap{flex:none;font-size:13px;color:var(--mut)}
-@media(max-width:380px){.cl{width:68px;font-size:12px}.cr{gap:6px}.dr.fm{width:78px}}
-.res{text-align:center;font-size:18px}.res b{font-size:28px}
+@media(max-width:380px){.cl{width:68px;font-size:12px}}
 .toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;padding:12px 20px;border-radius:22px;font-weight:500;width:max-content;max-width:min(92vw,460px);text-align:center;line-height:1.35;transition:transform .3s;touch-action:none}
 .toast.big{width:min(92vw,440px);padding:16px 20px 14px;text-align:left;font-weight:400;font-size:16px}
 .toast.big{background:var(--noise),rgba(255,255,255,.7)}:root[data-theme=dark] .toast.big{background:var(--noise),rgba(52,66,78,.74)}
@@ -245,7 +243,17 @@ const openOrd=r=>{const o=r&&r.orders[r.orders.length-1];return o&&(o.op==='1'||
 const ordN=r=>r.orders.length-(openOrd(r)?1:0);
 const r2=n=>Math.round(n*100)/100;
 const shiftM=(ym,n)=>{let y=+ym.slice(0,4),m=+ym.slice(5)-1+n;y+=Math.floor(m/12);m=((m%12)+12)%12;return y+'-'+z2(m+1)};
-const range=(a,b,f)=>Array.from({length:b-a+1},(_,i)=>f(a+i));
+// ---- ordinary calculator: an expression of numbers with + − × ÷ (usual precedence, no eval)
+// calcEval(x): null for an empty expression, NaN when it can not be calculated (division by zero, a bare dot), else the number
+const KOPS='+−×÷';
+function calcEval(x){let s=String(x).replace(/[+−×÷]+$/,'');if(!s)return null;let i=0;
+ const nu=()=>{const m=/^\d*\.?\d*/.exec(s.slice(i))[0];if(!m||m==='.')return NaN;i+=m.length;return parseFloat(m)};
+ const un=()=>{if(s[i]==='−'){i++;return -un()}return nu()};
+ const te=()=>{let v=un();while(i<s.length&&(s[i]==='×'||s[i]==='÷')){const o=s[i++],b=un();v=o==='×'?v*b:(b===0?NaN:v/b)}return v};
+ const ex=()=>{let v=te();while(i<s.length&&(s[i]==='+'||s[i]==='−')){const o=s[i++],b=te();v=o==='+'?v+b:v-b}return v};
+ const v=ex();if(i<s.length||!isFinite(v)||Math.abs(v)>1e12)return NaN;return Math.round(v*1e9)/1e9}
+const kShow=x=>String(x).split(/([+−×÷])/).map((t,i,a)=>/^[+−×÷]$/.test(t)?(i<2&&a[0]===''?t:' '+t+' '):t.replace(/^\d+/,m=>m.replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')).replace('.',',')).join('').trim();
+const kFmt=v=>v.toLocaleString('ru-RU',{maximumFractionDigits:6}).replace(/[-\u2212]/,'\u2212');
 const STEPS=[
 {t:'Имя заказчика',f:[{k:'customer',l:'Заказчик',m:'text'}]},
 {t:'Номера',f:[{k:'order',l:'Номер заказа',m:'numeric'},{k:'tech',l:'Номер техкарты',m:'text',opt:1,caps:1,ph:'цифры и буквы, можно пусто'}]},
@@ -259,8 +267,8 @@ const IDX={rep:0,his:1,mon:2};
 const FL={customer:'Заказчик',order:'Номер заказа',tech:'Техкарта',len:'Длина, мм',wid:'Ширина, мм',plan:'Нужно по заказу, шт',fact:'Произведено, шт',bq:'Брак, шт',bw:'Вес заготовки, г'};
 const GROUPS=[
  {id:'a',t:'Заказ',rows:[{f:['customer'],x:'cust'},{f:['order','tech'],x:'tech'}]},
- {id:'b',t:'Размер и план',rows:[{f:['len','wid'],x:'size'},{f:['plan']}]},
- {id:'c',t:'Факт и брак',rows:[{f:['fact'],x:'area'},{f:['bq','bw'],x:'brk'}]}];
+ {id:'b',t:'Размер и план',rows:[{f:['len','wid'],x:'size'},{f:['plan','bw'],x:'bw'}]},
+ {id:'c',t:'Факт и брак',rows:[{f:['fact'],x:'area'},{f:['bq'],x:'brk'},{f:['bw'],x:'fbw',fo:1}]}];   // fo: only in fact entry, when the order has no weight yet
 const REQ=new Set(['customer','order','len','wid','plan']);
 const INPUTS=[
  {v:'one',t:'Один экран',d:'Все поля сразу. Факт и брак можно добавить позже'},
@@ -270,8 +278,6 @@ const PK='gofro-ui-v1';
 const loadPrefs=()=>{let d=null;try{d=JSON.parse(localStorage.getItem(PK))}catch(e){}return{input:d&&['one','three','six'].includes(d.input)?d.input:'one'}};
 const prefs=reactive(loadPrefs());
 const blankO=()=>({customer:'',order:'',tech:'',len:'',wid:'',plan:'',fact:'',bq:'',bw:''});
-const TT={B:30,E:18};
-const WN=range(1,40,v=>({v,t:v})),WS=range(1,4,v=>({v,t:v})),WF=['A','B','E'].map(v=>({v,t:v})),WH=range(10,220,v=>({v,t:v})),WL=[{v:0,t:'='}].concat(WH),WT=range(40,50,v=>({v,t:(v/10).toFixed(1).replace('.',',')}));
 
 const D10=/^\d{4}-\d{2}-\d{2}$/,S=v=>v==null?'':String(v);
 const cleanRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))&&Array.isArray(r.orders)?{id:S(r.id),date:S(r.date),u:+r.u||0,waste:S(r.waste),orders:r.orders.filter(o=>o&&typeof o==='object').map(o=>({id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op)}))}:null;
@@ -496,45 +502,14 @@ const Pill={props:{items:Array,modelValue:String},emits:['update:modelValue'],
   return{el}},
  template:'<div class="g pill" ref="el"><span class="drop"></span><button v-for="it in items" :key="it.v" :class="{on:it.v===modelValue}" @click="$emit(\'update:modelValue\',it.v)">{{it.t}}</button></div>'};
 
-const Wheel={props:{items:Array,modelValue:null,w:{type:Number,default:52},speed:{type:Number,default:2},disabled:Boolean},emits:['update:modelValue'],
- setup(p,{emit}){
-  const el=ref(null),R=7,slots=range(-R,R,k=>k);
-  let nodes=[],pos=0,tgt=0,raf=0,drag=null,hist=[],wt=0;
-  const N=()=>p.items.length,mod=i=>((i%N())+N())%N(),idxOf=v=>Math.max(0,p.items.findIndex(i=>i.v===v));
-  function draw(){const W=p.w,b=Math.round(pos);
-   for(let j=0;j<nodes.length;j++){const nd=nodes[j],id=b+j-R,d=id-pos,a=Math.abs(d);
-    if(nd._id!==id){nd._id=id;nd.textContent=p.items[mod(id)].t}
-    const s=a<.5;if(nd._s!==s){nd._s=s;nd.classList.toggle('sel',s)}
-    nd.style.transform='translate3d('+(d*W).toFixed(2)+'px,0,0) scale('+(1-Math.min(a,2.5)*.09).toFixed(3)+')';
-    nd.style.opacity=Math.max(.2,1-a*.3).toFixed(2)}}
-  function glide(to){cancelAnimationFrame(raf);tgt=to;const from=pos,t0=performance.now(),tau=190;
-   const step=t=>{pos=from+(to-from)*(1-Math.exp(-Math.max(0,t-t0)/tau));
-    if(Math.abs(to-pos)<.01){pos=to;draw();return}draw();raf=requestAnimationFrame(step)};
-   raf=requestAnimationFrame(step)}
-  function settle(i){const v=p.items[mod(i)].v;if(v!==p.modelValue)emit('update:modelValue',v);glide(i)}
-  const down=e=>{if(p.disabled||(e.pointerType==='mouse'&&e.button!==0))return;cancelAnimationFrame(raf);
-   drag={x:e.clientX,mv:0,t:performance.now()};hist=[{t:drag.t,p:pos}];try{el.value.setPointerCapture(e.pointerId)}catch(x){}};
-  const move=e=>{if(!drag)return;const dx=e.clientX-drag.x;drag.x=e.clientX;drag.mv+=Math.abs(dx);
-   pos-=dx*p.speed/52;draw();const t=performance.now();hist.push({t,p:pos});while(hist.length>2&&t-hist[0].t>90)hist.shift()};
-  const up=e=>{if(!drag)return;const d=drag,t=performance.now();drag=null;
-   if(d.mv<6&&t-d.t<400){const r=el.value.getBoundingClientRect();settle(Math.round(pos)+Math.round((e.clientX-r.left-r.width/2)/p.w));return}
-   const a=hist[0],b=hist[hist.length-1];let v=0;if(b.t-a.t>10&&t-b.t<70)v=(b.p-a.p)/(b.t-a.t);
-   settle(Math.round(pos+Math.max(-300,Math.min(300,v*220))))};
-  const wheel=e=>{if(p.disabled)return;const t=performance.now();if(t-wt<50)return;wt=t;settle(Math.round(tgt)+(e.deltaY>0?1:-1))};
-  watch(()=>p.modelValue,v=>{if(drag)return;const i=idxOf(v);if(mod(Math.round(tgt))!==i){cancelAnimationFrame(raf);pos=tgt=i;draw()}});
-  onMounted(()=>{nodes=[...el.value.children];pos=tgt=idxOf(p.modelValue);draw()});
-  return{el,slots,down,move,up,wheel}},
- template:`<div class="dr" :class="{dis:disabled}" ref="el" :style="{'--w':w+'px'}" @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @wheel.prevent="wheel"><div v-for="k in slots" :key="k" class="di"></div></div>`};
-
-const App={components:{Pill,Wheel},
+const App={components:{Pill},
 setup(){
  const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
  const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:''}),armed=ref('');
- const fold=reactive({cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
+ const fold=reactive({sett:false,cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
  const tab=ref('rep'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
- const W=reactive({mode:'new',layout:'one',more:false,q:[],qi:0,step:0,id:null,err:'',o:{},auto:{size:null,bw:null,list:[],top:[]},bwTry:false}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
- const C=reactive({n:1,s:1,f:'B',h:100,l:0,t:45});
+ const W=reactive({mode:'new',layout:'one',more:false,q:[],qi:0,step:0,id:null,err:'',o:{},auto:{size:null,bw:null,list:[],top:[]},bwTry:false,wk:false}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
  const mMonth=ref(null),mSel=ref(null),dp=ref(null),instOff=ref(false),pend=ref(null);
  const impText=ref(''),impDt=ref(null),impErr=ref(''),impEl=ref(null);
 
@@ -774,7 +749,9 @@ setup(){
  const oneNew=computed(()=>W.layout==='one'&&W.mode==='new');
  const gOn=computed(()=>W.mode==='fact'?{a:false,b:false,c:true}:three.value?{a:W.step===0,b:W.step===1,c:W.step===2}:{a:true,b:true,c:W.mode==='edit'||W.more});
  const gHead=computed(()=>({a:three.value,b:three.value,c:three.value||W.mode==='edit'}));
- const lastK=computed(()=>three.value?['tech','plan','bw'][W.step]:oneNew.value&&!W.more?'plan':'bw');
+ // fact entry: the weight field shows up only for an order without weight, once the number of defective blanks is typed
+ const fwOn=computed(()=>W.mode==='fact'&&!W.wk&&!!(S(W.o.bq).trim()||W.err==='bw'||(S(W.o.bw).trim()&&!W.auto.bw)));
+ const lastK=computed(()=>W.mode==='fact'?(fwOn.value?'bw':'bq'):three.value?['tech','bw','bq'][W.step]:oneNew.value&&!W.more?'bw':'bq');
  const focusK0=computed(()=>W.mode==='fact'?'fact':'customer');
  const orderTitle=computed(()=>W.mode==='edit'?'Изменить заказ':W.mode==='fact'?'Ввод факта':'Заказ №'+(cur.value?cur.value.orders.length+1:1));
  const orderCnt=computed(()=>W.mode==='fact'?(W.qi+1)+' из '+W.q.length:W.mode!=='new'?'':W.layout==='six'?(W.step+1)+'/'+STEPS.length:three.value?(W.step+1)+'/3':'');
@@ -796,18 +773,18 @@ setup(){
   commitOrder(false)}
  function nextFlat(){
   if(three.value&&W.step<2){const m=keysOf([GROUPS[W.step]]).find(k=>REQ.has(k)&&!S(W.o[k]).trim());if(m){badField(m);return}
-   W.step++;if(W.step===1)fillSize();focusG();return}
+   W.step++;if(W.step===1){fillSize();fillBwSize()}focusG();return}
   saveFlat(false)}
  function saveFlat(keep){
   const m=keysOf(GROUPS).find(k=>REQ.has(k)&&!S(W.o[k]).trim());
   if(m){if(three.value)W.step=groupOf(m);badField(m);return}
-  if(S(W.o.bq).trim()&&!S(W.o.bw).trim()){if(three.value)W.step=2;else if(oneNew.value)W.more=true;badField('bw');return}
+  if(S(W.o.bq).trim()&&!S(W.o.bw).trim()){if(three.value)W.step=groupOf('bw');badField('bw');return}
   commitOrder(keep)}
  const saveNow=()=>saveFlat(false),saveMore=()=>saveFlat(true);
  function commitOrder(keep){
   const o=Object.assign({},W.o),r=cur.value;if(!r)return;
   o.customer=o.customer.trim().replace(/\s+/g,' ');const kn=customers.value.find(c=>c.toLowerCase()===o.customer.toLowerCase());if(kn)o.customer=kn;
-  ['order','tech','len','wid','plan','fact','bq','bw'].forEach(k=>{o[k]=S(o[k]).replace(/\s+/g,'')});o.tech=o.tech.toUpperCase();if(!o.bq&&W.auto.bw)o.bw='';
+  ['order','tech','len','wid','plan','fact','bq','bw'].forEach(k=>{o[k]=S(o[k]).replace(/\s+/g,'')});o.tech=o.tech.toUpperCase();if(W.layout==='six'&&!o.bq&&W.auto.bw)o.bw='';
   const ex=W.mode==='edit'&&r.orders.find(x=>x.id===W.id);
   if(ex){if(S(ex.fact)!==o.fact||S(ex.plan)!==o.plan)o.op='';Object.assign(ex,o)}else r.orders.push(Object.assign({id:uid()},o));
   r.u=now();addCust(o.customer);
@@ -818,7 +795,7 @@ setup(){
  const pendN=computed(()=>cur.value?cur.value.orders.filter(o=>num(o.fact)===0).length:0);
  const nfN=computed(()=>cur.value?cur.value.orders.filter(o=>S(o.fact).trim()==='').length:0);
  function loadFact(i){const o=cur.value&&cur.value.orders.find(x=>x.id===W.q[i]);if(!o)return false;
-  Object.assign(W,{qi:i,id:o.id,err:'',auto:{size:null,bw:null,list:[],top:[]},bwTry:false,o:Object.assign({bq:'',bw:''},o)});return true}
+  Object.assign(W,{qi:i,id:o.id,err:'',auto:{size:null,bw:null,list:[],top:[]},bwTry:false,wk:!!S(o.bw).trim(),o:Object.assign({bq:'',bw:''},o)});return true}
  function openFacts(){const r=cur.value;if(!r)return;const q=r.orders.filter(o=>num(o.fact)===0).map(o=>o.id);
   if(!q.length){close();say('У всех заказов уже указан факт');return}
   Object.assign(W,{mode:'fact',layout:'one',more:true,step:0,q});loadFact(0);show('order')}
@@ -833,24 +810,33 @@ setup(){
   if(i>=W.q.length){const r=cur.value,n=r?r.orders.filter(o=>W.q.includes(o.id)&&num(o.fact)>0).length:0;close();say(n?'Факт сохранён: '+n+' из '+W.q.length+' зак.':'Факт не введён');return}
   loadFact(i);focusK('fact')}
  const toggleMore=()=>{W.more=!W.more;if(W.more)focusK('fact')};
- const onCommit=k=>{if(W.layout==='one'&&W.mode==='new'&&(k==='order'||k==='tech'))fillSize()};
+ const onCommit=k=>{if(W.mode!=='new'||W.layout==='six')return;
+  if(W.layout==='one'&&(k==='order'||k==='tech'))fillSize();
+  if(k==='order'||k==='tech'||k==='len'||k==='wid')fillBwSize()};
  const back=()=>{if(W.step>0){W.step--;if(W.layout==='three')focusG()}};
  const setInput=v=>{prefs.input=v;try{localStorage.setItem(PK,JSON.stringify({input:v}))}catch(e){}};
  const mem=computed(()=>memBuild(db.reports));
  // tech cards the same customer+order had before: chips under the order field (never filled silently: half of such orders have several)
  const techChips=computed(()=>W.mode==='new'&&S(W.o.order).trim()?memFind(mem.value,W.o).techs:[]);
- const pickTech=c=>{W.o.tech=c.v;if(W.mode!=='new')return;if(W.layout==='one'){fillSize();focusK(S(W.o.len).trim()&&S(W.o.wid).trim()?'plan':'len')}else next()};
+ const pickTech=c=>{W.o.tech=c.v;if(W.mode!=='new')return;if(W.layout==='one'){fillSize();fillBwSize();focusK(S(W.o.len).trim()&&S(W.o.wid).trim()?'plan':'len')}else next()};
  // size on entering the size step: only into empty fields, or over an earlier auto-fill the user has not touched
  function fillSize(){if(W.mode!=='new')return;const none=!S(W.o.len).trim()&&!S(W.o.wid).trim();if(!none&&!W.auto.size)return;
   const f=memFind(mem.value,W.o);
   if(f.size){W.o.len=f.size.len;W.o.wid=f.size.wid;W.auto.size={date:f.size.date,src:f.size.src}}
   else if(W.auto.size){W.o.len='';W.o.wid='';W.auto.size=null}
   W.auto.list=f.list;W.auto.top=f.size?[]:f.top}
- const pickSize=z=>{W.o.len=z.len;W.o.wid=z.wid;W.auto.size={date:'',src:'chip'}};
+ const pickSize=z=>{W.o.len=z.len;W.o.wid=z.wid;W.auto.size={date:'',src:'chip'};fillBwSize()};
  const sizeChips=computed(()=>{const a=W.auto;if(a.list.length)return a.list;return !a.size&&!S(W.o.len).trim()&&!S(W.o.wid).trim()?a.top:[]});
  const sizeNote=computed(()=>{const a=W.auto.size;if(!a||a.src==='chip')return'';const d=a.date?' · '+dayTxt(a.date):'';
   return a.src==='order'?'Размер как в заказе '+S(W.o.order).trim()+d:'Размер техкарты '+S(W.o.tech).trim().toUpperCase()+d});
- // blank weight appears when the number of defective blanks is typed (once per form); an edit by hand wins
+ // blank weight of a NEW order (one screen / three steps): from the tech card + size (or the size alone) as soon as the size is known; a value typed by hand wins
+ function fillBwSize(){if(W.mode!=='new'||W.layout==='six')return;
+  if(S(W.o.bw).trim()&&!W.auto.bw)return;
+  if(!(num(W.o.len)>0&&num(W.o.wid)>0)){if(W.auto.bw){W.o.bw='';W.auto.bw=null}return}
+  const m=memBw(mem.value,W.o);
+  if(m){W.o.bw=m.bw;W.auto.bw={date:m.date,src:m.src,lo:m.lo,hi:m.hi}}
+  else if(W.auto.bw){W.o.bw='';W.auto.bw=null}}
+ // edit / fact entry / six steps: the weight appears when the number of defective blanks is typed (once per form); an edit by hand wins
  function fillBw(){if(W.bwTry||!S(W.o.bq).trim()||S(W.o.bw).trim())return;W.bwTry=true;
   const m=memBw(mem.value,W.o);if(m){W.o.bw=m.bw;W.auto.bw={date:m.date,src:m.src,lo:m.lo,hi:m.hi}}}
  const bwNote=computed(()=>{const a=W.auto.bw;if(!a)return'';const rg=a.hi>a.lo?' '+fmt(a.lo)+'–'+fmt(a.hi):'';return a.src==='tech'?(rg?'вес был'+rg:'вес как раньше'):'вес по размеру'+rg});
@@ -860,7 +846,7 @@ setup(){
  const copyOrder=()=>copy(orderText(W.o));
  function applyPaste(p){
   const c=canonNames([p.customer],customers.value).get(p.customer)||p.customer;
-  Object.assign(W.o,{customer:c,order:p.order,tech:p.tech,len:p.len,wid:p.wid});if(p.bw)W.o.bw=p.bw;Object.assign(W.auto,{size:null,list:[],top:[]});
+  Object.assign(W.o,{customer:c,order:p.order,tech:p.tech,len:p.len,wid:p.wid});Object.assign(W.auto,{size:null,list:[],top:[]});if(p.bw){W.o.bw=p.bw;W.auto.bw=null}else fillBwSize();
   W.err='';
   if(W.layout==='six'){const i=STEPS.findIndex(st=>st.f.some(f=>!f.opt&&!S(W.o[f.k]).trim()));W.step=i<0?STEPS.length-1:i}
   else{const m=keysOf(GROUPS).find(k=>REQ.has(k)&&!S(W.o[k]).trim())||'plan';if(three.value)W.step=groupOf(m);focusK(m)}
@@ -885,10 +871,34 @@ setup(){
   mMonth.value=o.date.slice(0,7);mSel.value=o.date;close();say('День сохранён')}
  const delDay=()=>{const x=db.days.find(y=>y.date===D.orig);if(x){x.del=true;x.u=now()}close()};
 
- const t10=computed(()=>C.f==='A'?C.t:TT[C.f]),thTxt=computed(()=>String(t10.value/10).replace('.',','));
- const calcTotal=computed(()=>{const per=h=>Math.floor(h*100/t10.value),full=per(C.h),last=C.n>1&&C.l?per(C.l):full;return C.s*((C.n-1)*full+last)});
- function openCalc(){const a=document.activeElement;if(a&&a.blur)a.blur();calcOpen.value=true}
- const applyCalc=()=>{W.o.fact=String(calcTotal.value);calcOpen.value=false;nextTick(()=>{const e=sheetEl.value&&(sheetEl.value.querySelector('input[data-k="fact"]')||sheetEl.value.querySelector('input'));e&&e.focus({preventScroll:true})})};
+ // calculator for «Произведено» and «Брак, шт»: the result goes into the field
+ const K=reactive({k:'fact',x:'',prev:'',done:false}),KN={fact:'Произведено',bq:'Брак'};
+ const kOpIn=x=>/[+−×÷]/.test(x.slice(1));
+ const kVal=computed(()=>calcEval(K.x));
+ const kErr=computed(()=>K.x!==''&&Number.isNaN(kVal.value));
+ const kOk=computed(()=>{const v=kVal.value;return v!==null&&!Number.isNaN(v)&&v>=0});
+ const kIns=computed(()=>kOk.value?Math.round(kVal.value):null);
+ const kName=computed(()=>KN[K.k]||'');
+ const kTop=computed(()=>K.done?(K.prev?kShow(K.prev)+' =':''):kOpIn(K.x)?kShow(K.x):'');
+ const kBig=computed(()=>{if(kErr.value)return'Ошибка';if(!K.x)return'0';if(!kOpIn(K.x))return kShow(K.x);const v=kVal.value;return v===null||Number.isNaN(v)?'0':kFmt(v)});
+ const kHint=computed(()=>{if(kErr.value)return'Деление на ноль или неполное выражение';const v=kVal.value;if(v===null||Number.isNaN(v))return'';
+  return v<0?'Отрицательное число в поле не подставить':Number.isInteger(v)?'':'В поле попадёт '+fmt(kIns.value)+' (округлено до целого)'});
+ const kFresh=()=>{if(K.done){K.x='';K.prev='';K.done=false}};
+ function kDigit(d){kFresh();const cur=/[\d.]*$/.exec(K.x)[0];if(cur.replace('.','').length>=12||K.x.length>=60)return;if(cur==='0')K.x=K.x.slice(0,-1);K.x+=d}
+ function kDot(){kFresh();const cur=/[\d.]*$/.exec(K.x)[0];if(cur.includes('.')||K.x.length>=60)return;K.x+=cur?'.':'0.'}
+ function kOp(o){if(K.done){K.done=false;K.prev=''}
+  if(!K.x){if(o==='−')K.x='−';return}
+  if(K.x==='−')return;
+  const l=K.x.slice(-1);K.x=KOPS.includes(l)?K.x.slice(0,-1)+o:K.x+o}
+ const kBack=()=>{if(K.done){kFresh();return}K.x=K.x.slice(0,-1)};
+ const kClear=()=>{K.x='';K.prev='';K.done=false};
+ function kEq(){const v=calcEval(K.x);if(v===null||Number.isNaN(v)||!kOpIn(K.x))return;K.prev=K.x;K.x=v.toFixed(9).replace(/\.?0+$/,'').replace('-','−');K.done=true}
+ function openCalc(k){const a=document.activeElement;if(a&&a.blur)a.blur();
+  const v=S(W.o[k]).replace(/\s+/g,'').replace(',','.');
+  const have=/^\d+(\.\d+)?$/.test(v)&&num(v)>0;   // a number already in the field: an operator continues it, a digit starts a new one
+  Object.assign(K,{k,x:have?v:'',prev:'',done:have});calcOpen.value=true}
+ const applyCalc=()=>{if(!kOk.value)return;const k=K.k;W.o[k]=String(kIns.value);calcOpen.value=false;onType(k);
+  nextTick(()=>{const e=sheetEl.value&&(sheetEl.value.querySelector('input[data-k="'+k+'"]')||sheetEl.value.querySelector('input'));e&&e.focus({preventScroll:true})})};
 
  const syncKey=computed(()=>cfg.url?'gofro:'+btoa(JSON.stringify({u:cfg.url,c:cfg.code})):'');
  const syncTitle=computed(()=>!cfg.url?'Данные только на этом устройстве':sync.busy?'Синхронизация…':sync.status==='err'?'Ошибка синхронизации':'Данные синхронизируются');
@@ -973,14 +983,14 @@ setup(){
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
- return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,C,mMonth,mSel,
+ return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
   toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
-  bwNote,prefs,setInput,INPUTS,GROUPS,FL,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
-  openDay,dayOk,delDay,calcTotal,openCalc,applyCalc,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
-  theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,thTxt,
+  bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
+  openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
+  theme,toggleTheme,pend,viewDate,startReport,onDay,selOrders,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
-  canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,bkCols,bkAvg,bkY,bkRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,WN,WS,WF,WH,WL,WT,fmt,num,dm,dayTxt,area}},
+  canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,bkCols,bkAvg,bkY,bkRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,MODES,TABS,fmt,num,dm,dayTxt,area}},
 template:`
 <div class="shell" @touchstart.passive="tStart" @touchend.passive="tEnd">
  <div class="top" :class="{hide:topHidden}"><span></span><Pill :items="MODES" v-model="db.mode"/><button class="g tg" type="button" @click="toggleTheme" :aria-label="theme==='dark'?'Включить светлую тему':'Включить тёмную тему'"><svg class="su" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="mo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
@@ -1009,10 +1019,12 @@ template:`
     <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
     </div>
     <div class="blk">
-     <h2>Настройки</h2>
+     <button type="button" class="sech" :class="{on:fold.sett}" :aria-expanded="fold.sett" @click="toggleFold('sett')"><span>Настройки</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+     <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.sett" class="fold">
      <div class="g opts" role="radiogroup" aria-label="Ввод заказа"><div class="oh">Ввод заказа</div>
       <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b><small>{{ m.d }}</small></span></button>
      </div>
+     </div></Transition>
     </div>
     <div class="blk">
      <button type="button" class="sech" :class="{on:fold.cust}" :aria-expanded="fold.cust" @click="toggleFold('cust')"><span>Сохранённые заказчики</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
@@ -1112,7 +1124,7 @@ template:`
      <h2>{{ s.t }}</h2>
      <label v-for="(f,i) in s.f" :key="f.k">{{ f.l }}
       <span class="inw"><input v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="si===0&&i===0" @input="onType(f.k)" @paste="f.k==='customer'&&onPaste($event)">
-      <button v-if="f.k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
+      <button v-if="f.k==='fact'||f.k==='bq'" type="button" class="calcb" @click="openCalc(f.k)" aria-label="Калькулятор"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
      </label>
      <div class="slot">
       <div v-if="s.f[0].k==='fact'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
@@ -1128,17 +1140,17 @@ template:`
    <div class="row"><button v-if="W.mode==='new'" class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ nextLabel }}</button></div>
    </template>
    <template v-else>
-    <div v-if="W.mode==='fact'" class="info fsum"><b>{{ W.o.customer }} {{ W.o.order }}/{{ W.o.tech||'-' }}</b><small>{{ W.o.len }}×{{ W.o.wid }} · план {{ W.o.plan }} шт</small></div>
+    <div v-if="W.mode==='fact'" class="info fsum"><b>{{ W.o.customer }} {{ W.o.order }}/{{ W.o.tech||'-' }}</b><small>{{ W.o.len }}×{{ W.o.wid }} · план {{ W.o.plan }} шт<template v-if="W.wk"> · вес {{ W.o.bw }} г</template></small></div>
     <div class="flat" :class="{st:three,one:oneNew,fm:W.mode==='fact'}">
      <template v-for="g in GROUPS" :key="g.id">
       <button v-if="g.id==='c'&&oneNew" type="button" class="sech mini" :class="{on:W.more}" :aria-expanded="W.more" @click="toggleMore"><span>Факт и брак<small>{{ !W.more&&W.o.fact?'факт '+W.o.fact:'можно позже' }}</small></span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
       <div class="gf" :class="{off:!gOn[g.id],fd:g.id==='c'}" :data-g="g.id" :inert="gOn[g.id]?null:''"><div class="gi">
        <h2 v-if="gHead[g.id]">{{ g.t }}<small v-if="g.id==='c'&&three" class="mut"> · можно пропустить</small></h2>
-       <template v-for="(rw,ri) in g.rows" :key="ri">
+       <template v-for="(rw,ri) in g.rows" :key="ri"><template v-if="!rw.fo||fwOn">
         <div class="frow" :class="{two:rw.f.length>1}">
          <label v-for="k in rw.f" :key="k">{{ FL[k] }}
           <span class="inw"><input v-model="W.o[k]" :data-k="k" :class="{err:W.err===k}" inputmode="text" :enterkeyhint="k===lastK?'done':'next'" :autocapitalize="k==='customer'?'words':k==='tech'?'characters':'off'" :placeholder="k==='tech'?'можно пусто':''" autocomplete="off" autocorrect="off" spellcheck="false" v-focus="k===focusK0" @input="onType(k)" @change="onCommit(k)" @paste="k==='customer'&&onPaste($event)">
-          <button v-if="k==='fact'" type="button" class="calcb" @click="openCalc" aria-label="Калькулятор заготовок"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
+          <button v-if="k==='fact'||k==='bq'" type="button" class="calcb" @click="openCalc(k)" aria-label="Калькулятор"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
          </label>
         </div>
         <div v-if="rw.x==='cust'" class="sug"><button v-if="W.mode==='new'" type="button" class="chip paste" @click="pasteOrder"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1.5"/><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/></svg>Вставить</button><button v-for="c in sugs" :key="c" type="button" class="chip" @click="pick(c)">{{ c }}</button></div>
@@ -1146,8 +1158,10 @@ template:`
         <div v-else-if="rw.x==='size'&&sizeChips.length" class="sug"><span v-if="!W.auto.list.length" class="cl">Частые</span><button v-for="z in sizeChips" :key="z.len+'×'+z.wid" type="button" class="chip" :class="{on:z.len===W.o.len&&z.wid===W.o.wid}" @click="pickSize(z)">{{ z.len }}×{{ z.wid }}</button></div>
         <div v-else-if="rw.x==='size'&&sizeNote" class="info">{{ sizeNote }}</div>
         <div v-else-if="rw.x==='area'" class="info">Площадь: <b>{{ fmt(area(W.o)) }} м²</b></div>
-        <div v-else-if="rw.x==='brk'" class="info brk" :class="{bad:W.err==='bq'||W.err==='bw'}"><template v-if="W.err==='bq'||W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b><span v-if="W.auto.bw" class="mut"> · {{ bwNote }}</span></template></div>
-       </template>
+        <div v-else-if="rw.x==='bw'&&(W.err==='bw'||W.auto.bw)" class="info" :class="{bad:W.err==='bw'}"><template v-if="W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>{{ bwNote.charAt(0).toUpperCase()+bwNote.slice(1) }}</template></div>
+        <div v-else-if="rw.x==='fbw'" class="info brk" :class="{bad:W.err==='bw'}"><template v-if="W.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Брак: <b>{{ fmt(brakNow) }} кг</b><span v-if="W.auto.bw" class="mut"> · {{ bwNote }}</span></template></div>
+        <div v-else-if="rw.x==='brk'&&!fwOn" class="info brk">Брак: <b>{{ fmt(brakNow) }} кг</b></div>
+       </template></template>
        <button v-if="g.id==='b'&&three" type="button" class="btn skip" @click="saveNow">Добавить без факта и брака</button>
       </div></div>
      </template>
@@ -1236,15 +1250,30 @@ template:`
   </template>
  </div></div>
  <div class="ov" style="z-index:11" :class="{open:calcOpen}" @click="calcOpen=false"></div>
- <div class="g calc" :class="{open:calcOpen}">
+ <div class="g calc" :class="{open:calcOpen}" role="dialog" aria-label="Калькулятор">
   <div class="top2"><button class="ghost" @click="calcOpen=false">Закрыть</button><b>Калькулятор</b><span class="dim"></span></div>
-  <div class="cr"><span class="cl">Паддонов</span><Wheel :items="WN" v-model="C.n"/></div>
-  <div class="cr"><span class="cl">Стопок</span><Wheel :items="WS" v-model="C.s"/></div>
-  <div class="cr"><span class="cl">Формат</span><Wheel class="fm" :items="WF" :w="36" v-model="C.f"/><div class="tk" :class="{off:C.f!=='A'}"><Wheel :items="WT" :w="48" :disabled="C.f!=='A'" v-model="C.t"/><span class="cap">мм</span></div></div>
-  <div class="cr"><span class="cl">Высота, см</span><Wheel :items="WH" :w="56" :speed="7" v-model="C.h"/></div>
-  <div class="cr" :class="{off:C.n<2}"><span class="cl">Последний, см</span><Wheel :items="WL" :w="56" :speed="7" :disabled="C.n<2" v-model="C.l"/></div>
-  <div class="info res">≈ <b>{{ fmt(calcTotal) }}</b> шт<small class="hint" style="display:block">Формат {{ C.f }} · толщина {{ thTxt }} мм</small></div>
-  <div class="row"><button class="btn pri" @click="applyCalc">Подставить в «по факту»</button></div>
+  <div class="kd"><div class="ke">{{ kTop }}</div><div class="kr" :class="{bad:kErr}">{{ kBig }}</div><div class="kh">{{ kHint }}</div></div>
+  <div class="kp">
+   <button type="button" class="kb fn" @click="kClear" aria-label="Очистить">C</button>
+   <button type="button" class="kb fn" @click="kBack" aria-label="Стереть"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 6H9L3 12l6 6h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z"/><path d="M14 10l4 4M18 10l-4 4"/></svg></button>
+   <button type="button" class="kb op" @click="kOp('÷')" aria-label="Разделить">÷</button>
+   <button type="button" class="kb op" @click="kOp('×')" aria-label="Умножить">×</button>
+   <button type="button" class="kb" @click="kDigit('7')">7</button>
+   <button type="button" class="kb" @click="kDigit('8')">8</button>
+   <button type="button" class="kb" @click="kDigit('9')">9</button>
+   <button type="button" class="kb op" @click="kOp('−')" aria-label="Минус">−</button>
+   <button type="button" class="kb" @click="kDigit('4')">4</button>
+   <button type="button" class="kb" @click="kDigit('5')">5</button>
+   <button type="button" class="kb" @click="kDigit('6')">6</button>
+   <button type="button" class="kb op" @click="kOp('+')" aria-label="Плюс">+</button>
+   <button type="button" class="kb" @click="kDigit('1')">1</button>
+   <button type="button" class="kb" @click="kDigit('2')">2</button>
+   <button type="button" class="kb" @click="kDigit('3')">3</button>
+   <button type="button" class="kb eq" @click="kEq" aria-label="Равно">=</button>
+   <button type="button" class="kb zero" @click="kDigit('0')">0</button>
+   <button type="button" class="kb" @click="kDot" aria-label="Запятая">,</button>
+  </div>
+  <div class="row"><button class="btn pri" :disabled="!kOk" @click="applyCalc">Подставить в «{{ kName }}»</button></div>
  </div>
  <div class="g toast" :class="{show:toast.show,big:toast.big}" ref="toastEl" @click="hideToast" @touchstart.stop.passive="tsStart" @touchmove.stop.passive="tsMove" @touchend.stop.passive="tsEnd" @touchcancel.stop.passive="tsCancel" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p></template><template v-else>{{ toast.msg }}</template></div>
 </Teleport>`};
