@@ -238,6 +238,7 @@ input::placeholder{font-size:16px;font-weight:400;color:var(--mut);opacity:.75}
 .toast .tr{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 0;border-top:1px solid var(--edge)}.toast .tr b{font-weight:700;white-space:nowrap}
 .toast .tnote{margin:8px 0 0;padding-top:10px;border-top:1px solid var(--edge);font-size:14px;line-height:1.4;color:var(--mut);white-space:pre-line}
 .toast.show{transform:translate(-50%,0);transition:transform .3s var(--eo)}
+.toast .tshare{display:block;width:100%;margin-top:12px;padding:12px 16px;min-height:46px;border:0;border-radius:16px;font:inherit;font-weight:700;color:#1a1206;background:linear-gradient(180deg,#f0b967,#d8923a);box-shadow:inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer;transition:transform .15s var(--eo)}.toast .tshare:active{transform:scale(.98)}
 .toast.act{display:flex;align-items:center;gap:12px;text-align:left;padding:8px 10px 8px 20px}.toast.act .tm{min-width:0}
 .toast .tact{flex:none;padding:9px 12px;border-radius:14px;font:inherit;font-weight:700;color:#8a5410;background:rgba(224,154,66,.16);border:0;cursor:pointer;white-space:nowrap}:root[data-theme=dark] .toast .tact{color:#f3c887}
 .steps{padding-left:22px;margin:0 0 6px;line-height:1.7}
@@ -759,7 +760,7 @@ function buildPdf(imgs){
 const App={components:{Pill},
 setup(){
  const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
- const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:'',act:''}),armed=ref('');
+ const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:'',act:'',text:''}),armed=ref('');
  const fold=reactive({sett:false,cust:false}),toggleFold=k=>{fold[k]=!fold[k]};
  const tab=ref('rep'),pg=ref('rep'),swn=ref('sw'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
@@ -945,7 +946,7 @@ setup(){
   if(d&&!d.ba)notes.push('Брак за день в месячном отчёте введён вручную, он не изменён.');
   if(ou.length===1)notes.push('Заказ «'+ou[0].customer+' '+ou[0].order+'» не завершён: остаток '+fmt(r2(num(ou[0].plan)-num(ou[0].fact)))+' шт перенесётся в новый отчёт.');
   else if(ou.length>1)notes.push('Не завершено заказов: '+ou.length+'. Остатки перенесутся в новый отчёт.');
-  sayBig('Отчёт за '+dayTxt(r.date)+' сохранён в месячном отчёте',rows,notes.join('\n'))}
+  sayBig('Отчёт за '+dayTxt(r.date)+' сохранён в месячном отчёте',rows,notes.join('\n'),cur.value&&cur.value.id===r.id?repText.value:'')}
  function finishReport(){const r=cur.value;if(!r||!r.orders.length)return;if(r.orders.some(o=>S(o.fact).trim()===''))show('nofact');else finishNow()}
  function finishNow(){const r=cur.value;if(!r||!r.orders.length)return;const l=r.orders[r.orders.length-1];
   Object.assign(WA,{v:S(r.waste),q:false,done:null,err:false});
@@ -970,11 +971,13 @@ setup(){
 
  let tt,tc,tms=3500;
  let undo=null;   // the last deleted order: {rid, o, i}; lives as long as the «Отменить» toast
- const hideToast=()=>{clearTimeout(tt);toast.show=false;clearTimeout(tc);tc=setTimeout(()=>{if(!toast.show){toast.msg='';toast.big=false;toast.title='';toast.rows=[];toast.note='';toast.act='';undo=null}},400)};
- const showToast=(o,ms)=>{clearTimeout(tt);clearTimeout(tc);if(!o.act)undo=null;Object.assign(toast,{msg:'',big:false,title:'',rows:[],note:'',act:''},o,{show:true});tms=ms;tt=setTimeout(hideToast,ms)};
+ const hideToast=()=>{clearTimeout(tt);toast.show=false;clearTimeout(tc);tc=setTimeout(()=>{if(!toast.show){toast.msg='';toast.big=false;toast.title='';toast.rows=[];toast.note='';toast.act='';toast.text='';undo=null}},400)};
+ const showToast=(o,ms)=>{clearTimeout(tt);clearTimeout(tc);if(!o.act)undo=null;Object.assign(toast,{msg:'',big:false,title:'',rows:[],note:'',act:'',text:''},o,{show:true});tms=ms;tt=setTimeout(hideToast,ms)};
  const say=m=>showToast({msg:m},3500);
  const toastEl=ref(null),ts=toastSwipe(()=>toastEl.value,{ok:()=>toast.show,hold:()=>clearTimeout(tt),release:()=>{clearTimeout(tt);tt=setTimeout(hideToast,tms)},hide:hideToast});
- const sayBig=(title,rows,note)=>showToast({msg:title,big:true,title,rows,note:note||''},3000);
+ // окно после «Закончить отчёт»: с кнопкой «Поделиться» оно висит дольше (10 с), без неё - 3 с; текст отчёта берётся в момент завершения
+ const sayBig=(title,rows,note,text)=>showToast({msg:title,big:true,title,rows,note:note||'',text:text||''},text?10000:3000);
+ function toastShare(){const t=toast.text;if(!t||!toast.show)return;clearTimeout(tt);hideToast();if(canShare)share(t);else copy(t)}
  async function copy(t){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}say(ok?'Скопировано':'Не удалось скопировать — выделите текст вручную')}
  const canShare=typeof navigator!=='undefined'&&typeof navigator.share==='function';
  async function share(t){try{await navigator.share({text:t})}catch(e){if(e&&e.name==='AbortError')return;copy(t)}}
@@ -1371,7 +1374,7 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,toastAct,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
@@ -1700,7 +1703,7 @@ template:`
   </div>
   <div class="row"><button class="btn pri" :disabled="!kOk" @click="applyCalc">Подставить в «{{ kName }}»</button></div>
  </div>
- <div class="g toast" :class="{show:toast.show,big:toast.big,act:!!toast.act}" ref="toastEl" @click="hideToast" @touchstart.stop.passive="tsStart" @touchmove.stop.passive="tsMove" @touchend.stop.passive="tsEnd" @touchcancel.stop.passive="tsCancel" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p></template><template v-else><span class="tm">{{ toast.msg }}</span><button v-if="toast.act" type="button" class="tact" @click.stop="toastAct" @touchstart.stop>{{ toast.act }}</button></template></div>
+ <div class="g toast" :class="{show:toast.show,big:toast.big,act:!!toast.act}" ref="toastEl" @click="hideToast" @touchstart.stop.passive="tsStart" @touchmove.stop.passive="tsMove" @touchend.stop.passive="tsEnd" @touchcancel.stop.passive="tsCancel" role="status"><template v-if="toast.big"><b class="tt">{{ toast.title }}</b><div v-for="x in toast.rows" :key="x[0]" class="tr"><span>{{ x[0] }}</span><b>{{ x[1] }}</b></div><p v-if="toast.note" class="tnote">{{ toast.note }}</p><button v-if="toast.text" type="button" class="tshare" @click.stop="toastShare" @touchstart.stop>{{ canShare?'Поделиться отчётом':'Скопировать отчёт' }}</button></template><template v-else><span class="tm">{{ toast.msg }}</span><button v-if="toast.act" type="button" class="tact" @click.stop="toastAct" @touchstart.stop>{{ toast.act }}</button></template></div>
 </Teleport>`};
 
 const app=createApp(App);
