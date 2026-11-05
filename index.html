@@ -295,13 +295,15 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .opts+.opts{margin-top:12px}
 
 /* ===== версия для ПК: широкий экран (от 1000 px). Телефон не затрагивается ===== */
-.dnav,.ox,.keys{display:none}
+.dnav,.ox,.keys,.dw{display:none}
 @media (min-width:1000px){
  .top,.dock{display:none!important}
- .dnav{display:flex;align-items:center;gap:24px;position:absolute;top:0;left:0;right:0;z-index:6;height:60px;padding:0 max(39px,calc((100% - 1240px)/2));background:color-mix(in srgb,var(--bg) 58%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
- .dnav .dl{font-weight:700;font-size:17px;letter-spacing:-.01em;white-space:nowrap}
+ .dnav{display:flex;align-items:center;justify-content:center;position:absolute;top:0;left:0;right:0;z-index:6;height:60px;padding:0 max(39px,calc((100% - 1240px)/2));background:color-mix(in srgb,var(--bg) 58%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
  .dnav .pill{pointer-events:auto}.dnav .pill button{font-size:15px;padding:7px 22px}
- .dnav .dk{margin-left:auto;font-size:13px;color:var(--mut);white-space:nowrap}
+ .dnav .dk{position:absolute;top:0;bottom:0;right:max(39px,calc((100% - 1240px)/2));display:flex;align-items:center;font-size:13px;color:var(--mut);white-space:nowrap}
+}
+@media (min-width:1000px) and (max-width:1099px){.dnav .dk{display:none}}
+@media (min-width:1000px){
  .scroll{padding:84px 24px 40px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--mut) 55%,transparent) transparent}
  .wrap{max-width:1240px}
  h1{font-size:30px}
@@ -310,9 +312,16 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
  .dv>.head,.dv>.empty,.dv>.inst{grid-column:1/-1}
  .dv>.empty{max-width:620px}
  .dv.rep{grid-template-columns:minmax(0,1fr) 400px;grid-template-rows:auto auto 1fr}
- .dv.rep>.olist{grid-column:1;grid-row:2/span 2}
+ .dv.rep>.lc{grid-column:1;grid-row:2/span 2;min-width:0}
+ .dv.rep>.dw{grid-column:1/-1;max-width:620px;margin-top:14px}
  .dv.rep>.sa{grid-column:2;grid-row:2}.dv.rep>.sb{grid-column:2;grid-row:3}
- .dv.rep>.olist .oc{padding:14px 18px}
+ .dv.rep .olist .oc{padding:14px 18px}
+ .dw{display:block;margin-top:6px;padding:16px 18px}
+ .dw .phd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px}.dw .phd b{font-weight:600}.dw .phd>span{font-size:22px;font-weight:700}
+ .dw .pm{margin:10px 0 6px}
+ .dw .dwn{margin:10px 0 12px;font-size:14px}.dw .dwn b{color:var(--ink)}
+ .dw button.pr{width:100%;background:none;border:0;border-top:1px solid var(--edge);font:inherit;font-size:13px;color:var(--mut);cursor:pointer;justify-content:flex-end;padding:10px 0 0}
+ .dw button.pr:hover{color:var(--ink)}
  .dv.bl{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto auto auto 1fr}
  .dv.bl>.seg{grid-column:1;grid-row:2;margin:0 0 12px;max-width:440px;align-self:center}
  .dv.bl>.bkb{grid-column:2;grid-row:2;margin:0 0 12px}
@@ -897,6 +906,19 @@ setup(){
   const mk=monthKey.value,m2=String(num(v)),l=db.plans.find(x=>x.month===mk);
   if(l)Object.assign(l,{m2,del:false,u:now()});else db.plans.push({month:mk,m2,u:now()});close()}
  function planDel(){const l=db.plans.find(x=>x.month===monthKey.value);if(l){l.del=true;l.u=now()}close()}
+ // ПК: «План на день». План на день = (план месяца - сделано в месяце ДО этого дня) / смен до конца месяца (пн-пт, включая этот день).
+ // Сделано до этого дня: запись месяца за дату, а если её ещё нет (отчёт не закончен) - заказы отчётов за эту дату. Сделано за день считается по заказам сразу.
+ const dayPlan=computed(()=>{
+  const d=viewDate.value,mk=d.slice(0,7),p=db.plans.find(x=>x.month===mk&&!x.del),pl=p&&num(p.m2)>0?num(p.m2):0,dim=dimOf(mk);
+  const by=new Map();for(const x of db.days)if(!x.del&&x.date.slice(0,7)===mk&&x.date<d)by.set(x.date,num(x.m2));
+  const rp=new Map();for(const x of db.reports)if(!x.del&&x.date.slice(0,7)===mk&&x.date<d&&!by.has(x.date))rp.set(x.date,(rp.get(x.date)||0)+repTotal(x));
+  let before=0;by.forEach(v=>{before+=v});rp.forEach(v=>{before+=v});
+  const today=db.reports.filter(x=>!x.del&&x.date===d).reduce((t,x)=>t+repTotal(x),0),left=shiftsIn(mk,+d.slice(8),dim);
+  if(!pl)return{pl:0,month:mk,today};
+  const need=Math.max(0,pl-before),plan=left>0?Math.round(need/left):null,done=need<=0||(plan!==null&&today>=plan);
+  const pct=plan>0?Math.round(today/plan*1000)/10:need<=0?100:0;
+  return{pl,month:mk,before,need,left,plan,today,pct,bar:Math.min(100,pct),done,rest:plan===null?need:Math.max(0,plan-today),extra:plan!==null&&today>plan?today-plan:0,weekend:shiftsIn(mk,+d.slice(8),+d.slice(8))===0}});
+ function dayPlanEdit(){mMonth.value=viewDate.value.slice(0,7);openPlan()}
  // defects of the month: kg per 1000 m² (all defects + waste, from the days), % of pieces and top lists (from the orders of the reports)
  const bkTab=ref('tech'),chEl=ref(null);
  const bk=computed(()=>{const t=mTot.value,per=t.m2>0?t.brak/t.m2*1000:null,reps=db.reports.filter(r=>!r.del&&r.date.indexOf(monthKey.value)===0);
@@ -1377,12 +1399,12 @@ setup(){
   toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
-  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
+  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
   canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,bkCols,bkAvg,bkY,bkRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,TABS,fmt,num,dm,dayTxt,area}},
 template:`
 <div class="shell" @touchstart.passive="tStart" @touchend.passive="tEnd">
- <header class="dnav"><span class="dl">Отчёт гофролинии</span><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–4 — разделы</span></header>
+ <header class="dnav"><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–4 — разделы</span></header>
  <div class="top" :class="{hide:topHidden||(view!=='rep'&&view!=='bl')}"><Pill :items="PAGES" v-model="pg"/></div>
  <main class="scroll" ref="scrollEl" @scroll.passive="onScroll"><div class="wrap">
   <div v-if="showInst" class="g inst"><span>{{ desk?'Установите приложение на компьютер':'Добавьте приложение на главный экран' }}</span><button class="btn sm pri" @click="doInstall">{{ desk?'Установить':'Добавить' }}</button><button class="x" @click="offInst" aria-label="Скрыть">×</button></div>
@@ -1394,16 +1416,54 @@ template:`
      <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak) }} кг</b></div></div>
      <div class="addrow"><button class="btn pri big" @click="openOrder()">Добавить заказ</button><button v-if="pendN" class="btn big" @click="openFacts">Факт ({{ pendN }})</button></div>
      </div>
+     <div class="lc">
      <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
       <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" title="Выше" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" title="Ниже" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" title="Перенести в следующий отчёт" aria-label="Перенести в следующий отчёт" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" title="Удалить" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span></button>
      </TransitionGroup></div>
+     <div v-if="desk&&dayPlan" class="g dw">
+      <template v-if="dayPlan.pl>0">
+       <div class="phd"><b>План на день</b><span>{{ fmt(dayPlan.pct) }} %</span></div>
+       <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(dayPlan.bar)"><i :style="{width:dayPlan.bar+'%'}"></i></span>
+       <div class="pr"><span>Сделано за день</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
+       <div class="pr"><span>План на день<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
+       <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
+       <div v-else-if="dayPlan.done" class="pr"><span>Итог</span><b>план на день выполнен ✓<template v-if="dayPlan.extra>0"> <small>+{{ fmt(Math.round(dayPlan.extra)) }} м²</small></template></b></div>
+       <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
+       <button type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
+      </template>
+      <template v-else>
+       <div class="phd"><b>План на день</b></div>
+       <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
+       <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
+      </template>
+     </div>
+     </div>
      <div class="sb">
      <button v-if="cur.orders.length" class="btn big fin" @click="finishReport">{{ finLabel }}</button>
      <p v-if="!cur.orders.length" class="mut">Заказов пока нет.</p>
      <div v-if="cur.orders.length" class="g prev"><pre>{{ repText }}</pre><label class="chk"><input type="checkbox" v-model="db.wa"> Добавить м² и брак в конец списка</label><div class="addrow"><button class="btn pri big" @click="copy(repText)">{{ canShare?'Скопировать':'Скопировать список' }}</button><button v-if="canShare" class="btn big" @click="share(repText)">Отправить</button></div></div>
      </div>
     </template>
-    <div v-else class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button><button class="btn big" @click="openImport">Импорт из буфера обмена</button></div>
+    <template v-else>
+     <div class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button><button class="btn big" @click="openImport">Импорт из буфера обмена</button></div>
+    <div v-if="desk&&dayPlan" class="g dw">
+     <template v-if="dayPlan.pl>0">
+      <div class="phd"><b>План на день</b><span>{{ fmt(dayPlan.pct) }} %</span></div>
+      <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(dayPlan.bar)"><i :style="{width:dayPlan.bar+'%'}"></i></span>
+      <div class="pr"><span>Сделано за день</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
+      <div class="pr"><span>План на день<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
+      <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
+      <div v-else-if="dayPlan.done" class="pr"><span>Итог</span><b>план на день выполнен ✓<template v-if="dayPlan.extra>0"> <small>+{{ fmt(Math.round(dayPlan.extra)) }} м²</small></template></b></div>
+      <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
+      <button type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
+     </template>
+     <template v-else>
+      <div class="phd"><b>План на день</b></div>
+      <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
+      <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
+     </template>
+    </div>
+    </template>
    </section>
    <section v-else-if="view==='bl'" key="bl" class="dv bl">
     <div class="head"><h1>Бланк</h1><small v-if="cur" class="mut bi">{{ blankInfo }}</small></div>
