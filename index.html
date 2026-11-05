@@ -145,19 +145,24 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .gear:hover{color:var(--ink)}.gear:active{transform:rotate(60deg)}
 .plq{margin:10px 0 0}.plq .btn{margin-left:6px;vertical-align:middle}
 .pt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-.pt>div{position:relative;min-width:0;padding:8px 10px 8px 14px;border-radius:12px;border:1px solid var(--edge)}
-.pt>div::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:#d8923a}
-.pt>div.bd::before{background:#cf5a4a}.pt>div.ok::before{background:#3fae8f}
+.pt>div{--tc:#d8923a;--ta:20%;position:relative;min-width:0;padding:8px 10px 8px 14px;border-radius:12px;background:color-mix(in srgb,var(--tc) var(--ta),var(--fld));border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
+:root[data-theme=dark] .pt>div{--ta:26%}
+.pt>div::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
+.pt>div.bd{--tc:#e6c53f;grid-column:1/-1}.pt>div.ok{--tc:#3fae8f}
+.mdh{display:flex;align-items:center;justify-content:space-between;gap:10px}.mdh>b{font-size:16px}
+.mdp{flex:none}.mdp button{flex:none;padding:5px clamp(10px,3.4vw,14px);font-size:13px}
+.mdc{margin:6px 0 10px;font-size:12px;color:var(--mut)}
+@media(max-width:340px){.mdh>b{font-size:15px}.mdp button{padding:5px 9px}}
 .pt>div.w{grid-column:1/-1}
 .pln{container-type:inline-size}
-@container (min-width:420px){.pt{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@container (min-width:420px){.pt{grid-template-columns:repeat(3,minmax(0,1fr))}.pt>div.bd{grid-column:auto}}
 @container (min-width:560px){.pt{grid-template-columns:repeat(4,minmax(0,1fr))}.pt>div.bd1{grid-column-start:1}}
 .pt small{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;line-height:1.2;color:var(--mut);letter-spacing:.02em}
 .pt small em{font-size:15px;font-style:normal;font-weight:700;color:var(--ink);letter-spacing:0}
 .pt b{display:block;margin-top:2px;font-size:16px;font-weight:650;line-height:1.25;white-space:nowrap;font-variant-numeric:tabular-nums}
 .pt b i{font-style:normal;font-weight:400;color:var(--mut);margin:0 1px}
 .pt>div>em{display:block;margin-top:1px;font-size:11px;font-style:normal;line-height:1.2;color:var(--mut)}
-.pt .pm{height:7px;margin:7px 0 2px}
+.pt .pm{height:7px;margin:7px 0 2px;background:color-mix(in srgb,var(--ink) 14%,transparent)}
 .pch{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 10px;margin-top:16px;font-size:14px}.pch b{font-weight:600;white-space:nowrap}.pch span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}.pch .avl{display:block;width:14px;border-top:1px solid var(--ink);opacity:.55}
 .pln .bch{margin-top:12px;height:100px}.pln .by{white-space:nowrap}
 .sech.sm{margin:10px 0 0;min-height:38px;font-size:14px;font-weight:600}.sech.sm .chev{width:30px;height:30px}
@@ -937,6 +942,10 @@ setup(){
  const mgN=computed(()=>mgW(mTot.value));
  const dTot=computed(()=>{const d=selDay.value;return d?{m2:num(d.m2),ord:num(d.ord),sh:num(d.sh),brak:num(d.brak)}:null});
  const dgN=computed(()=>dTot.value?mgW(dTot.value):8);
+ // «Гофроагрегат»: месяц и выбранный день одним блоком, переключатель как «Отчёт | Бланк» (кнопки и свайп по блоку)
+ const MDT=[{v:'m',t:'Месяц'},{v:'d',t:'День'}],mdTab=ref('m'),mdn=ref('swf');
+ watch(mdTab,n=>{mdn.value=n==='d'?'swf':'swb'},{flush:'sync'});
+ const dCap=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Сегодня, '+dayTxt(d.date):dayTxt(d.date)):''});
  const dTitle=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Гофроагрегат за сегодня':'Гофроагрегат за '+dayTxt(d.date)):''});
  // plan of the month (db.plans: {month:'YYYY-MM', m2, u, del}); the pace is counted per shift: shifts = all Mon-Fri days of the month (not calendar days)
  const plan=computed(()=>{const p=db.plans.find(x=>x.month===monthKey.value&&!x.del);return p&&num(p.m2)>0?num(p.m2):0});
@@ -1357,10 +1366,10 @@ setup(){
  window.addEventListener('appinstalled',()=>{instOff.value=true;say('Приложение установлено')});
  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
- let tx=0,ty=0,t0=0,tok=false;
- const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big')};
+ let tx=0,ty=0,t0=0,tok=false,tmd=false;
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big')};
  const tEnd=e=>{if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
-  if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep'}};
+  if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep';else if(v==='mon'&&tmd)mdTab.value=dx<0?'d':'m'}};
   const olistEl=ref(null);
  // swipe of a card (long press, then pull to the left): a short pull marks the order for the next report, a long one deletes it
  const carryState=o=>o.op==='2'?'done':num(o.fact)>=num(o.plan)?'full':'ok';
@@ -1467,7 +1476,7 @@ setup(){
   toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
-  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
+  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,MDT,mdTab,mdn,dCap,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
   canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,pdCols,pdAvg,pdY,kfmt,pdRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,TABS,fmt,num,dm,dayTxt,area}},
 template:`
@@ -1590,9 +1599,25 @@ template:`
    <section v-else key="mon" class="dv mon">
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
      <div class="ca">
-     <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
-     <p v-if="mLive" class="hint lvn">В итог входит {{ mLive.date===nowDay?'сегодняшний день':dayTxt(mLive.date) }}: отчёт ещё не закончен, цифры меняются вместе с заказами.</p>
+     <div class="g mtot mdsw">
+     <div class="mdh"><b>Гофроагрегат</b><Pill class="mdp" :items="MDT" v-model="mdTab"/></div>
+     <Transition :name="mdn" mode="out-in">
+      <div v-if="mdTab==='m'" key="m">
+       <p class="mdc">{{ monthTitle }}</p>
+       <div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
+       <p v-if="mLive" class="hint lvn">В итог входит {{ mLive.date===nowDay?'сегодняшний день':dayTxt(mLive.date) }}: отчёт ещё не закончен, цифры меняются вместе с заказами.</p>
+      </div>
+      <div v-else key="d">
+       <template v-if="selDay">
+        <p class="mdc">{{ dCap }}</p>
+        <div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div>
+        <p v-if="selDay.live" class="hint lvn">Отчёт за день ещё не закончен: цифры считаются по заказам и после «Закончить отчёт» сохранятся в месяце.</p>
+       </template>
+       <p v-else class="hint">Пока нет данных за день: выберите день в списке «История» или закончите отчёт.</p>
+      </div>
+     </Transition>
     </div>
+    <button class="btn pri big" @click="openDay()">Добавить день</button>
     <div class="g mtot pln">
      <div class="plh"><b>План на месяц</b><button type="button" class="gear" @click="openPlan" aria-label="Изменить план на месяц" title="Изменить план"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
      <p v-if="!planI" class="hint plq">План не задан: после его ввода появятся прогресс, прогноз и нужный темп. <button type="button" class="btn sm" @click="openPlan">Задать план</button></p>
@@ -1602,8 +1627,7 @@ template:`
       <div v-if="planI&&planI.fc!==null"><small>Прогноз</small><b>{{ fmt(planI.fc) }} м²</b><em>{{ fmt(planI.fpct) }} % плана</em></div>
       <div v-if="planI&&planI.need!==null"><small>Нужно в смену</small><b>{{ fmt(planI.need) }} м²</b><em v-if="planI.now!==null">сейчас {{ fmt(planI.now) }}</em></div>
       <div v-if="planI"><small>{{ planI.closed?'Смен в месяце':'Осталось смен' }}</small><b>{{ planI.closed?planI.sh:planI.left }}</b><em>{{ planI.closed?'пн–пт':'из '+planI.sh+', пн–пт' }}</em></div>
-      <div v-if="mdays.length" class="bd bd1"><small>Брак, кг/1000 м²</small><b>{{ bk.per===null?'—':fmt(bk.per) }}</b><em v-if="bk.prev!==null">был {{ fmt(bk.prev) }}<template v-if="bk.cmp"> · {{ bk.cmp>0?'+':'−' }}{{ Math.abs(bk.cmp) }} %</template></em></div>
-      <div v-if="mdays.length" class="bd"><small>Доля брака</small><b>{{ bk.pct===null?'—':fmt(bk.pct)+' %' }}</b><em>в штуках</em></div>
+      <div v-if="mdays.length" class="bd bd1"><small>Доля брака</small><b>{{ bk.pct===null?'—':fmt(bk.pct)+' %' }}</b><em>в штуках</em></div>
      </div>
      <template v-if="mdays.length">
       <div class="pch"><b>Выработка по дням</b><span v-if="pdAvg>0"><i class="avl"></i>в среднем {{ fmt(pdAvg) }} м² в день</span></div>
@@ -1624,8 +1648,6 @@ template:`
       </div></Transition>
      </template>
     </div>
-    <div v-if="selDay" class="g mtot"><b>{{ dTitle }}</b><div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div><p v-if="selDay.live" class="hint lvn">Отчёт за день ещё не закончен: цифры считаются по заказам и после «Закончить отчёт» сохранятся в месяце.</p></div>
-    <button class="btn pri big" @click="openDay()">Добавить день</button>
      </div><div class="cb">
      <template v-if="days.length">
      <h2>История</h2>
