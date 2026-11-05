@@ -101,6 +101,8 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .empty{padding:22px;margin-top:6px}.empty p{color:var(--mut);margin:0 0 12px}.empty .big{margin:6px 0 0}.empty .big+.big{margin-top:10px}
 .item,.sy,.dc{display:flex;align-items:center;gap:10px;padding:14px 16px;margin-bottom:10px}
 .item .t,.sy .m,.dc .m{flex:1;min-width:0}.item .t{cursor:pointer}.item .t b{font-size:18px}.dc{cursor:pointer;padding:12px 14px}
+.lvb{flex:none;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,#d8923a 24%,transparent);color:var(--ink)}
+.lvn{margin:10px 0 0}
 .dc.sel{border-color:#d8923a;box-shadow:inset 0 1px 0 var(--hi),0 0 0 2px #d8923a88,0 12px 32px var(--sh)}
 .mn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
 .mtot{padding:16px 18px;margin-bottom:14px}
@@ -317,10 +319,23 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
  .dv.rep>.sa{grid-column:2;grid-row:2}.dv.rep>.sb{grid-column:2;grid-row:3}
  .dv.rep .olist .oc{padding:14px 18px}
  .dw{display:block;margin-top:6px;padding:16px 18px}
- .dw .phd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:15px}.dw .phd b{font-weight:600}.dw .phd>span{font-size:22px;font-weight:700}
- .dw .pm{margin:10px 0 6px}
- .dw .dwn{margin:10px 0 12px;font-size:14px}.dw .dwn b{color:var(--ink)}
- .dw button.pr{width:100%;background:none;border:0;border-top:1px solid var(--edge);font:inherit;font-size:13px;color:var(--mut);cursor:pointer;justify-content:flex-end;padding:10px 0 0}
+ .dw .dwr{display:flex;align-items:center;gap:22px}
+ .dw .rg{position:relative;flex:none;width:132px;height:132px}
+ .dw .rg svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+ .dw .rg circle{fill:none;stroke-width:11}
+ .dw .rg .rt{stroke:color-mix(in srgb,var(--mut) 24%,transparent)}
+ .dw .rg .rp{stroke:url(#dwg);stroke-linecap:round;transition:stroke-dasharray .3s var(--eo),stroke .3s var(--eo)}
+ .dw .rg.ok .rp{stroke:#3fae8f}
+ .dw .rc{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}.dw .rv{white-space:nowrap;line-height:1}
+ .dw .rv.s b{font-size:22px}
+ .dw .rc b{font-size:27px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+ .dw .rc small{font-size:14px;font-weight:600;margin-left:2px;color:var(--mut)}
+ .dw .rg.no .rc b{color:var(--mut)}
+ .dw .ri{flex:1;min-width:0}
+ .dw .rh{display:block;font-size:15px;font-weight:600;margin:0 0 6px}
+ .dw .ri .pr:first-of-type{border-top:0}
+ .dw .dwn{margin:0 0 12px;font-size:14px}.dw .dwn b{color:var(--ink)}
+ .dw button.pr{width:100%;background:none;border:0;border-top:1px solid var(--edge);font:inherit;font-size:13px;color:var(--mut);cursor:pointer;justify-content:flex-end;padding:10px 0 0;margin-top:12px}
  .dw button.pr:hover{color:var(--ink)}
  .dv.bl{grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto auto auto 1fr}
  .dv.bl>.seg{grid-column:1;grid-row:2;margin:0 0 12px;max-width:440px;align-self:center}
@@ -624,8 +639,8 @@ function listDrag(o){
   try{if(navigator.vibrate)navigator.vibrate(15)}catch(e){}
   if(o.onStart)o.onStart()}
  function endH(cancel){const el=st.el,id=el.dataset.id,z=cancel?0:zoneOf(-hdx());
-  if(z===2){el.style.transition='transform .25s cubic-bezier(.4,0,1,1),opacity .25s ease';el.style.transform='translate3d(-115%,0,0)';el.style.opacity='0';
-   setTimeout(()=>colOut(el,()=>{el.style.display='none';last=Date.now();o.onSwipe(id,2);clean(el);st=null;if(o.onEnd)o.onEnd()}),230);return true}
+  if(z===2||(z===1&&o.leaves&&o.leaves(id))){el.style.transition='transform .25s cubic-bezier(.4,0,1,1),opacity .25s ease';el.style.transform='translate3d(-115%,0,0)';el.style.opacity='0';
+   setTimeout(()=>colOut(el,()=>{el.style.display='none';last=Date.now();o.onSwipe(id,z);clean(el);st=null;if(o.onEnd)o.onEnd()}),230);return true}
   el.style.transition='transform .3s cubic-bezier(.22,1,.36,1)';el.style.transform='translate3d(0,0,0)';
   if(z===1)o.onSwipe(id,1);
   setTimeout(()=>{last=Date.now();clean();st=null;if(o.onEnd)o.onEnd()},310);return true}
@@ -873,7 +888,15 @@ setup(){
   r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.customer+' '+o.order+'/'+(o.tech||'-')+'\n        '+o.len+'×'+o.wid+'. '+o.plan+'шт\n\n'});
   t+='По факту:\n\n';r.orders.forEach((o,i)=>{t+=(i+1)+'. '+o.fact+'\n'});
   if(db.wa){t+='\nПроизведено: '+fmt(total.value)+' м²';if(totalBrak.value>0)t+='\nБрак: '+fmt(totalBrak.value)+' кг'}return t});
- const days=computed(()=>db.days.filter(x=>!x.del));
+ const realDays=computed(()=>db.days.filter(x=>!x.del));
+ // идущий день: сегодняшний день и день открытого отчёта, пока он не закрыт кнопкой «Закончить отчёт» (записи в месяце ещё нет).
+ // Цифры берутся из заказов так же, как их сохранит «Закончить отчёт», и сразу входят в итоги месяца; после закрытия дня остаётся одна обычная запись.
+ const liveDays=computed(()=>{const set=new Set([nowDay.value]);if(cur.value)set.add(cur.value.date);const out=[];
+  set.forEach(d=>{if(realDays.value.some(x=>x.date===d))return;const rs=db.reports.filter(x=>!x.del&&x.date===d&&x.orders.length);if(!rs.length)return;
+   const bk=r2(rs.reduce((t,x)=>t+repBrak(x),0));
+   out.push({date:d,m2:String(r2(rs.reduce((t,x)=>t+repTotal(x),0))),ord:String(rs.reduce((t,x)=>t+ordN(x),0)),sh:'1',brak:bk>0?String(bk):'',ba:true,live:true})});return out});
+ const days=computed(()=>realDays.value.concat(liveDays.value));
+ const mLive=computed(()=>mdays.value.find(x=>x.live)||null);
  const monthKey=computed(()=>mMonth.value||(days.value.map(x=>x.date).sort().pop()||today()).slice(0,7));
  const monthTitle=computed(()=>MI[+monthKey.value.slice(5)-1]+' '+monthKey.value.slice(0,4));
  const mdays=computed(()=>days.value.filter(x=>x.date.indexOf(monthKey.value)===0).sort((a,b)=>a.date.localeCompare(b.date)));
@@ -890,14 +913,14 @@ setup(){
  // plan of the month (db.plans: {month:'YYYY-MM', m2, u, del}); the pace is counted per shift: shifts = all Mon-Fri days of the month (not calendar days)
  const plan=computed(()=>{const p=db.plans.find(x=>x.month===monthKey.value&&!x.del);return p&&num(p.m2)>0?num(p.m2):0});
  const planI=computed(()=>{const pl=plan.value;if(!pl)return null;
-  const mk=monthKey.value,t=today(),tm=t.slice(0,7),done=mTot.value.m2,dim=dimOf(mk),
-   last=mdays.value.reduce((m,x)=>Math.max(m,+x.date.slice(8)),0),worked=mdays.value.filter(x=>num(x.m2)>0).length,
+  const mk=monthKey.value,t=today(),tm=t.slice(0,7),done=mTot.value.m2,dim=dimOf(mk),fin=mdays.value.filter(x=>!x.live),doneF=fin.reduce((a,x)=>a+num(x.m2),0),
+   last=fin.reduce((m,x)=>Math.max(m,+x.date.slice(8)),0),worked=fin.filter(x=>num(x.m2)>0).length,
    el=mk<tm?dim:mk===tm?Math.min(dim,Math.max(last,+t.slice(8)-1)):last,closed=mk<tm,rest=Math.max(0,pl-done),
    sh=shiftsIn(mk,1,dim),esh=shiftsIn(mk,1,el),left=Math.max(0,sh-esh),
-   fc=!closed&&done>0&&esh>0?done/esh*sh:null,need=!closed&&rest>0&&left>0?rest/left:null;
+   fc=!closed&&doneF>0&&esh>0?doneF/esh*sh:null,need=!closed&&rest>0&&left>0?rest/left:null;
   const pc=v=>v>=100?Math.round(v):Math.round(v*10)/10;
-  return{pl,done,pct:pc(done/pl*100),bar:Math.min(100,done/pl*100),rest,ok:done>=pl,closed,sh,left,
-   fc:fc==null?null:Math.round(fc),fpct:fc==null?null:pc(fc/pl*100),need:need==null?null:Math.round(need),now:worked?Math.round(done/worked):null}});
+  return{pl,done,live:!!mLive.value,pct:pc(done/pl*100),bar:Math.min(100,done/pl*100),rest,ok:done>=pl,closed,sh,left,
+   fc:fc==null?null:Math.round(fc),fpct:fc==null?null:pc(fc/pl*100),need:need==null?null:Math.round(need),now:worked?Math.round(doneF/worked):null}});
  const PL=reactive({v:'',err:false,from:false});
  function openPlan(){const p=plan.value;let v='',from=false;
   if(p)v=String(p);else{const q=db.plans.find(x=>x.month===shiftM(monthKey.value,-1)&&!x.del);if(q&&num(q.m2)>0){v=String(num(q.m2));from=true}}
@@ -952,7 +975,7 @@ setup(){
  const hRows=computed(()=>hRes.value||mdaysDesc.value.map(d=>({d,hit:[]})));
  const shiftMonth=n=>{mMonth.value=shiftM(monthKey.value,n);mSel.value=null};
  const dayTotals=r=>{const rs=db.reports.filter(x=>!x.del&&x.date===r.date);return{m2:Math.round(rs.reduce((s,x)=>s+repTotal(x),0)*100)/100,ord:rs.reduce((s,x)=>s+ordN(x),0),brak:r2(rs.reduce((s,x)=>s+repBrak(x),0))}};
- const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=days.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord&&(!e.ba||Math.abs(num(e.brak)-t.brak)<.005)?'ok':'stale'});
+ const finState=computed(()=>{const r=cur.value;if(!r)return'';const e=realDays.value.find(x=>x.date===r.date);if(!e)return'new';const t=dayTotals(r);return Math.abs(num(e.m2)-t.m2)<.005&&num(e.ord)===t.ord&&(!e.ba||Math.abs(num(e.brak)-t.brak)<.005)?'ok':'stale'});
  const finLabel=computed(()=>({new:'Закончить отчёт',stale:'Обновить в месячном отчёте',ok:'Сохранено в месячном отчёте ✓'})[finState.value]||'');
  const lastOrd=computed(()=>{const r=cur.value;return r&&r.orders.length?r.orders[r.orders.length-1]:null});
  const unfLeft=computed(()=>lastOrd.value?r2(Math.max(0,num(lastOrd.value.plan)-num(lastOrd.value.fact))):0);
@@ -1235,12 +1258,12 @@ setup(){
  const pick=c=>{W.o.customer=c;if(W.mode!=='new')return;if(W.layout==='six')next();else focusK('order')};
  const delOrder=()=>{const r=cur.value;r.orders=r.orders.filter(x=>x.id!==W.id);r.u=now();close()};
 
- function openDay(date){const ex=date&&days.value.find(x=>x.date===date);
+ function openDay(date){const ex=date&&realDays.value.find(x=>x.date===date);
   Object.assign(D,{orig:ex?ex.date:null,err:''},ex?{date:ex.date,m2:ex.m2,ord:ex.ord,sh:ex.sh,brak:ex.brak}:{date:today(),m2:'',ord:'',sh:'',brak:''});show('day')}
  function dayOk(){const g=k=>String(D[k]).trim().replace(/\s+/g,''),o={date:g('date'),m2:g('m2'),ord:g('ord'),sh:g('sh'),brak:g('brak')||'0',u:now()};
   const bad=['date','m2','ord','sh'].find(k=>!o[k]);if(bad){D.err=bad;return}
   const pv=D.orig&&db.days.find(x=>x.date===D.orig&&!x.del);if(pv&&pv.ba&&pv.date===o.date&&(S(pv.brak)||'0')===o.brak)o.ba=true;
-  if(D.orig!==o.date&&days.value.some(x=>x.date===o.date)){say('За эту дату уже есть запись. Откройте её кнопкой «Изменить»');return}
+  if(D.orig!==o.date&&realDays.value.some(x=>x.date===o.date)){say('За эту дату уже есть запись. Откройте её кнопкой «Изменить»');return}
   if(D.orig&&D.orig!==o.date){const old=db.days.find(x=>x.date===D.orig);if(old){old.del=true;old.u=now()}}
   const i=db.days.findIndex(x=>x.date===o.date);if(i>-1)db.days[i]=o;else db.days.push(o);
   mMonth.value=o.date.slice(0,7);mSel.value=o.date;close();say('День сохранён')}
@@ -1310,21 +1333,36 @@ setup(){
   if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep'}};
   const olistEl=ref(null);
  // swipe of a card (long press, then pull to the left): a short pull marks the order for the next report, a long one deletes it
- const carryState=o=>o.op==='2'?'done':num(o.fact)>=num(o.plan)?'full':o.op==='1'?'on':'ok';
- const carryLbl=o=>({done:'Перенесён',full:'Выполнен',on:'Снять',ok:'Перенести'})[carryState(o)];
+ const carryState=o=>o.op==='2'?'done':num(o.fact)>=num(o.plan)?'full':'ok';
+ const carryLbl=o=>({done:'Перенесён',full:'Выполнен',ok:'Перенести'})[carryState(o)];
+ const nextDate=d=>{const t=new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8)+1);return t.getFullYear()+'-'+z2(t.getMonth()+1)+'-'+z2(t.getDate())};
+ const WDA=['воскресенье','понедельник','вторник','среду','четверг','пятницу','субботу'];
+ const dayAcc=d=>'на '+WDA[new Date(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8)).getDay()]+', '+dayTxt(d);
+ // заказ без факта при «Перенести» уходит из списка целиком: карточка уезжает, как при удалении
+ const willLeave=id=>{const r=cur.value,o=r&&r.orders.find(x=>x.id===id);return !!o&&carryState(o)==='ok'&&num(o.fact)<=0};
  const carryOff=o=>{const k=carryState(o);return k==='done'||k==='full'};
  function onSwipe(id,z){const r=cur.value;if(!r)return;const i=r.orders.findIndex(x=>x.id===id);if(i<0)return;const o=r.orders[i],nm='«'+o.customer+' '+o.order+'»';
   if(z===2){r.orders.splice(i,1);r.u=now();showToast({msg:'Заказ '+nm+' удалён',act:'Отменить'},5000);undo={rid:r.id,o,i};return}
   if(z!==1)return;const k=carryState(o);
-  if(k==='done'){say('Заказ '+nm+' уже перенесён в новый отчёт');return}
+  if(k==='done'){say('Заказ '+nm+' уже перенесён на другой день');return}
   if(k==='full'){say('Заказ '+nm+' выполнен полностью: переносить нечего');return}
-  if(k==='on'){o.op='';r.u=now();say('Перенос отменён: '+nm);return}
-  o.op='1';r.u=now();say('Заказ '+nm+' перенесётся в следующий отчёт: останется '+fmt(r2(num(o.plan)-num(o.fact)))+' шт')}
+  // «Перенести»: заказ уходит в отчёт следующего дня (если отчёта нет - он создаётся). Без факта он убирается из этого дня целиком; если что-то уже сделано, сделанное остаётся в итогах этого дня, а остаток (план - факт) уходит на следующий день
+  const f=num(o.fact),part=f>0,left=r2(num(o.plan)-f),nd=nextDate(r.date),prev=o.op||'';
+  let t=db.reports.filter(x=>!x.del&&x.date===nd).sort((a,b)=>(b.orders.length>0)-(a.orders.length>0)||(b.u||0)-(a.u||0))[0],made=false;
+  if(!t){t={id:uid(),date:nd,orders:[],u:now()};db.reports.push(t);made=true}
+  const n={id:uid(),customer:o.customer,order:o.order,tech:o.tech,len:o.len,wid:o.wid,plan:part?String(left):S(o.plan),fact:'0',bq:'',bw:S(o.bw),rm:S(o.rm),pf:PF(o.pf),op:''};
+  t.orders.push(n);t.u=now();if(part)o.op='2';else r.orders.splice(i,1);r.u=now();
+  showToast({msg:'Заказ '+nm+(part?': остаток '+fmt(left)+' шт перенесён ':' перенесён ')+dayAcc(nd)+(part?'. Сделанное осталось в этом дне':''),act:'Отменить'},6000);
+  undo={k:'mv',rid:r.id,o,i,prev,part,tid:t.id,nid:n.id,made}}
  function toastAct(){const u=undo;undo=null;if(!u)return;const r=db.reports.find(x=>x.id===u.rid&&!x.del);
+  if(u.k==='mv'){const t=db.reports.find(x=>x.id===u.tid);   // отмена переноса: заказ уходит из следующего дня и возвращается
+   if(t){const j=t.orders.findIndex(x=>x.id===u.nid);if(j>-1){t.orders.splice(j,1);t.u=now()}if(u.made&&!t.orders.length){t.del=true;t.u=now()}}
+   if(r){if(u.part){if(u.o.op==='2')u.o.op=u.prev}else if(!r.orders.some(x=>x.id===u.o.id))r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
+   hideToast();return}
   if(r&&!r.orders.some(x=>x.id===u.o.id)){r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
   hideToast()}
  function moveOrder(a,b){const r=cur.value;if(!r||a===b||a<0||b<0||a>=r.orders.length||b>=r.orders.length)return;r.orders.splice(b,0,r.orders.splice(a,1)[0]);r.u=now()}
- const dr=listDrag({root:()=>olistEl.value,sel:'.oc',scroller:()=>scrollEl.value,ok:()=>!open.value&&!calcOpen.value&&!!cur.value,onStart:()=>{tok=false},onDrop:moveOrder,hz:true,onSwipe});
+ const dr=listDrag({root:()=>olistEl.value,sel:'.oc',scroller:()=>scrollEl.value,ok:()=>!open.value&&!calcOpen.value&&!!cur.value,onStart:()=>{tok=false},onDrop:moveOrder,hz:true,onSwipe,leaves:willLeave});
  const onCard=id=>{if(dr.recent())return;openOrder(id)};
  const mv=(i,d)=>moveOrder(i,i+d);      // ПК: кнопки «выше / ниже» на карточке
  // клавиатура (ПК): Esc закрывает окно, N - новый заказ, T - сегодня, 1-4 - разделы, Ctrl+P - печать бланка; в калькуляторе работают цифры и знаки
@@ -1395,8 +1433,8 @@ setup(){
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
-  reports,cur,repTotal,total,customers,view,repText,monthTitle,days,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
+  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
@@ -1418,24 +1456,31 @@ template:`
      </div>
      <div class="lc">
      <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" title="Выше" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" title="Ниже" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" title="Перенести в следующий отчёт" aria-label="Перенести в следующий отчёт" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" title="Удалить" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span></button>
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" title="Выше" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" title="Ниже" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" title="Перенести на следующий день" aria-label="Перенести на следующий день" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" title="Удалить" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span></button>
      </TransitionGroup></div>
      <div v-if="desk&&dayPlan" class="g dw">
-      <template v-if="dayPlan.pl>0">
-       <div class="phd"><b>План на день</b><span>{{ fmt(dayPlan.pct) }} %</span></div>
-       <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(dayPlan.bar)"><i :style="{width:dayPlan.bar+'%'}"></i></span>
-       <div class="pr"><span>Сделано за день</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
-       <div class="pr"><span>План на день<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
-       <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
-       <div v-else-if="dayPlan.done" class="pr"><span>Итог</span><b>план на день выполнен ✓<template v-if="dayPlan.extra>0"> <small>+{{ fmt(Math.round(dayPlan.extra)) }} м²</small></template></b></div>
-       <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
-       <button type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
-      </template>
-      <template v-else>
-       <div class="phd"><b>План на день</b></div>
-       <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
-       <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
-      </template>
+      <div class="dwr">
+       <div class="rg" :class="{ok:dayPlan.pl>0&&dayPlan.done,no:!(dayPlan.pl>0)}" role="progressbar" aria-label="Выполнение плана на день" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="dayPlan.pl>0?Math.round(dayPlan.bar):0">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="dwg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0b967"/><stop offset="1" stop-color="#d8923a"/></linearGradient></defs><circle class="rt" cx="60" cy="60" r="52" pathLength="100"/><circle v-if="dayPlan.pl>0&&dayPlan.bar>0" class="rp" cx="60" cy="60" r="52" pathLength="100" :stroke-dasharray="dayPlan.bar+' 100'"/></svg>
+        <span class="rc"><span class="rv" :class="{s:dayPlan.pl>0&&dayPlan.pct>=100}"><template v-if="dayPlan.pl>0"><b>{{ dayPlan.pct>=1000?'999+':fmt(dayPlan.pct) }}</b><small>%</small></template><b v-else>—</b></span></span>
+       </div>
+       <div class="ri">
+        <template v-if="dayPlan.pl>0">
+         <b class="rh">План на день</b>
+         <div class="pr"><span>Сделано</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
+         <div class="pr"><span>План<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
+         <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
+         <div v-else-if="dayPlan.done" class="pr"><span>Итог<small v-if="dayPlan.extra>0">+{{ fmt(Math.round(dayPlan.extra)) }} м² сверх плана</small></span><b>план на день выполнен ✓</b></div>
+         <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
+        </template>
+        <template v-else>
+         <b class="rh">План на день</b>
+         <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
+         <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
+        </template>
+       </div>
+      </div>
+      <button v-if="dayPlan.pl>0" type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
      </div>
      </div>
      <div class="sb">
@@ -1447,21 +1492,28 @@ template:`
     <template v-else>
      <div class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button><button class="btn big" @click="openImport">Импорт из буфера обмена</button></div>
     <div v-if="desk&&dayPlan" class="g dw">
-     <template v-if="dayPlan.pl>0">
-      <div class="phd"><b>План на день</b><span>{{ fmt(dayPlan.pct) }} %</span></div>
-      <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(dayPlan.bar)"><i :style="{width:dayPlan.bar+'%'}"></i></span>
-      <div class="pr"><span>Сделано за день</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
-      <div class="pr"><span>План на день<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
-      <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
-      <div v-else-if="dayPlan.done" class="pr"><span>Итог</span><b>план на день выполнен ✓<template v-if="dayPlan.extra>0"> <small>+{{ fmt(Math.round(dayPlan.extra)) }} м²</small></template></b></div>
-      <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
-      <button type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
-     </template>
-     <template v-else>
-      <div class="phd"><b>План на день</b></div>
-      <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
-      <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
-     </template>
+     <div class="dwr">
+      <div class="rg" :class="{ok:dayPlan.pl>0&&dayPlan.done,no:!(dayPlan.pl>0)}" role="progressbar" aria-label="Выполнение плана на день" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="dayPlan.pl>0?Math.round(dayPlan.bar):0">
+       <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="dwg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0b967"/><stop offset="1" stop-color="#d8923a"/></linearGradient></defs><circle class="rt" cx="60" cy="60" r="52" pathLength="100"/><circle v-if="dayPlan.pl>0&&dayPlan.bar>0" class="rp" cx="60" cy="60" r="52" pathLength="100" :stroke-dasharray="dayPlan.bar+' 100'"/></svg>
+       <span class="rc"><span class="rv" :class="{s:dayPlan.pl>0&&dayPlan.pct>=100}"><template v-if="dayPlan.pl>0"><b>{{ dayPlan.pct>=1000?'999+':fmt(dayPlan.pct) }}</b><small>%</small></template><b v-else>—</b></span></span>
+      </div>
+      <div class="ri">
+       <template v-if="dayPlan.pl>0">
+        <b class="rh">План на день</b>
+        <div class="pr"><span>Сделано</span><b>{{ fmt(Math.round(dayPlan.today)) }} м²</b></div>
+        <div class="pr"><span>План<small v-if="dayPlan.plan!==null"><template v-if="dayPlan.weekend">выходной · </template>({{ fmt(dayPlan.pl) }} − {{ fmt(Math.round(dayPlan.before)) }}) ÷ смен: {{ dayPlan.left }}</small><small v-else>в этом месяце смен больше нет</small></span><b>{{ dayPlan.plan===null?'—':fmt(dayPlan.plan)+' м²' }}</b></div>
+        <div v-if="dayPlan.need<=0" class="pr"><span>Итог</span><b>план месяца выполнен ✓</b></div>
+        <div v-else-if="dayPlan.done" class="pr"><span>Итог<small v-if="dayPlan.extra>0">+{{ fmt(Math.round(dayPlan.extra)) }} м² сверх плана</small></span><b>план на день выполнен ✓</b></div>
+        <div v-else class="pr"><span>{{ dayPlan.plan===null?'Осталось по месяцу':'Осталось на день' }}</span><b>{{ fmt(Math.round(dayPlan.rest)) }} м²</b></div>
+       </template>
+       <template v-else>
+        <b class="rh">План на день</b>
+        <p class="mut dwn">План на месяц не задан, поэтому план на день посчитать не из чего. Сделано за день: <b>{{ fmt(Math.round(dayPlan.today)) }} м²</b>.</p>
+        <button type="button" class="btn sm" @click="dayPlanEdit">Задать план на месяц</button>
+       </template>
+      </div>
+     </div>
+     <button v-if="dayPlan.pl>0" type="button" class="pr pe" @click="dayPlanEdit">План на месяц {{ fmt(dayPlan.pl) }} м² · изменить ›</button>
     </div>
     </template>
    </section>
@@ -1517,6 +1569,7 @@ template:`
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
      <div class="ca">
      <div class="g mtot"><b>Гофроагрегат за месяц</b><div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
+     <p v-if="mLive" class="hint lvn">В итог входит {{ mLive.date===nowDay?'сегодняшний день':dayTxt(mLive.date) }}: отчёт ещё не закончен, цифры меняются вместе с заказами.</p>
      <button v-if="planI" type="button" class="pl" @click="openPlan" aria-label="План на месяц. Нажмите, чтобы изменить">
       <span class="phd"><b>План на месяц</b><span>{{ fmt(planI.pct) }} %</span></span>
       <span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(planI.bar)"><i :style="{width:planI.bar+'%'}"></i></span>
@@ -1530,7 +1583,7 @@ template:`
      </button>
      <button v-else type="button" class="btn sm plb" @click="openPlan">Задать план на месяц</button>
     </div>
-    <div v-if="selDay" class="g mtot"><b>{{ dTitle }}</b><div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div></div>
+    <div v-if="selDay" class="g mtot"><b>{{ dTitle }}</b><div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div><p v-if="selDay.live" class="hint lvn">Отчёт за день ещё не закончен: цифры считаются по заказам и после «Закончить отчёт» сохранятся в месяце.</p></div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
     <div v-if="mdays.length" class="g mtot bk"><b>Брак за месяц</b>
      <div class="mg"><span><b>{{ bk.per===null?'—':fmt(bk.per) }}</b><small>кг на 1000 м²</small></span><span><b>{{ bk.pct===null?'—':fmt(bk.pct)+' %' }}</b><small>доля брака в штуках</small></span></div>
@@ -1556,7 +1609,7 @@ template:`
      <p v-if="hRes&&hRows.length" class="mut hcnt">Найдено дней: {{ hRows.length }}</p>
     </template>
     <TransitionGroup :name="hq?'nolist':'li'" tag="div">
-     <div v-for="x in hRows" :key="x.d.date" class="g dc" :class="{sel:selDay&&x.d.date===selDay.date}" @click="onDay(x.d.date)"><div class="m"><b>{{ dayTxt(x.d.date) }}<template v-if="hRes"> {{ x.d.date.slice(0,4) }}</template></b><small>{{ fmt(num(x.d.m2)) }} м² · {{ x.d.ord }} зак. · {{ x.d.sh }} см.</small><small>брак {{ fmt(num(x.d.brak)) }} кг</small><small v-for="o in x.hit.slice(0,3)" :key="o.id" class="hit">{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }} · {{ o.len }}×{{ o.wid }}</small><small v-if="x.hit.length>3" class="hit">и ещё {{ x.hit.length-3 }}</small></div><button class="btn sm" @click.stop="openDay(x.d.date)">Изменить</button></div>
+     <div v-for="x in hRows" :key="x.d.date" class="g dc" :class="{sel:selDay&&x.d.date===selDay.date}" @click="onDay(x.d.date)"><div class="m"><b>{{ dayTxt(x.d.date) }}<template v-if="hRes"> {{ x.d.date.slice(0,4) }}</template></b><small>{{ fmt(num(x.d.m2)) }} м² · {{ x.d.ord }} зак. · {{ x.d.sh }} см.</small><small>брак {{ fmt(num(x.d.brak)) }} кг</small><small v-for="o in x.hit.slice(0,3)" :key="o.id" class="hit">{{ o.customer }} {{ o.order }}/{{ o.tech||'-' }} · {{ o.len }}×{{ o.wid }}</small><small v-if="x.hit.length>3" class="hit">и ещё {{ x.hit.length-3 }}</small></div><span v-if="x.d.live" class="lvb">Идёт</span><button v-else class="btn sm" @click.stop="openDay(x.d.date)">Изменить</button></div>
     </TransitionGroup>
     <p v-if="hRes&&!hRows.length" class="mut">Ничего не найдено.</p>
     <p v-else-if="!hRes&&!mdays.length" class="mut">За этот месяц данных пока нет.</p>
