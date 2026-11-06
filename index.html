@@ -145,13 +145,16 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .gear:hover{color:var(--ink)}.gear:active{transform:rotate(60deg)}
 .plq{margin:10px 0 0}.plq .btn{margin-left:6px;vertical-align:middle}
 .pt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-.pt>div{--tc:#d8923a;--ta:20%;position:relative;min-width:0;padding:8px 10px 8px 14px;border-radius:12px;background:color-mix(in srgb,var(--tc) var(--ta),var(--fld));border:1px solid color-mix(in srgb,var(--tc) 38%,transparent)}
-:root[data-theme=dark] .pt>div{--ta:26%}
+.pt>div{--tc:#d8923a;--ta:10%;position:relative;min-width:0;padding:8px 10px 8px 14px;border-radius:12px;background:color-mix(in srgb,var(--tc) var(--ta),var(--fld));border:1px solid color-mix(in srgb,var(--tc) 26%,transparent)}
+:root[data-theme=dark] .pt>div{--ta:13%}
 .pt>div::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
 .pt>div.bd{--tc:#e6c53f;grid-column:1/-1}.pt>div.ok{--tc:#3fae8f}
 .mdh{display:flex;align-items:center;justify-content:space-between;gap:10px}.mdh>b{font-size:16px}
 .mdp{flex:none}.mdp button{flex:none;padding:5px clamp(10px,3.4vw,14px);font-size:13px}
-.mdc{margin:6px 0 10px;font-size:12px;color:var(--mut)}
+.mdp.pill{gap:0;border-radius:11px;background:color-mix(in srgb,var(--ink) 8%,transparent);border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.mdp.pill button{border-radius:8px}.mdp.pill button.on{color:#1a1206;font-weight:700}
+.mdp .drop{border-radius:8px;border:0;background:linear-gradient(180deg,#f0b967,#d8923a);box-shadow:none}
+.mdsw .mg{margin-top:12px}
 @media(max-width:340px){.mdh>b{font-size:15px}.mdp button{padding:5px 9px}}
 .pt>div.w{grid-column:1/-1}
 .pln{container-type:inline-size}
@@ -195,6 +198,15 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .li-enter-from,.li-leave-to{opacity:0;transform:translateY(10px)}
 .ov{position:fixed;inset:0;z-index:8;background:rgba(5,12,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s var(--eio)}
 .ov.open{opacity:1;pointer-events:auto}
+/* обновление страницы: кружок при протягивании вниз (телефон) и кнопка в левом верхнем углу (мышь) */
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 50px);z-index:7;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--mut);background:var(--bg);border:1px solid var(--edge);box-shadow:0 6px 18px var(--sh);opacity:0;transform:translate(-50%,-44px);pointer-events:none}
+.ptr.hit{color:#d8923a}.ptr svg,.rfb svg{width:20px;height:20px;transition:transform .3s var(--eo)}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+.ptr.spin{opacity:1!important}.ptr.spin svg,.rfb.spin svg{animation:ptrspin .8s linear infinite}
+.rfb{display:none;position:fixed;top:12px;left:16px;z-index:7;width:40px;height:40px;padding:0;border-radius:50%;place-items:center;color:var(--ink);cursor:pointer;font:inherit}
+.rfb:active{transform:scale(.94)}
+@media(hover:hover) and (pointer:fine){.rfb{display:grid}.rfb:hover svg{transform:rotate(90deg)}.rfb:focus-visible{outline:2px solid #d8923a;outline-offset:2px}}
+@media(min-width:1000px){.rfb{top:10px;left:max(39px,calc((100% - 1240px)/2))}}
 @media(hover:none){.ov{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(5,12,18,.42)}}   /* телефон: затемнение без размытия на весь экран - окна открываются без пропуска кадров */
 .sheet{position:fixed;left:50%;bottom:0;z-index:9;width:min(100%,560px);max-height:calc(var(--vh,100dvh) - env(safe-area-inset-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,var(--out,105%));transition:transform .3s var(--ei),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo);will-change:transform}
 .sheet.open{transform:translate(-50%,calc(var(--kb,0px)*-1 + var(--dy,0px)));transition:transform .3s var(--eo),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo)}
@@ -949,7 +961,6 @@ setup(){
  // «Гофроагрегат»: месяц и выбранный день одним блоком, переключатель как «Отчёт | Бланк» (кнопки и свайп по блоку)
  const MDT=[{v:'m',t:'Месяц'},{v:'d',t:'День'}],mdTab=ref('m'),mdn=ref('swf');
  watch(mdTab,n=>{mdn.value=n==='d'?'swf':'swb'},{flush:'sync'});
- const dCap=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Сегодня, '+dayTxt(d.date):dayTxt(d.date)):''});
  const dTitle=computed(()=>{const d=selDay.value;return d?(d.date===today()?'Гофроагрегат за сегодня':'Гофроагрегат за '+dayTxt(d.date)):''});
  // plan of the month (db.plans: {month:'YYYY-MM', m2, u, del}); the pace is counted per shift: shifts = all Mon-Fri days of the month (not calendar days)
  const plan=computed(()=>{const p=db.plans.find(x=>x.month===monthKey.value&&!x.del);return p&&num(p.m2)>0?num(p.m2):0});
@@ -1380,10 +1391,25 @@ setup(){
  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
  let tx=0,ty=0,t0=0,tok=false,tmd=false;
- const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big')};
- const tEnd=e=>{if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big');ptrStart(e)};
+ const tEnd=e=>{ptrEnd();if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep';else if(v==='mon'&&tmd)mdTab.value=dx<0?'d':'m'}};
   const olistEl=ref(null);
+ // обновление страницы: в самом начале страницы потянуть вниз (телефон) или нажать кнопку в углу (компьютер)
+ const ptrEl=ref(null),ptrBusy=ref(false);let ptr=null;const PTR_HIT=64,PTR_MAX=110;
+ const ptrPaint=(p,anim)=>{const e=ptrEl.value;if(!e)return;e.style.transition=anim?'transform .28s var(--eo),opacity .28s':'none';e.style.transform='translate(-50%,'+(p-44)+'px)';e.style.opacity=p>6?Math.min(1,p/PTR_HIT):0;e.classList.toggle('hit',p>=PTR_HIT);const v=e.firstChild;if(v&&v.style)v.style.transform='rotate('+Math.round(p*3.4)+'deg)'};
+ const ptrStart=e=>{ptr=null;const sc=scrollEl.value;if(ptrBusy.value||!tok||!sc||sc.scrollTop>0)return;if(e.target.closest&&e.target.closest('.pvz,.bcols,.sug,input,textarea,select'))return;const t=e.touches[0];ptr={x:t.clientX,y:t.clientY,on:false,p:0,hit:false}};
+ const ptrCancel=()=>{if(ptr&&ptr.on)ptrPaint(0,true);ptr=null};
+ const ptrMove=e=>{if(!ptr)return;const sc=scrollEl.value;if(!tok||!sc||sc.scrollTop>0||e.touches.length!==1){ptrCancel();return}
+  const t=e.touches[0],dx=t.clientX-ptr.x,dy=t.clientY-ptr.y;
+  if(!ptr.on){if(dy<-6||(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy))){ptr=null;return}if(dy<14)return;ptr.on=true}
+  ptr.p=Math.min(PTR_MAX,Math.max(0,(dy-14)*.55));const was=ptr.hit;ptr.hit=ptr.p>=PTR_HIT;if(ptr.hit&&!was){try{if(navigator.vibrate)navigator.vibrate(8)}catch(_){}}
+  ptrPaint(ptr.p,false)};
+ const ptrEnd=()=>{const q=ptr;ptr=null;if(!q||!q.on)return;if(q.hit)refreshApp(true);else ptrPaint(0,true)};
+ async function refreshApp(pull){if(ptrBusy.value)return;ptrBusy.value=true;if(pull)ptrPaint(PTR_HIT*.85,true);
+  try{save()}catch(_){}
+  try{const sw=navigator.serviceWorker;if(sw&&sw.getRegistration)await Promise.race([sw.getRegistration().then(r=>r&&r.update()),new Promise(r=>setTimeout(r,2500))])}catch(_){}   // заодно проверяем новую версию приложения
+  setTimeout(()=>location.reload(),pull?200:0)}
  // swipe of a card (long press, then pull to the left): a short pull marks the order for the next report, a long one deletes it
  const carryState=o=>o.op==='2'?'done':num(o.fact)>=num(o.plan)?'full':'ok';
  const carryLbl=o=>({done:'Перенесён',full:'Выполнен',ok:'Перенести'})[carryState(o)];
@@ -1490,14 +1516,16 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,landToday,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  toastEl,landToday,ptrEl,ptrBusy,ptrMove,ptrCancel,refreshApp,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
-  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,MDT,mdTab,mdn,dCap,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
+  theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,MDT,mdTab,mdn,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
   impText,impDt,impErr,impEl,imp:impParsed,impOrders,impNotes,impDateEff,impM2,dupInfo,openImport,importGo,applyImport,
   canShare,share,plan,planI,PL,openPlan,planOk,planDel,bk,bkTab,bkList,pdCols,pdAvg,pdY,kfmt,pdRead,chEl,chPick,chMove,bkKey,tStart,tEnd,onKey,onFocusIn,STEPS,TABS,fmt,num,dm,dayTxt,area}},
 template:`
-<div class="shell" @touchstart.passive="tStart" @touchend.passive="tEnd">
+<div class="shell" @touchstart.passive="tStart" @touchmove.passive="ptrMove" @touchend.passive="tEnd" @touchcancel.passive="ptrCancel">
+ <div class="ptr" ref="ptrEl" :class="{spin:ptrBusy}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div>
+ <button type="button" class="g rfb" :class="{spin:ptrBusy}" @click="refreshApp(false)" title="Обновить страницу (F5)" aria-label="Обновить страницу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></button>
  <header class="dnav"><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–4 — разделы</span></header>
  <div class="top" :class="{hide:topHidden||(view!=='rep'&&view!=='bl')}"><Pill :items="PAGES" v-model="pg"/></div>
  <main class="scroll" ref="scrollEl" @scroll.passive="onScroll"><div class="wrap">
@@ -1620,13 +1648,11 @@ template:`
      <div class="mdh"><b>Гофроагрегат</b><Pill class="mdp" :items="MDT" v-model="mdTab"/></div>
      <Transition :name="mdn" mode="out-in">
       <div v-if="mdTab==='m'" key="m">
-       <p class="mdc">{{ monthTitle }}</p>
        <div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
        <p v-if="mLive" class="hint lvn">В итог входит {{ mLive.date===nowDay?'сегодняшний день':dayTxt(mLive.date) }}: отчёт ещё не закончен, цифры меняются вместе с заказами.</p>
       </div>
       <div v-else key="d">
        <template v-if="selDay">
-        <p class="mdc">{{ dCap }}</p>
         <div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div>
         <p v-if="selDay.live" class="hint lvn">Отчёт за день ещё не закончен: цифры считаются по заказам и после «Закончить отчёт» сохранятся в месяце.</p>
        </template>
