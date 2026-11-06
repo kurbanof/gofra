@@ -74,8 +74,8 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 :focus-visible{outline:3px solid #4fb3a9;outline-offset:2px}
 .total{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;margin-bottom:14px}
 .tb{flex:0 0 100%;display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:-4px;padding-top:10px;border-top:1px solid var(--edge);font-size:13px;color:var(--mut)}.tb b{font-size:14px;font-weight:600;color:var(--ink);opacity:.8;white-space:nowrap}
-.tl{flex:1;min-width:0;font-size:15px;line-height:1.25}
-.tn{flex:none;white-space:nowrap;font-size:clamp(24px,8vw,34px);font-weight:700}
+.tl{flex:1 1 7.5em;min-width:0;font-size:15px;line-height:1.25}
+.tn{flex:none;margin-left:auto;white-space:nowrap;font-size:clamp(24px,8vw,34px);font-weight:700}
 .tn small{font-size:16px;font-weight:500;color:var(--mut);margin-left:5px}
 .oc{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .oc .oa{display:none}
@@ -92,7 +92,7 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .oc .a,.item .a,.or .a{font-weight:700;white-space:nowrap}
 .or{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:16px;background:var(--fld)}
 .or .m{flex:1;min-width:0}.or .m b{display:block;overflow-wrap:anywhere}.or small{display:block;color:var(--mut);font-size:13px}
-.m b.nm{display:flex;flex-wrap:wrap;column-gap:.3em;min-width:0;overflow:hidden;overflow-wrap:normal}.nm .cu{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nm .on{flex:none;white-space:nowrap}
+.m b.nm{display:flex;flex-wrap:wrap;column-gap:.3em;min-width:0;overflow:hidden;overflow-wrap:normal}.nm .cu{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nm .on{flex:0 1 auto;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tot2{margin:10px 0 4px;padding:12px 14px;border-radius:16px;background:var(--fld);font-size:15px}
 .prev{padding:16px;margin-top:18px}
 pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--fld);border-radius:16px;padding:14px;max-height:340px;overflow:auto}
@@ -124,7 +124,7 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .dw .rc b{font-size:calc(var(--rd)*.2);font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .dw .rv.s b{font-size:calc(var(--rd)*.155)}
 .dw .rc small{font-size:calc(var(--rd)*.1);font-weight:600;margin-left:2px;color:var(--mut)}
-.dw .rc .rl{margin:0;font-size:calc(var(--rd)*.085);font-weight:500;line-height:1}
+.dw .rc .rl{margin:0;font-size:max(10px,calc(var(--rd)*.085));font-weight:500;line-height:1}
 .dw .rg.no .rc b{color:var(--mut)}
 .dw .ri{flex:1;min-width:0;min-height:var(--rd);display:flex;flex-direction:column;justify-content:space-between}
 .dw .ri.no{justify-content:center}
@@ -195,6 +195,7 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .li-enter-from,.li-leave-to{opacity:0;transform:translateY(10px)}
 .ov{position:fixed;inset:0;z-index:8;background:rgba(5,12,18,.35);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s var(--eio)}
 .ov.open{opacity:1;pointer-events:auto}
+@media(hover:none){.ov{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(5,12,18,.42)}}   /* телефон: затемнение без размытия на весь экран - окна открываются без пропуска кадров */
 .sheet{position:fixed;left:50%;bottom:0;z-index:9;width:min(100%,560px);max-height:calc(var(--vh,100dvh) - env(safe-area-inset-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,var(--out,105%));transition:transform .3s var(--ei),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo);will-change:transform}
 .sheet.open{transform:translate(-50%,calc(var(--kb,0px)*-1 + var(--dy,0px)));transition:transform .3s var(--eo),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo)}
 .sheet.drag{transition:none}
@@ -409,6 +410,9 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 <div id="app"></div>
 <script src="vue.global.prod.js"></script>
 <script>window.Vue||document.write('<script src="https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js"><\/script>')</script>
+<script>window.Vue||document.write('<script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"><\/script>')</script>
+<script>window.Vue||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.13/vue.global.prod.min.js"><\/script>')</script>
+<script>window.Vue||(document.getElementById('app').innerHTML='<div style="padding:40px 24px;text-align:center;font:16px/1.5 system-ui,sans-serif;color:#13222d">Не удалось загрузить библиотеку Vue.<br>Проверьте интернет и обновите страницу.</div>')</script>
 <script>
 const {createApp,ref,reactive,computed,watch,onMounted,nextTick}=Vue;
 const K='gofro-reports-v1',KS='gofro-sync-v1';
@@ -930,7 +934,7 @@ setup(){
    out.push({date:d,m2:String(r2(rs.reduce((t,x)=>t+repTotal(x),0))),ord:String(rs.reduce((t,x)=>t+ordN(x),0)),sh:'1',brak:bk>0?String(bk):'',ba:true,live:true})});return out});
  const days=computed(()=>realDays.value.concat(liveDays.value));
  const mLive=computed(()=>mdays.value.find(x=>x.live)||null);
- const monthKey=computed(()=>mMonth.value||(days.value.map(x=>x.date).sort().pop()||today()).slice(0,7));
+ const monthKey=computed(()=>mMonth.value||(days.value.reduce((m,x)=>x.date>m?x.date:m,'')||today()).slice(0,7));
  const monthTitle=computed(()=>MI[+monthKey.value.slice(5)-1]+' '+monthKey.value.slice(0,4));
  const mdays=computed(()=>days.value.filter(x=>x.date.indexOf(monthKey.value)===0).sort((a,b)=>a.date.localeCompare(b.date)));
  const mdaysDesc=computed(()=>[...mdays.value].reverse());
@@ -1196,17 +1200,20 @@ setup(){
  function nextSix(){
   const bad=shownSteps.value.flatMap(s=>s.f).find(f=>!f.opt&&!S(W.o[f.k]).trim());
   if(bad){W.err=bad.k;nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
+  const nb6=numBadKey(shownSteps.value.flatMap(s=>s.f.map(f=>f.k)));if(nb6){numFail(nb6);return}
   const hasQ=!!S(W.o.bq).trim(),hasW=!!S(W.o.bw).trim();
   if((W.mode==='edit'||W.step===STEPS.length-1)&&hasQ&&!hasW){W.err='bw';nextTick(()=>{const e=sheetEl.value.querySelector('input.err');e&&e.focus()});return}
   if(W.mode==='new'&&W.step<STEPS.length-1){W.step++;if(W.step===2)fillSize();return}
   commitOrder(false)}
  function nextFlat(){
   if(three.value&&W.step<2){const m=keysOf([GROUPS[W.step]]).find(k=>REQ.has(k)&&!S(W.o[k]).trim());if(m){badField(m);return}
+   const nb3=numBadKey(keysOf([GROUPS[W.step]]));if(nb3){numFail(nb3);return}
    W.step++;if(W.step===1){fillSize();fillBwSize()}focusG();return}
   saveFlat(false)}
  function saveFlat(keep){
   const m=keysOf(GROUPS).find(k=>REQ.has(k)&&!S(W.o[k]).trim());
   if(m){if(three.value)W.step=groupOf(m);badField(m);return}
+  const nb=numBadKey(NUMK);if(nb){if(three.value)W.step=groupOf(nb);numFail(nb);return}
   if(S(W.o.bq).trim()&&!S(W.o.bw).trim()){if(three.value)W.step=groupOf('bw');badField('bw');return}
   commitOrder(keep)}
  const saveNow=()=>saveFlat(false),saveMore=()=>saveFlat(true);
@@ -1230,6 +1237,7 @@ setup(){
   Object.assign(W,{mode:'fact',layout:'one',more:true,step:0,q});loadFact(0);show('order')}
  function factSave(){const r=cur.value,ex=r&&r.orders.find(x=>x.id===W.id);if(!ex)return true;
   const g=k=>S(W.o[k]).replace(/\s+/g,'');const f=g('fact'),bq=g('bq');let bw=g('bw');
+  const nbf=numBadKey(['fact','bq','bw']);if(nbf){numFail(nbf);return false}
   if(bq&&!bw){badField('bw');return false}
   if(!bq&&W.auto.bw)bw='';
   if(S(ex.fact)!==f)ex.op='';
@@ -1277,6 +1285,9 @@ setup(){
  function fillBw(){if(W.bwTry||!S(W.o.bq).trim()||S(W.o.bw).trim())return;W.bwTry=true;
   const m=memBw(mem.value,W.o);if(m){W.o.bw=m.bw;W.auto.bw={date:m.date,src:m.src,lo:m.lo,hi:m.hi}}}
  const bwNote=computed(()=>{const a=W.auto.bw;if(!a)return'';const rg=a.hi>a.lo?' '+fmt(a.lo)+'–'+fmt(a.hi):'';return a.src==='tech'?(rg?'вес был'+rg:'вес как раньше'):'вес по размеру'+rg});
+ const NUMK=['len','wid','plan','fact','bq','bw'],NUMRX=/^\d+([.,]\d+)?$/;
+ const numBadKey=keys=>keys.find(k=>NUMK.includes(k)&&S(W.o[k]).replace(/\s+/g,'')!==''&&!NUMRX.test(S(W.o[k]).replace(/\s+/g,'')));
+ const numFail=k=>{badField(k);say('«'+FL[k]+'»: только число (цифры, точка или запятая)')};
  function onType(k){W.err='';
   if(k==='len'||k==='wid')W.auto.size=null;else if(k==='bw')W.auto.bw=null;else if(k==='rm')W.auto.rm=null;else if(k==='bq')fillBw()}
  const orderText=o=>{const g=k=>S(o[k]).trim(),bw=g('bw');return g('customer')+' '+g('order')+'/'+(g('tech')||'-')+'\n        '+g('len')+'×'+g('wid')+'. '+g('plan')+'шт'+(bw?'\nВес заготовки: '+bw+' г':'')};
@@ -1295,12 +1306,14 @@ setup(){
   applyPaste(p)}
  function onPaste(e){if(W.mode!=='new'||W.step!==0)return;const p=parseOne(e.clipboardData&&e.clipboardData.getData('text'));if(p){e.preventDefault();applyPaste(p)}}
  const pick=c=>{W.o.customer=c;if(W.mode!=='new')return;if(W.layout==='six')next();else focusK('order')};
- const delOrder=()=>{const r=cur.value;r.orders=r.orders.filter(x=>x.id!==W.id);r.u=now();close()};
+ const delOrder=()=>{const r=cur.value,i=r?r.orders.findIndex(x=>x.id===W.id):-1;if(i<0){close();return}const o=r.orders[i];r.orders.splice(i,1);r.u=now();close();
+  showToast({msg:'Заказ «'+o.customer+' '+o.order+'» удалён',act:'Отменить'},5000);undo={rid:r.id,o,i}};   // как и при удалении свайпом: можно отменить
 
  function openDay(date){const ex=date&&realDays.value.find(x=>x.date===date);
   Object.assign(D,{orig:ex?ex.date:null,err:''},ex?{date:ex.date,m2:ex.m2,ord:ex.ord,sh:ex.sh,brak:ex.brak}:{date:today(),m2:'',ord:'',sh:'',brak:''});show('day')}
  function dayOk(){const g=k=>String(D[k]).trim().replace(/\s+/g,''),o={date:g('date'),m2:g('m2'),ord:g('ord'),sh:g('sh'),brak:g('brak')||'0',u:now()};
   const bad=['date','m2','ord','sh'].find(k=>!o[k]);if(bad){D.err=bad;return}
+  const nbd=['m2','ord','sh','brak'].find(k=>!NUMRX.test(o[k]));if(nbd){D.err=nbd;say('Только число: цифры, точка или запятая');return}
   const pv=D.orig&&db.days.find(x=>x.date===D.orig&&!x.del);if(pv&&pv.ba&&pv.date===o.date&&(S(pv.brak)||'0')===o.brak)o.ba=true;
   if(D.orig!==o.date&&realDays.value.some(x=>x.date===o.date)){say('За эту дату уже есть запись. Откройте её кнопкой «Изменить»');return}
   if(D.orig&&D.orig!==o.date){const old=db.days.find(x=>x.date===D.orig);if(old){old.del=true;old.u=now()}}
@@ -1395,7 +1408,7 @@ setup(){
   undo={k:'mv',rid:r.id,o,i,prev,part,tid:t.id,nid:n.id,made}}
  function toastAct(){const u=undo;undo=null;if(!u)return;const r=db.reports.find(x=>x.id===u.rid&&!x.del);
   if(u.k==='mv'){const t=db.reports.find(x=>x.id===u.tid);   // отмена переноса: заказ уходит из следующего дня и возвращается
-   if(t){const j=t.orders.findIndex(x=>x.id===u.nid);if(j>-1){t.orders.splice(j,1);t.u=now()}if(u.made&&!t.orders.length){t.del=true;t.u=now()}}
+   if(t){const j=t.orders.findIndex(x=>x.id===u.nid);if(j>-1){t.orders.splice(j,1);t.u=now()}if(u.made&&!t.orders.length){t.del=true;t.u=now();if(db.cur===t.id){db.cur=null;pend.value=t.date}}}
    if(r){if(u.part){if(u.o.op==='2')u.o.op=u.prev}else if(!r.orders.some(x=>x.id===u.o.id))r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
    hideToast();return}
   if(r&&!r.orders.some(x=>x.id===u.o.id)){r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
@@ -1447,14 +1460,17 @@ setup(){
  watch(isRoot,schedule);
 
  let st,dt;
- const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}};
+ let saveBad=false;
+ const save=()=>{try{localStorage.setItem(K,JSON.stringify(db));saveBad=false}catch(e){if(!saveBad){saveBad=true;say('Не удалось сохранить: память браузера заполнена. Сделайте экспорт в «Ещё»')}}};
  watch(db,()=>{clearTimeout(st);st=setTimeout(()=>{if(window.requestIdleCallback)requestIdleCallback(save,{timeout:2000});else save()},500)},{deep:true});
  watch(cfg,()=>{try{localStorage.setItem(KS,JSON.stringify(cfg))}catch(e){}},{deep:true});
  watch(()=>[db.reports,db.days,db.customers,db.plans],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
  // при запуске главная страница - сегодняшняя дата: отчёт за сегодня, если он уже есть, иначе пустой день с кнопкой «Начать отчёт»
- {const t=today();nowDay.value=t;if(!cur.value||cur.value.date!==t){const tr=todayRep();dropEmpty();db.cur=tr?tr.id:null;pend.value=null}}
+ function landToday(){const t=today();nowDay.value=t;if(!cur.value||cur.value.date!==t){const tr=todayRep();dropEmpty();db.cur=tr?tr.id:null;pend.value=null}}
+ landToday();
 
  onMounted(()=>{
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   const vv=window.visualViewport;let baseH=vv?vv.height:innerHeight,prev=0,bt;
   const upd=()=>{const h=vv?vv.height:innerHeight,r=document.documentElement,a=document.activeElement;
    if(!(a&&a.tagName==='INPUT')||h>baseH)baseH=h;const real=Math.max(0,baseH-h);
@@ -1464,8 +1480,9 @@ setup(){
    prev=real>90?real:0};
   if(vv){vv.addEventListener('resize',upd);vv.addEventListener('scroll',upd)}addEventListener('resize',upd);upd();
   window.addEventListener('popstate',()=>{if(ignorePop){ignorePop=false;return}trapped=false;const a=document.activeElement;if(a&&a.tagName==='INPUT')a.blur();else backStep();schedule()});
-  const go=()=>{if(document.visibilityState==='visible'){rollDay();syncNow(false)}};
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();go()});
+  let hid=0;   // phone was left for a long time (night): the next morning the app opens on today, as after a cold start
+  const go=()=>{if(document.visibilityState==='visible'){if(hid&&Date.now()-hid>14400000&&!open.value&&!calcOpen.value&&!(toast.show&&toast.big))landToday();hid=0;rollDay();syncNow(false)}};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){hid=Date.now();save()}go()});
   addEventListener('keydown',hotkey);
   addEventListener('pagehide',save);
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
@@ -1473,7 +1490,7 @@ setup(){
 
  return{db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  toastEl,landToday,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,MDT,mdTab,mdn,dCap,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
