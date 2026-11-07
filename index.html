@@ -203,13 +203,9 @@ pre{margin:0 0 12px;white-space:pre-wrap;word-break:break-word;font:15px/1.5 ui-
 .ov.open{opacity:1;pointer-events:auto}
 /* обновление страницы: кружок при протягивании вниз (телефон) и кнопка в левом верхнем углу (мышь) */
 .ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 50px);z-index:7;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--mut);background:var(--bg);border:1px solid var(--edge);box-shadow:0 6px 18px var(--sh);opacity:0;transform:translate(-50%,-44px);pointer-events:none}
-.ptr.hit{color:#d8923a}.ptr svg,.rfb svg{width:20px;height:20px;transition:transform .3s var(--eo)}
+.ptr.hit{color:#d8923a}.ptr svg{width:20px;height:20px;transition:transform .3s var(--eo)}
 @keyframes ptrspin{to{transform:rotate(360deg)}}
-.ptr.spin{opacity:1!important}.ptr.spin svg,.rfb.spin svg{animation:ptrspin .8s linear infinite}
-.rfb{display:none;position:fixed;top:12px;left:16px;z-index:7;width:40px;height:40px;padding:0;border-radius:50%;place-items:center;color:var(--ink);cursor:pointer;font:inherit}
-.rfb:active{transform:scale(.94)}
-@media(hover:hover) and (pointer:fine){.rfb{display:grid}.rfb:hover svg{transform:rotate(90deg)}.rfb:focus-visible{outline:2px solid #d8923a;outline-offset:2px}}
-@media(min-width:1000px){.rfb{top:10px;left:max(39px,calc((100% - 1240px)/2))}}
+.ptr.spin{opacity:1!important}.ptr.spin svg{animation:ptrspin .8s linear infinite}
 @media(hover:none){.ov{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(5,12,18,.42)}}   /* телефон: затемнение без размытия на весь экран - окна открываются без пропуска кадров */
 .sheet{position:fixed;left:50%;bottom:0;z-index:9;width:min(100%,560px);max-height:calc(var(--vh,100dvh) - env(safe-area-inset-top,0px) - 12px);overflow:auto;overscroll-behavior:contain;border-radius:28px 28px 0 0;padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translate(-50%,var(--out,105%));transition:transform .3s var(--ei),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo);will-change:transform}
 .sheet.open{transform:translate(-50%,calc(var(--kb,0px)*-1 + var(--dy,0px)));transition:transform .3s var(--eo),max-height .3s var(--eo),padding .3s var(--eo),border-radius .3s var(--eo)}
@@ -365,8 +361,7 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .lbr label{min-width:0;margin-bottom:10px;display:flex;flex-direction:column;justify-content:flex-end}
 .lbr input:not([type=checkbox]){font-size:17px;font-weight:500;padding:10px 12px;border-radius:14px}
 .lbr input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
-.lbr .chk{align-self:end;margin:0 0 10px;min-height:46px;color:var(--ink);font-size:14px;line-height:1.2}
-.lbs{margin:4px 0 2px;font-size:13px;font-weight:600;color:var(--mut);letter-spacing:.02em}
+.lbr label.chk{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;align-self:end;margin:0 0 10px;min-height:46px;color:var(--ink);font-size:14px;line-height:1.2}
 @media print{
  @page{size:A4 landscape;margin:0}
  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
@@ -806,7 +801,7 @@ const lbDate=d=>/^\d{4}-\d\d-\d\d$/.test(d)?d.slice(8)+'.'+d.slice(5,7)+'.'+d.sl
 const lbColor=rm=>/бел/i.test(S(rm))?'Белый':'Бурый';   // «БЕЛ» в любой строке сырья - белый, иначе бурый
 const lbProf=pf=>({B:'B',E:'E',C:'BE'})[PF(pf)]||'';
 // значения для окна печати: всё, что известно о заказе; количество, кип, марка, дата отгрузки и логистика - пустые, их вводят руками
-const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech),part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:true,made:S(date),ship:'',dest:S(o.customer),h:'',lay:'',str:'',cor:'',tape:'',err:''});
+const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech),part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:true,made:S(date),ship:'',dest:'',h:'',lay:'',str:'',cor:'',tape:'',err:''});
 // листы: «1-6» и 6 копий - шесть листов с КИП 1/6 … 6/6 (без «из N» - просто 1 … 6); любой другой КИП печатается как есть на каждом листе
 function lbPlan(L){const cs=S(L.copies).trim(),c=cs===''?1:Number(cs.replace(',','.'));
  if(!Number.isInteger(c)||c<1||c>LB_MAX)return{n:0,kips:[],err:'Копий: целое число от 1 до '+LB_MAX};
@@ -1518,7 +1513,6 @@ setup(){
  const LB=reactive(lbFrom({},''));
  const LBROWS=[[{k:'order',l:'№ заказа'},{k:'tech',l:'№ техкарты'}],[{k:'part',l:'Часть'},{k:'name',l:'Наименование изделия'}],[{k:'size',l:'Размер Д×Ш'}],[{k:'mark',l:'Марка'},{k:'prof',l:'Профиль'},{k:'color',l:'Цвет'}],
   [{k:'qty',l:'Количество',im:'numeric'},{k:'kip',l:'№ кипы',ph:'1-6'}],[{k:'made',l:'Дата изготовления',d:1},{k:'ship',l:'Дата отгрузки',d:1}]];
- const LBROWS2=[[{k:'dest',l:'Назначение'}],[{k:'h',l:'Высота паллеты'},{k:'lay',l:'Раскладка на поддоне'}],[{k:'str',l:'Стрейч'},{k:'cor',l:'Уголки'}],[{k:'tape',l:'Лента'}]];
  const lbPl=computed(()=>lbPlan(LB));
  const lbZ=computed(()=>{const w=vw.value,sw=w>=1000?Math.min(640,w*.94)-52:Math.min(560,w)-36;return Math.max(.2,Math.min(1,(sw-2)/718))});
  const lbPrev=computed(()=>lblBake(lblBox(LB,lbPl.value.kips[0]||'')));
@@ -1610,7 +1604,7 @@ setup(){
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
- return{LB,LBROWS,LBROWS2,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
+ return{LB,LBROWS,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
   toastEl,landToday,ptrEl,ptrBusy,ptrMove,ptrCancel,refreshApp,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
@@ -1621,7 +1615,6 @@ setup(){
 template:`
 <div class="shell" @touchstart.passive="tStart" @touchmove.passive="ptrMove" @touchend.passive="tEnd" @touchcancel.passive="ptrCancel">
  <div class="ptr" ref="ptrEl" :class="{spin:ptrBusy}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div>
- <button type="button" class="g rfb" :class="{spin:ptrBusy}" @click="refreshApp(false)" title="Обновить страницу (F5)" aria-label="Обновить страницу"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></button>
  <header class="dnav"><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–4 — разделы</span></header>
  <div class="top" :class="{hide:topHidden||(view!=='rep'&&view!=='bl')}"><Pill :items="PAGES" v-model="pg"/></div>
  <main class="scroll" ref="scrollEl" @scroll.passive="onScroll"><div class="wrap">
@@ -1908,12 +1901,8 @@ template:`
     <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}<input v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" :placeholder="f.ph" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
    </div>
    <div class="lbr c2"><label>Копий<input v-model="LB.copies" :class="{err:LB.err==='copies'}" inputmode="numeric" autocomplete="off" name="z9_0" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb('copies')"></label><label class="chk"><input type="checkbox" v-model="LB.tot"> КИП вида «1/6», а не «1»</label></div>
-   <div class="lbs">Логистика / упаковка</div>
-   <div v-for="(row,ri) in LBROWS2" :key="'b'+ri" class="lbr" :class="'c'+row.length">
-    <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}<input v-model="LB[f.k]" type="text" autocomplete="off" :name="'z'+(ri+10)+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
-   </div>
    <div class="row"><button class="btn pri" :disabled="!!lbPl.err" @click="lblPrint">Печать<template v-if="lbPl.n>1"> · {{ lbPl.n }} л.</template></button></div>
-   <p class="hint" style="margin-top:12px">Лист А4 печатается всегда вертикально, этикетка стоит в нижней части листа, как в образце. Любое поле можно поменять.</p>
+   <p class="hint" style="margin-top:12px">Лист А4 печатается всегда вертикально, этикетка стоит в нижней части листа, как в образце. Блок «Логистика / упаковка» печатается пустым - его заполняют от руки.</p>
   </template>
   <template v-else-if="sheet==='nofact'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Завершение отчёта</b><span></span></div>
