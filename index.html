@@ -478,28 +478,28 @@ const kShow=x=>String(x).split(/([+−×÷])/).map((t,i,a)=>/^[+−×÷]$/.test(
 const kFmt=v=>v.toLocaleString('ru-RU',{maximumFractionDigits:6}).replace(/[-\u2212]/,'\u2212');
 const STEPS=[
 {t:'Имя заказчика',f:[{k:'customer',l:'Заказчик',m:'text'}]},
-{t:'Номера',f:[{k:'order',l:'Номер заказа',m:'numeric'},{k:'tech',l:'Номер техкарты',m:'text',opt:1,caps:1,ph:'цифры и буквы, можно пусто'}]},
+{t:'Номера',f:[{k:'order',l:'Номер заказа',m:'numeric'},{k:'tech',l:'Номер техкарты',m:'text',opt:1,caps:1}]},
 {t:'Размеры заготовки, мм',f:[{k:'len',l:'Длина',m:'decimal'},{k:'wid',l:'Ширина',m:'decimal'}]},
-{t:'Сырьё',f:[{k:'rm',l:'Сырьё: каждый слой с новой строки',m:'text',opt:1,area:1,ph:'К1 125 АКЗ 1050'}]},
+{t:'Сырьё',f:[{k:'rm',l:'Сырьё',m:'text',opt:1,area:1}]},
 {t:'Количество по заказу',f:[{k:'plan',l:'Нужно по заказу, шт',m:'numeric'}]},
 {t:'Количество по факту',f:[{k:'fact',l:'Произведено, шт',m:'numeric'}]},
-{t:'Расчёт брака',f:[{k:'bq',l:'Брак, заготовок (шт)',m:'numeric',opt:1,ph:'необязательно'},{k:'bw',l:'Вес одной заготовки, г',m:'decimal',opt:1,ph:'необязательно'}]}];
+{t:'Расчёт брака',f:[{k:'bq',l:'Брак, заготовок (шт)',m:'numeric',opt:1},{k:'bw',l:'Вес одной заготовки, г',m:'decimal',opt:1}]}];
 const PAGES=[{v:'rep',t:'Отчёт'},{v:'bl',t:'Бланк'}],TABS=[{v:'rep',t:'Отчёт'},{v:'mon',t:'Месяц'},{v:'his',t:'Ещё'}];   // сверху: страницы раздела «Отчёт» (свайп), снизу: разделы
-const THEMES=[{v:'auto',t:'Как в системе',d:'Следует настройке системы'},{v:'light',t:'Светлая',d:''},{v:'dark',t:'Тёмная',d:''}];
+const THEMES=[{v:'auto',t:'Как в системе'},{v:'light',t:'Светлая'},{v:'dark',t:'Тёмная'}];
 const IDX={rep:0,bl:1,mon:2,his:3};
 const DNAV=[{v:'rep',t:'Отчёт'},{v:'bl',t:'Бланк'},{v:'mon',t:'Месяц'},{v:'his',t:'Ещё'}];   // версия для ПК: все четыре раздела в одной верхней панели
 // order form: layouts 'one' (one screen, fact and defect folded), 'three' (3 steps), 'six' (the old 6-step wizard); chosen in «Ещё → Настройки»
 const FI={customer:1,order:2,tech:3,len:4,wid:5,plan:6,fact:7,bq:8,bw:9,rm:10};   // neutral field names: nothing that Chrome or the keyboard could take for a login or an address form
-const FL={customer:'Заказчик',order:'Номер заказа',tech:'Техкарта',len:'Длина, мм',wid:'Ширина, мм',plan:'Нужно по заказу, шт',fact:'Произведено, шт',bq:'Брак, шт',bw:'Вес заготовки, г',rm:'Сырьё: каждый слой с новой строки'};
+const FL={customer:'Заказчик',order:'Номер заказа',tech:'Техкарта',len:'Длина, мм',wid:'Ширина, мм',plan:'Нужно по заказу, шт',fact:'Произведено, шт',bq:'Брак, шт',bw:'Вес заготовки, г',rm:'Сырьё'};
 const GROUPS=[
  {id:'a',t:'Заказ',rows:[{f:['customer'],x:'cust'},{f:['order','tech'],x:'tech'}]},
  {id:'b',t:'Размер, план и сырьё',rows:[{f:['len','wid'],x:'size'},{f:['plan','bw'],x:'bw'},{f:['rm'],x:'rm'}]},
  {id:'c',t:'Факт и брак',rows:[{f:['fact'],x:'area'},{f:['bq'],x:'brk'},{f:['bw'],x:'fbw',fo:1}]}];   // fo: only in fact entry, when the order has no weight yet
 const REQ=new Set(['customer','order','len','wid','plan']);
 const INPUTS=[
- {v:'one',t:'Один экран',d:'Все поля сразу. Факт и брак можно добавить позже'},
- {v:'three',t:'Три шага',d:'Заказ, размер и план, затем факт и брак (можно пропустить)'},
- {v:'six',t:'Шесть шагов',d:'Как раньше: по одному полю на шаг, факт обязателен'}];
+ {v:'one',t:'Один экран'},
+ {v:'three',t:'Три шага'},
+ {v:'six',t:'Шесть шагов'}];
 const PK='gofro-ui-v1';
 const loadPrefs=()=>{let d=null;try{d=JSON.parse(localStorage.getItem(PK))}catch(e){}return{input:d&&['one','three','six'].includes(d.input)?d.input:'one'}};
 const prefs=reactive(loadPrefs());
@@ -1430,7 +1430,7 @@ setup(){
 
  const syncKey=computed(()=>cfg.url?'gofro:'+btoa(JSON.stringify({u:cfg.url,c:cfg.code})):'');
  const syncTitle=computed(()=>!cfg.url?'Данные только на этом устройстве':sync.busy?'Синхронизация…':sync.status==='err'?'Ошибка синхронизации':'Данные синхронизируются');
- const syncSub=computed(()=>!cfg.url?'Подключите облачную базу, чтобы отчёты были на всех устройствах':sync.status==='err'?sync.msg:cfg.last?'Последняя синхронизация: '+new Date(cfg.last).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'Ожидание');
+ const syncSub=computed(()=>!cfg.url?'Не подключено':sync.status==='err'?sync.msg:cfg.last?'Последняя синхронизация: '+new Date(cfg.last).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'Ожидание');
  function syncConnect(){const s=syncInp.value.trim();let u='',c='';
   try{if(s.indexOf('gofro:')===0){const k=JSON.parse(atob(s.slice(6)));u=k.u;c=k.c}else if(/^https?:\/\//.test(s)){u=s;c=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(36).padStart(2,'0')).join('')}}catch(e){}
   if(!u||!c){say('Введите адрес базы (https://…) или ключ подключения');return}
@@ -1512,7 +1512,7 @@ setup(){
  // ---- печать маркировки: окно с полями (всё можно поменять), предпросмотр, печать на А4 в портрете; «1-6» и 6 копий = шесть листов с КИП 1/6 … 6/6
  const LB=reactive(lbFrom({},''));
  const LBROWS=[[{k:'order',l:'№ заказа'},{k:'tech',l:'№ техкарты'}],[{k:'part',l:'Часть'},{k:'name',l:'Наименование изделия'}],[{k:'size',l:'Размер Д×Ш'}],[{k:'mark',l:'Марка'},{k:'prof',l:'Профиль'},{k:'color',l:'Цвет'}],
-  [{k:'qty',l:'Количество',im:'numeric'},{k:'kip',l:'№ кипы',ph:'1-6'}],[{k:'made',l:'Дата изготовления',d:1},{k:'ship',l:'Дата отгрузки',d:1}]];
+  [{k:'qty',l:'Количество',im:'numeric'},{k:'kip',l:'№ кипы'}],[{k:'made',l:'Дата изготовления',d:1},{k:'ship',l:'Дата отгрузки',d:1}]];
  const lbPl=computed(()=>lbPlan(LB));
  const lbZ=computed(()=>{const w=vw.value,sw=w>=1000?Math.min(640,w*.94)-52:Math.min(560,w)-36;return Math.max(.2,Math.min(1,(sw-2)/718))});
  const lbPrev=computed(()=>lblBake(lblBox(LB,lbPl.value.kips[0]||'')));
@@ -1629,7 +1629,7 @@ template:`
      </div>
      <div class="lc">
      <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" title="Выше" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" title="Ниже" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" title="Печать маркировки" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" role="button" tabindex="0" title="Перенести на следующий день" aria-label="Перенести на следующий день" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" title="Удалить" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span></button>
+      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Перенести на следующий день" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span></button>
      </TransitionGroup></div>
      <div v-if="dayPlan" class="g dw">
       <div class="rg" :class="{ok:dayPlan.pl>0&&dayPlan.done,no:!(dayPlan.pl>0)}" role="progressbar" aria-label="Выполнение плана на день" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="dayPlan.pl>0?Math.round(dayPlan.bar):0">
@@ -1688,15 +1688,11 @@ template:`
      <div class="addrow bkb"><button type="button" class="btn pri" :disabled="!!pdfBusy" @click="blankDo('print')">Печать</button><button type="button" class="btn" :disabled="!!pdfBusy" @click="blankDo('pdf')">{{ pdfBusy==='pdf'?'Готовлю…':'PDF' }}</button><button type="button" class="btn" :disabled="!!pdfBusy" @click="blankDo('mail')">{{ pdfBusy==='mail'?'Готовлю…':'На почту' }}</button></div>
      <div class="seg"><button type="button" class="btn sm" :class="{on:blank.zoom==='fit'}" @click="setZoom('fit')">Вся страница</button><button type="button" class="btn sm" :class="{on:blank.zoom==='big'}" @click="setZoom('big')">Крупно</button></div>
      <div class="pvz" ref="pvEl" :class="{big:blank.zoom==='big'||pz>0}" @touchstart="pvStart" @touchmove="pvMove" @touchend="pvEnd" @touchcancel="pvEnd"><div v-for="(h,i) in blankPagesH" :key="i" class="pgb" :style="{zoom:bZoom}" v-html="h"></div></div>
-     <p class="hint pvh">Щипок — масштаб, двойное касание — крупно / вся страница, перетаскивание — сдвиг.</p>
      <div class="g bkc">
       <div class="bkr"><label>Линия №<input v-model="blank.line" inputmode="numeric" autocomplete="off" name="x31" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"></label><label>Номер бланка<input v-model="blank.no" inputmode="numeric" autocomplete="off" name="x32" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"></label></div>
       <label>Отходы смены, кг<input v-model="wasteIn" inputmode="decimal" autocomplete="off" placeholder="0" name="x33" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"></label>
-      <p class="hint">Вводится в конце смены. Складывается с браком заготовок: получаются «Отходы заготовок» и «Брак за смену».</p>
       <label>Рулонные отходы, кг<input v-model="rwIn" inputmode="decimal" autocomplete="off" placeholder="0" name="x35" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"></label>
-      <p class="hint">Отдельный показатель: ни к браку, ни к отходам заготовок не прибавляется.</p>
       <label>Почта для отправки<input v-model="blank.email" type="email" inputmode="email" autocomplete="off" autocapitalize="off" placeholder="адрес@почта.ру" name="x34" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"></label>
-      <p class="hint">«На почту» открывает окно «Поделиться» с PDF: выберите почтовое приложение. Адрес подставится, если файл придётся прикреплять к письму вручную.</p>
      </div>
     </template>
     <div v-else class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button></div>
@@ -1712,10 +1708,10 @@ template:`
      <button type="button" class="sech" :class="{on:fold.sett}" :aria-expanded="fold.sett" @click="toggleFold('sett')"><span>Настройки</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
      <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.sett" class="fold">
      <div class="g opts" role="radiogroup" aria-label="Тема"><div class="oh">Тема</div>
-      <button v-for="m in THEMES" :key="m.v" type="button" class="opt" :class="{on:themePref===m.v}" role="radio" :aria-checked="themePref===m.v" @click="setTheme(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b><small v-if="m.d">{{ m.d }}</small></span></button>
+      <button v-for="m in THEMES" :key="m.v" type="button" class="opt" :class="{on:themePref===m.v}" role="radio" :aria-checked="themePref===m.v" @click="setTheme(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
      </div>
      <div class="g opts" role="radiogroup" aria-label="Ввод заказа"><div class="oh">Ввод заказа</div>
-      <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b><small>{{ m.d }}</small></span></button>
+      <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
      </div>
      </div></Transition>
     </div>
@@ -1738,21 +1734,19 @@ template:`
      <Transition :name="mdn" mode="out-in">
       <div v-if="mdTab==='m'" key="m">
        <div class="mg" :style="{'--tn':mgN}"><span><b>{{ fmt(mTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(mTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(mTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(mTot.sh) }}</b><small>смен</small></span></div>
-       <p v-if="mLive" class="hint lvn">В итог входит {{ mLive.date===nowDay?'сегодняшний день':dayTxt(mLive.date) }}: отчёт ещё не закончен, цифры меняются вместе с заказами.</p>
       </div>
       <div v-else key="d">
        <template v-if="selDay">
         <div class="mg" :style="{'--tn':dgN}"><span><b>{{ fmt(dTot.m2) }}</b><small>м²</small></span><span><b>{{ fmt(dTot.ord) }}</b><small>заказов</small></span><span><b>{{ fmt(dTot.brak) }}</b><small>кг брака</small></span><span><b>{{ fmt(dTot.sh) }}</b><small>смен</small></span></div>
-        <p v-if="selDay.live" class="hint lvn">Отчёт за день ещё не закончен: цифры считаются по заказам и после «Закончить отчёт» сохранятся в месяце.</p>
        </template>
-       <p v-else class="hint">Пока нет данных за день: выберите день в списке «История» или закончите отчёт.</p>
+       <p v-else class="hint">Нет данных за день</p>
       </div>
      </Transition>
     </div>
     <button class="btn pri big" @click="openDay()">Добавить день</button>
     <div class="g mtot pln">
-     <div class="plh"><b>План на месяц</b><button type="button" class="gear" @click="openPlan" aria-label="Изменить план на месяц" title="Изменить план"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
-     <p v-if="!planI" class="hint plq">План не задан: после его ввода появятся прогресс, прогноз и нужный темп. <button type="button" class="btn sm" @click="openPlan">Задать план</button></p>
+     <div class="plh"><b>План на месяц</b><button type="button" class="gear" @click="openPlan" aria-label="Изменить план на месяц"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
+     <p v-if="!planI" class="hint plq">План не задан <button type="button" class="btn sm" @click="openPlan">Задать план</button></p>
      <div v-if="planI||mdays.length" class="pt">
       <div v-if="planI" class="w"><small>Выполнено / план<em>{{ fmt(planI.pct) }} %</em></small><b>{{ fmt(Math.round(planI.done)) }} <i>/</i> {{ fmt(planI.pl) }} м²</b><span class="pm" role="progressbar" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(planI.bar)"><i :style="{width:planI.bar+'%'}"></i></span></div>
       <div v-if="planI" :class="{ok:planI.ok}"><small>{{ planI.ok?'Итог':'Осталось' }}</small><b>{{ planI.ok?'выполнен ✓':fmt(Math.round(planI.rest))+' м²' }}</b></div>
@@ -1774,9 +1768,9 @@ template:`
       <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.bk" class="fold">
        <div class="seg"><button type="button" class="btn sm" :class="{on:bkTab==='tech'}" @click="bkTab='tech'">Техкарты</button><button type="button" class="btn sm" :class="{on:bkTab==='cust'}" @click="bkTab='cust'">Заказчики</button></div>
        <div v-for="g in bkList" :key="bkTab+g.name" class="rk"><span class="rh"><span class="rn">{{ g.name }}</span><b>{{ fmt(g.kg) }} кг</b></span><span class="rb"><i :style="{width:g.w+'%'}"></i></span><small><template v-if="g.per!==null"><span class="nb">{{ fmt(g.per) }} кг на 1000 м²</span> · </template><span class="nb">{{ fmt(Math.round(g.m2)) }} м²</span> · <span class="nb">{{ g.n }} зак.</span></small></div>
-       <p v-if="bkTab==='tech'&&bk.nt" class="hint">Без номера техкарты: {{ fmt(bk.nt.kg) }} кг ({{ bk.nt.n }} зак.), в список не входят.</p>
+       <p v-if="bkTab==='tech'&&bk.nt" class="hint">Без номера техкарты: {{ fmt(bk.nt.kg) }} кг ({{ bk.nt.n }} зак.)</p>
        <p v-if="!bkList.length&&!(bkTab==='tech'&&bk.nt)" class="hint">В заказах за этот месяц брак в штуках не введён.</p>
-       <p v-if="bk.ob>0||bk.wst>0" class="hint">Брак по заказам {{ fmt(bk.ob) }} кг, отходы {{ fmt(bk.wst) }} кг (отходы между заказами не делятся).</p>
+       <p v-if="bk.ob>0||bk.wst>0" class="hint">Брак по заказам {{ fmt(bk.ob) }} кг, отходы {{ fmt(bk.wst) }} кг</p>
       </div></Transition>
      </template>
     </div>
@@ -1804,7 +1798,6 @@ template:`
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b></b><span></span></div>
    <h2>{{ dateF.isNew?'Дата нового отчёта':'Выберите дату' }}</h2>
    <label>Дата смены<input type="date" v-model="dateF.v" :class="{err:dateF.err}"></label>
-   <p v-if="!dateF.isNew" class="hint">Покажем заказы за выбранную дату. Если их нет, можно начать отчёт.</p>
    <div class="row"><button class="btn pri" @click="dateF.isNew?dateOk():goDate()">{{ dateF.isNew?'Далее':'Показать заказы' }}</button></div>
    <div v-if="!dateF.isNew&&cur" class="row"><button class="btn" @click="renameDate">Изменить дату этого отчёта</button></div>
    <div v-if="dateF.isNew" class="row"><button class="btn" @click="openImport">Импорт из буфера обмена</button></div>
@@ -1838,7 +1831,7 @@ template:`
     <div v-for="(s,si) in shownSteps" :key="s.t" class="stpi">
      <h2>{{ s.t }}</h2>
      <label v-for="(f,i) in s.f" :key="f.k">{{ f.l }}
-      <span class="inw"><textarea v-if="f.area" v-model="W.o[f.k]" :rows="rmRows+1" :class="{err:W.err===f.k}" autocapitalize="characters" :placeholder="f.ph" autocomplete="off" :name="'x'+FI[f.k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="si===0&&i===0" @input="onType(f.k)"></textarea><input v-else v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" :placeholder="f.ph" autocomplete="off" :name="'x'+FI[f.k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="si===0&&i===0" @input="onType(f.k)" @paste="f.k==='customer'&&onPaste($event)">
+      <span class="inw"><textarea v-if="f.area" v-model="W.o[f.k]" :rows="rmRows+1" :class="{err:W.err===f.k}" autocapitalize="characters" autocomplete="off" :name="'x'+FI[f.k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="si===0&&i===0" @input="onType(f.k)"></textarea><input v-else v-model="W.o[f.k]" :class="{err:W.err===f.k}" inputmode="text" :enterkeyhint="f.k==='bw'?'done':'next'" :autocapitalize="f.k==='customer'?'words':f.caps?'characters':'off'" autocomplete="off" :name="'x'+FI[f.k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="si===0&&i===0" @input="onType(f.k)" @paste="f.k==='customer'&&onPaste($event)">
       <button v-if="f.k==='fact'||f.k==='bq'" type="button" class="calcb" @click="openCalc(f.k)" aria-label="Калькулятор"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
      </label>
      <div class="slot">
@@ -1859,13 +1852,13 @@ template:`
     <div v-if="W.mode==='fact'" class="info fsum"><b>{{ W.o.customer }} {{ W.o.order }}/{{ W.o.tech||'-' }}</b><small>{{ W.o.len }}×{{ W.o.wid }} · план {{ W.o.plan }} шт<template v-if="W.wk"> · вес {{ W.o.bw }} г</template></small></div>
     <div class="flat" :class="{st:three,one:oneNew,fm:W.mode==='fact'}">
      <template v-for="g in GROUPS" :key="g.id">
-      <button v-if="g.id==='c'&&oneNew" type="button" class="sech mini" :class="{on:W.more}" :aria-expanded="W.more" @click="toggleMore"><span>Факт и брак<small>{{ !W.more&&W.o.fact?'факт '+W.o.fact:'можно позже' }}</small></span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+      <button v-if="g.id==='c'&&oneNew" type="button" class="sech mini" :class="{on:W.more}" :aria-expanded="W.more" @click="toggleMore"><span>Факт и брак<small>{{ !W.more&&W.o.fact?'факт '+W.o.fact:'' }}</small></span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
       <div class="gf" :class="{off:!gOn[g.id],fd:g.id==='c'}" :data-g="g.id" :inert="gOn[g.id]?null:''"><div class="gi">
-       <h2 v-if="gHead[g.id]">{{ g.t }}<small v-if="g.id==='c'&&three" class="mut"> · можно пропустить</small></h2>
+       <h2 v-if="gHead[g.id]">{{ g.t }}</h2>
        <template v-for="(rw,ri) in g.rows" :key="ri">
         <Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="!rw.fo||fwOn" class="frow" :class="{two:rw.f.length>1,fo:rw.fo}">
          <label v-for="k in rw.f" :key="k">{{ FL[k] }}
-          <span class="inw"><textarea v-if="k==='rm'" v-model="W.o.rm" :data-k="k" :rows="rmRows" :class="{err:W.err===k}" autocapitalize="characters" placeholder="Каждый слой с новой строки" autocomplete="off" :name="'x'+FI[k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onType(k)"></textarea><input v-else v-model="W.o[k]" :data-k="k" :class="{err:W.err===k}" inputmode="text" :enterkeyhint="k===lastK?'done':'next'" :autocapitalize="k==='customer'?'words':k==='tech'?'characters':'off'" :placeholder="k==='tech'?'можно пусто':''" autocomplete="off" :name="'x'+FI[k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="k===focusK0" @input="onType(k)" @change="onCommit(k)" @paste="k==='customer'&&onPaste($event)">
+          <span class="inw"><textarea v-if="k==='rm'" v-model="W.o.rm" :data-k="k" :rows="rmRows" :class="{err:W.err===k}" autocapitalize="characters" autocomplete="off" :name="'x'+FI[k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onType(k)"></textarea><input v-else v-model="W.o[k]" :data-k="k" :class="{err:W.err===k}" inputmode="text" :enterkeyhint="k===lastK?'done':'next'" :autocapitalize="k==='customer'?'words':k==='tech'?'characters':'off'" autocomplete="off" :name="'x'+FI[k]" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="k===focusK0" @input="onType(k)" @change="onCommit(k)" @paste="k==='customer'&&onPaste($event)">
           <button v-if="k==='fact'||k==='bq'" type="button" class="calcb" @click="openCalc(k)" aria-label="Калькулятор"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span>
          </label>
         </div></Transition>
@@ -1898,11 +1891,10 @@ template:`
    <div class="lbp" :style="{height:Math.round(582*lbZ)+'px'}"><div :style="{zoom:lbZ}" v-html="lbPrev"></div></div>
    <p class="hint lbh" :class="{err:lbPl.err}">{{ lbInfo }}</p>
    <div v-for="(row,ri) in LBROWS" :key="'a'+ri" class="lbr" :class="'c'+row.length">
-    <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}<input v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" :placeholder="f.ph" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
+    <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}<input v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
    </div>
    <div class="lbr c2"><label>Копий<input v-model="LB.copies" :class="{err:LB.err==='copies'}" inputmode="numeric" autocomplete="off" name="z9_0" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb('copies')"></label><label class="chk"><input type="checkbox" v-model="LB.tot"> КИП вида «1/6», а не «1»</label></div>
    <div class="row"><button class="btn pri" :disabled="!!lbPl.err" @click="lblPrint">Печать<template v-if="lbPl.n>1"> · {{ lbPl.n }} л.</template></button></div>
-   <p class="hint" style="margin-top:12px">Лист А4 печатается всегда вертикально, этикетка стоит в нижней части листа, как в образце. Блок «Логистика / упаковка» печатается пустым - его заполняют от руки.</p>
   </template>
   <template v-else-if="sheet==='nofact'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Завершение отчёта</b><span></span></div>
@@ -1915,25 +1907,21 @@ template:`
    <h2>Заказ завершён?</h2>
    <div v-if="lastOrd" class="tot2"><b>{{ lastOrd.customer }} {{ lastOrd.order }}/{{ lastOrd.tech||'-' }}</b><br>План: <b>{{ fmt(num(lastOrd.plan)) }}</b> шт · сделано: <b>{{ fmt(num(lastOrd.fact)) }}</b> шт<br>Осталось: <b>{{ fmt(unfLeft) }}</b> шт</div>
    <div class="row"><button class="btn" @click="finAns(false)">Нет, не завершён</button><button class="btn pri" @click="finAns(true)">Да, завершён</button></div>
-   <p class="hint" style="margin-top:12px">«Да» — всё как обычно. «Нет» — заказ не войдёт в количество заказов в месячном отчёте, а остаток ({{ fmt(unfLeft) }} шт) станет планом этого заказа в следующем новом отчёте.</p>
   </template>
   <template v-else-if="sheet==='waste'">
    <div class="top2"><button class="ghost" @click="WA.q?show('unf'):close()">{{ WA.q?'Назад':'Отмена' }}</button><b>Завершение отчёта</b><span></span></div>
    <h2>Отходы</h2>
-   <label>Отходы, кг<span class="inw"><input v-model="WA.v" :class="{err:WA.err}" inputmode="decimal" enterkeyhint="done" placeholder="необязательно" autocomplete="off" name="x11" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="true" @input="WA.err=false"></span></label>
-   <div class="info brk" :class="{bad:WA.err}"><template v-if="WA.err">Введите число, например 12,5</template><template v-else>Брак за смену: <b>{{ fmt(wasteSum) }} кг</b><small class="hint" style="display:block">по заказам {{ fmt(ordBrak) }} кг + отходы {{ fmt(num(WA.v)) }} кг</small></template></div>
+   <label>Отходы, кг<span class="inw"><input v-model="WA.v" :class="{err:WA.err}" inputmode="decimal" enterkeyhint="done" autocomplete="off" name="x11" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="true" @input="WA.err=false"></span></label>
+   <div class="info brk" :class="{bad:WA.err}"><template v-if="WA.err">Введите число</template><template v-else>Брак за смену: <b>{{ fmt(wasteSum) }} кг</b><small class="hint" style="display:block">по заказам {{ fmt(ordBrak) }} кг + отходы {{ fmt(num(WA.v)) }} кг</small></template></div>
    <div class="row"><button class="btn pri" @click="wasteOk">Закончить отчёт</button></div>
-   <p class="hint" style="margin-top:12px">Число прибавится к браку за день и попадёт в месячный отчёт. Можно оставить пустым.</p>
   </template>
   <template v-else-if="sheet==='plan'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>План на месяц</b><span></span></div>
    <h2>{{ monthTitle }}</h2>
-   <label>План, м²<input v-model="PL.v" :class="{err:PL.err}" inputmode="decimal" enterkeyhint="done" placeholder="например 120000" autocomplete="off" name="x12" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="true" @input="PL.err=false"></label>
-   <p v-if="PL.err" class="hint err">Введите число больше нуля, например 120000</p>
-   <p v-else-if="PL.from" class="hint">Подставлен план прошлого месяца. Измените, если нужно.</p>
+   <label>План, м²<input v-model="PL.v" :class="{err:PL.err}" inputmode="decimal" enterkeyhint="done" autocomplete="off" name="x12" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" v-focus="true" @input="PL.err=false"></label>
+   <p v-if="PL.err" class="hint err">Введите число больше нуля</p>
    <div class="row"><button class="btn pri" @click="planOk">Сохранить</button></div>
    <div v-if="plan" class="row"><button class="btn dng" @click="sure('p',planDel)">{{ armed==='p'?'Нажмите ещё раз':'Убрать план' }}</button></div>
-   <p class="hint" style="margin-top:12px">Прогноз считается по сменам: это все дни с понедельника по пятницу в месяце. План хранится для каждого месяца отдельно и синхронизируется.</p>
   </template>
   <template v-else-if="sheet==='day'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>{{ D.orig?'Изменить день':'Новый день' }}</b><span></span></div>
@@ -1951,7 +1939,6 @@ template:`
    <template v-if="!cfg.url">
     <h2>Подключение</h2>
     <label>Адрес базы Firebase или ключ подключения<input v-model="syncInp" inputmode="text" autocomplete="off" name="x17" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" autocapitalize="off" enterkeyhint="done" v-focus="true"></label>
-    <p class="hint">На втором устройстве вставьте ключ, который покажет первое. Пошаговая инструкция лежит в README.txt.</p>
     <div class="row"><button class="btn pri" @click="syncConnect">Подключить</button></div>
    </template>
    <template v-else>
@@ -1970,7 +1957,7 @@ template:`
     <div v-for="(o,i) in selOrders" :key="o.id" class="or"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span></div>
     <div class="tot2">Итого: <b>{{ fmt(selOrders.reduce((t,o)=>t+area(o),0)) }} м²</b> · заказов: {{ selOrders.length }}</div>
    </template>
-   <p v-else class="hint">За этот день заказов нет. Они берутся из ежедневных отчётов за эту дату.</p>
+   <p v-else class="hint">Заказов нет</p>
   </template>
   <template v-else-if="sheet==='inst'">
    <div class="top2"><button class="ghost" @click="close">Закрыть</button><b>На главный экран</b><span></span></div>
