@@ -361,6 +361,13 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .lbr label{min-width:0;margin-bottom:10px;display:flex;flex-direction:column;justify-content:flex-end}
 .lbr input:not([type=checkbox]){font-size:17px;font-weight:500;padding:10px 12px;border-radius:14px}
 .lbr input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
+.lbr input:not([type=checkbox]),.sel select{height:48px;box-sizing:border-box}
+.sel{position:relative;display:block;margin-top:6px}
+.sel::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-6px;border:solid var(--mut);border-width:0 2px 2px 0;transform:rotate(45deg);pointer-events:none;transition:transform .3s var(--eo),border-color .3s var(--eio)}
+.sel:focus-within::after{transform:rotate(225deg) translate(-2px,-2px);border-color:var(--ink)}
+.sel select{display:block;width:100%;margin:0;font:inherit;font-size:17px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:14px;padding:10px 38px 10px 12px;min-height:46px;-webkit-appearance:none;appearance:none;cursor:pointer;text-overflow:ellipsis;transition:border-color .3s var(--eio),box-shadow .3s var(--eio)}
+.sel select:focus{outline:none;border-color:var(--hi);box-shadow:0 0 0 3px color-mix(in srgb,#d8923a 35%,transparent)}
+.lbw{display:block}
 .lbr label.chk{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;align-self:end;margin:0 0 10px;min-height:46px;color:var(--ink);font-size:14px;line-height:1.2}
 @media print{
  @page{size:A4 landscape;margin:0}
@@ -424,6 +431,11 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
  .sheet.open{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto;visibility:visible;transition:transform .3s var(--eo),opacity .3s var(--eio),visibility 0s,max-height .3s var(--eo),padding .3s var(--eo)}
  .sheet.drag{transition:none}
  .calc{width:min(94vw,460px)}
+ .sheet.lblw{width:min(94vw,1120px)}
+ .lbw{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
+ .lbw .lbl{position:sticky;top:0}
+ .lbw .lbp{margin-top:6px}
+ .lbw .lbe{padding-top:6px}
  .toast{max-width:min(92vw,560px)}
  :focus-visible{outline:2px solid #d8923a;outline-offset:2px}
  .pill button:focus-visible{outline-offset:-2px}
@@ -801,7 +813,7 @@ const lbDate=d=>/^\d{4}-\d\d-\d\d$/.test(d)?d.slice(8)+'.'+d.slice(5,7)+'.'+d.sl
 const lbColor=rm=>/бел/i.test(S(rm))?'Белый':'Бурый';   // «БЕЛ» в любой строке сырья - белый, иначе бурый
 const lbProf=pf=>({B:'B',E:'E',C:'BE'})[PF(pf)]||'';
 // значения для окна печати: всё, что известно о заказе; количество, кип, марка, дата отгрузки и логистика - пустые, их вводят руками
-const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech),part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:true,made:S(date),ship:'',dest:'',h:'',lay:'',str:'',cor:'',tape:'',err:''});
+const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech).trim()||'-',part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:true,made:S(date),ship:'',dest:'',h:'',lay:'',str:'',cor:'',tape:'',err:''});
 // листы: «1-6» и 6 копий - шесть листов с КИП 1/6 … 6/6 (без «из N» - просто 1 … 6); любой другой КИП печатается как есть на каждом листе
 function lbPlan(L){const cs=S(L.copies).trim(),c=cs===''?1:Number(cs.replace(',','.'));
  if(!Number.isInteger(c)||c<1||c>LB_MAX)return{n:0,kips:[],err:'Копий: целое число от 1 до '+LB_MAX};
@@ -939,7 +951,7 @@ setup(){
  const loadBlank=()=>{let d=null;try{d=JSON.parse(localStorage.getItem(BK))}catch(e){}d=d&&typeof d==='object'?d:{};return{line:S(d.line)||'1',no:S(d.no),email:S(d.email).trim(),zoom:d.zoom==='big'?'big':'fit'}};
  const blank=reactive(loadBlank());
  watch(blank,()=>{try{localStorage.setItem(BK,JSON.stringify(blank))}catch(e){}},{deep:true});
- const vw=ref(window.innerWidth||390);window.addEventListener('resize',()=>{vw.value=window.innerWidth||vw.value});
+ const vw=ref(window.innerWidth||390),vh=ref(window.innerHeight||800);window.addEventListener('resize',()=>{vw.value=window.innerWidth||vw.value;vh.value=window.innerHeight||vh.value});
  // широкий экран (ПК, планшет в альбомной ориентации): другая вёрстка; жесты и разметка для телефона остаются как есть
  const DQ=window.matchMedia?matchMedia('(min-width:1000px)'):null,desk=ref(!!(DQ&&DQ.matches));
  if(DQ){const f=e=>{desk.value=!!e.matches};if(DQ.addEventListener)DQ.addEventListener('change',f);else if(DQ.addListener)DQ.addListener(f)}
@@ -1511,10 +1523,10 @@ setup(){
 
  // ---- печать маркировки: окно с полями (всё можно поменять), предпросмотр, печать на А4 в портрете; «1-6» и 6 копий = шесть листов с КИП 1/6 … 6/6
  const LB=reactive(lbFrom({},''));
- const LBROWS=[[{k:'order',l:'№ заказа'},{k:'tech',l:'№ техкарты'}],[{k:'part',l:'Часть'},{k:'name',l:'Наименование изделия'}],[{k:'size',l:'Размер Д×Ш'}],[{k:'mark',l:'Марка'},{k:'prof',l:'Профиль'},{k:'color',l:'Цвет'}],
-  [{k:'qty',l:'Количество',im:'numeric'},{k:'kip',l:'№ кипы'}],[{k:'made',l:'Дата изготовления',d:1},{k:'ship',l:'Дата отгрузки',d:1}]];
+ const LBROWS=[[{k:'part',l:'Часть',s:[['','—'],['1','1'],['2','2'],['3','3']]},{k:'dest',l:'Назначение',s:[['','—'],['VIKING','VIKING'],['Склад ГП','Склад ГП']]}],
+       [{k:'mark',l:'Марка'},{k:'qty',l:'Количество',im:'numeric'}],[{k:'kip',l:'№ кипы'},{k:'ship',l:'Дата отгрузки',d:1}]];
  const lbPl=computed(()=>lbPlan(LB));
- const lbZ=computed(()=>{const w=vw.value,sw=w>=1000?Math.min(640,w*.94)-52:Math.min(560,w)-36;return Math.max(.2,Math.min(1,(sw-2)/718))});
+ const lbZ=computed(()=>{const w=vw.value;let sw;if(w>=1000){const W=Math.min(1120,w*.94);sw=W-52-28-360;const hz=(Math.min(vh.value*.86,900)-52-22-26-64)/582;return Math.max(.2,Math.min(1,(sw-2)/718,hz))}sw=Math.min(560,w)-36;return Math.max(.2,Math.min(1,(sw-2)/718))});
  const lbPrev=computed(()=>lblBake(lblBox(LB,lbPl.value.kips[0]||'')));
  const lbInfo=computed(()=>{const p=lbPl.value;if(p.err)return p.err;
   if(p.range)return 'Листов: '+p.n+' · КИП '+p.kips[0]+(p.n>1?' … '+p.kips[p.n-1]:'')+(p.cut?(p.n<p.len?'. В диапазоне '+p.len+' кип, печатаю первые '+p.n:'. В диапазоне '+p.len+' кип, копий меньше или больше нужного: печатаю '+p.n):'');
@@ -1793,7 +1805,7 @@ template:`
 </div>
 <Teleport to="body">
  <div class="ov" :class="{open:open}" @click="close"></div>
- <div class="g sheet" :class="{open:open,drag:dragging}" ref="sheetEl" @focusin="onFocusIn" @keydown="onKey" @touchstart.passive="shStart" @touchmove="shMove" @touchend="shEnd" @touchcancel="shCancel"><div :key="oc">
+ <div class="g sheet" :class="{open:open,drag:dragging,lblw:sheet==='lbl'}" ref="sheetEl" @focusin="onFocusIn" @keydown="onKey" @touchstart.passive="shStart" @touchmove="shMove" @touchend="shEnd" @touchcancel="shCancel"><div :key="oc">
   <template v-if="sheet==='date'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b></b><span></span></div>
    <h2>{{ dateF.isNew?'Дата нового отчёта':'Выберите дату' }}</h2>
@@ -1887,15 +1899,23 @@ template:`
    <div v-if="W.mode==='edit'" class="row"><button class="btn dng" @click="sure('o',delOrder)">{{ armed==='o'?'Нажмите ещё раз':'Удалить заказ' }}</button></div>
   </template>
   <template v-else-if="sheet==='lbl'">
-   <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Печать маркировки</b><span></span></div>
-   <div class="lbp" :style="{height:Math.round(582*lbZ)+'px'}"><div :style="{zoom:lbZ}" v-html="lbPrev"></div></div>
-   <p class="hint lbh" :class="{err:lbPl.err}">{{ lbInfo }}</p>
-   <div v-for="(row,ri) in LBROWS" :key="'a'+ri" class="lbr" :class="'c'+row.length">
-    <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}<input v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
-   </div>
-   <div class="lbr c2"><label>Копий<input v-model="LB.copies" :class="{err:LB.err==='copies'}" inputmode="numeric" autocomplete="off" name="z9_0" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb('copies')"></label><label class="chk"><input type="checkbox" v-model="LB.tot"> КИП вида «1/6», а не «1»</label></div>
-   <div class="row"><button class="btn pri" :disabled="!!lbPl.err" @click="lblPrint">Печать<template v-if="lbPl.n>1"> · {{ lbPl.n }} л.</template></button></div>
-  </template>
+      <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Печать маркировки</b><span></span></div>
+      <div class="lbw">
+       <div class="lbl">
+        <div class="lbp" :style="{height:Math.round(582*lbZ)+'px'}"><div :style="{zoom:lbZ}" v-html="lbPrev"></div></div>
+        <p class="hint lbh" :class="{err:lbPl.err}">{{ lbInfo }}</p>
+       </div>
+       <div class="lbe">
+        <div v-for="(row,ri) in LBROWS" :key="'a'+ri" class="lbr" :class="'c'+row.length">
+         <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}
+          <span v-if="f.s" class="sel"><select v-model="LB[f.k]" @change="onLb(f.k)"><option v-for="o in f.s" :key="o[0]" :value="o[0]">{{ o[1] }}</option></select></span>
+          <input v-else v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
+        </div>
+        <div class="lbr c2"><label>Копий<input v-model="LB.copies" :class="{err:LB.err==='copies'}" inputmode="numeric" autocomplete="off" name="z9_0" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb('copies')"></label><label class="chk"><input type="checkbox" v-model="LB.tot"> КИП вида «1/6», а не «1»</label></div>
+        <div class="row"><button class="btn pri" :disabled="!!lbPl.err" @click="lblPrint">Печать<template v-if="lbPl.n>1"> · {{ lbPl.n }} л.</template></button></div>
+       </div>
+      </div>
+     </template>
   <template v-else-if="sheet==='nofact'">
    <div class="top2"><button class="ghost" @click="close">Отмена</button><b>Завершение отчёта</b><span></span></div>
    <h2>Нет факта</h2>
