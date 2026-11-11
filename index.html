@@ -77,7 +77,8 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .tl{flex:1 1 7.5em;min-width:0;font-size:15px;line-height:1.25}
 .tn{flex:none;margin-left:auto;white-space:nowrap;font-size:clamp(24px,8vw,34px);font-weight:700}
 .tn small{font-size:16px;font-weight:500;color:var(--mut);margin-left:5px}
-.oc{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.oc{display:block;width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;color:inherit;font:inherit;cursor:pointer;position:relative;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.oh{display:flex;align-items:center;gap:14px;width:100%;cursor:pointer;border-radius:14px;outline-offset:6px}
 .oc .oa{display:none}
 .oc.hz .oa{display:flex;gap:6px;position:absolute;left:calc(100% + 6px);top:0;bottom:0}
 .oc .ob{width:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 4px;border-radius:16px;font-size:11px;font-weight:600;line-height:1.1;text-align:center;opacity:.5;transition:opacity .2s var(--eio),transform .2s var(--eo)}
@@ -87,12 +88,30 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .oc .pa{display:none}
 .oc.hz .pa{display:flex;position:absolute;right:calc(100% + 6px);top:0;bottom:0}
 .oc .ob.pb{background:linear-gradient(180deg,#8aa0b5,#5f7589);color:#fff}
-.oc[data-z="1"] .ob.cb,.oc[data-z="2"] .ob.db,.oc[data-z="3"] .ob.pb{opacity:1;transform:scale(1.05)}
-.oc .ob.cb.off{filter:grayscale(.85);opacity:.35!important;transform:none!important}
+.oc .ob.ab{background:linear-gradient(180deg,#7fb59a,#4f8f74);color:#fff}
+.oc[data-z="1"] .ob.cb,.oc[data-z="2"] .ob.db,.oc[data-z="3"] .ob.pb,.oc[data-z="4"] .ob.ab{opacity:1;transform:scale(1.05)}
+.oc .ob.cb.off,.oc .ob.ab.off{filter:grayscale(.85);opacity:.35!important;transform:none!important}
 .scroll .oc.drag{box-shadow:inset 0 1px 0 var(--hi),0 18px 44px var(--sh),0 0 0 2px #d8923a99}
+.oc.act{border-color:#d8923a;box-shadow:inset 0 1px 0 var(--hi),0 0 0 1px #d8923a88,0 14px 34px #d8923a2e}
+.oc .ak{display:block;margin-bottom:2px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8a4f06}
+:root[data-theme=dark] .oc .ak{color:#f0b967}
+.oc .ai{margin-top:12px;padding-top:12px;cursor:default;user-select:text;-webkit-user-select:text;-webkit-touch-callout:default;background:linear-gradient(var(--edge),var(--edge)) top/100% 1px no-repeat}
+.ai .ar{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ai .ar.one{grid-template-columns:1fr;margin-top:10px}
+.ai label{display:block;min-width:0;font-size:13px;font-weight:600;color:var(--mut)}
+.ai .inw{display:block;position:relative;margin-top:5px}
+.ai input:not([type=checkbox]){margin:0;height:48px;box-sizing:border-box;font-size:20px;padding:10px 48px 10px 12px;border-radius:14px}
+.ai .ar.one input:not([type=checkbox]){padding-right:12px}
+.ai .calcb{width:36px;height:36px;right:6px;bottom:6px;border-radius:11px}
+.ai .ainfo{margin:10px 2px 0;font-size:13px;color:var(--mut);min-height:18px}.ai .ainfo b{color:var(--ink);font-weight:600}.ai .ainfo.bad{color:#c0392b}
+:root[data-theme=dark] .ai .ainfo.bad{color:#ff8a80}
+.ai .aact{display:flex;gap:10px;margin-top:10px}.ai .aact .btn{flex:1;min-width:0;padding:12px 10px}.ai .aact .btn.pri{flex:1.6}
 .oc .n,.or .n{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206}
 .oc .m{flex:1;min-width:0}.oc .m b{display:block;overflow-wrap:anywhere}.oc small,.dc small,.item small,.sy small{display:block;color:var(--mut);font-size:13px}
 .oc .a,.item .a,.or .a{font-weight:700;white-space:nowrap}
+.addrow .btn.ico{flex:0 0 56px;padding:0;display:grid;place-items:center;position:relative}
+.addrow .btn.ico .bd{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;display:grid;place-items:center;font:700 12px/1 Onest,system-ui,sans-serif;font-style:normal;background:linear-gradient(180deg,#f0b967,#d8923a);color:#1a1206;box-shadow:0 2px 6px #0003}
+.or.ar{flex-wrap:wrap;gap:10px}.or.ar .m{flex:1 1 100%;min-width:0}.or.ar .btn.pri{flex:1}.or.ar .btn.ic{flex:0 0 46px;padding:0;display:grid;place-items:center}
+.olist.dragging .oc:not(.drag){pointer-events:none}.olist.dragging,.olist.dragging *{cursor:grabbing!important}.olist.dragging .ox{opacity:0!important}
 .or{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:16px;background:var(--fld)}
 .or .m{flex:1;min-width:0}.or .m b{display:block;overflow-wrap:anywhere}.or small{display:block;color:var(--mut);font-size:13px}
 .m b.nm{display:flex;flex-wrap:wrap;column-gap:.3em;min-width:0;overflow:hidden;overflow-wrap:normal}.nm .cu{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nm .on{flex:0 1 auto;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -246,6 +265,8 @@ input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .chip.paste{display:inline-flex;align-items:center;gap:7px;font-weight:600;border-color:#d8923a99}.chip.paste svg{color:#d8923a;flex:none}
 .chip.on{border-color:#d8923a;box-shadow:0 0 0 1px #d8923a inset;font-weight:600}
 .addrow{display:flex;gap:10px}.addrow .btn{flex:1;min-width:0}.addrow .btn.pri{flex:2}
+.addrow:has(.btn.ico) .btn:not(.ico){padding-left:8px;padding-right:8px;font-size:16px;white-space:nowrap}.addrow:has(.btn.ico) .btn.pri{flex:1.7}
+@media (max-width:359px){.addrow:has(.btn.ico) .btn:not(.ico){font-size:14px;padding-left:4px;padding-right:4px}}
 .frow.fo{display:flow-root}
 .frow.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.frow.two label{min-width:0;display:flex;flex-direction:column;justify-content:flex-end}.frow.two .inw input{padding-right:14px;font-size:22px}
 .gf h2{margin:12px 0 8px;font-size:18px}.gf h2 small{font-size:14px;font-weight:400}
@@ -361,14 +382,29 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 .lbr label{min-width:0;margin-bottom:10px;display:flex;flex-direction:column;justify-content:flex-end}
 .lbr input:not([type=checkbox]){font-size:17px;font-weight:500;padding:10px 12px;border-radius:14px}
 .lbr input.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
-.lbr input:not([type=checkbox]),.sel select{height:48px;box-sizing:border-box}
-.sel{position:relative;display:block;margin-top:6px}
-.sel::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-6px;border:solid var(--mut);border-width:0 2px 2px 0;transform:rotate(45deg);pointer-events:none;transition:transform .3s var(--eo),border-color .3s var(--eio)}
-.sel:focus-within::after{transform:rotate(225deg) translate(-2px,-2px);border-color:var(--ink)}
-.sel select{display:block;width:100%;margin:0;font:inherit;font-size:17px;font-weight:500;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:14px;padding:10px 38px 10px 12px;min-height:46px;-webkit-appearance:none;appearance:none;cursor:pointer;text-overflow:ellipsis;transition:border-color .3s var(--eio),box-shadow .3s var(--eio)}
-.sel select:focus{outline:none;border-color:var(--hi);box-shadow:0 0 0 3px color-mix(in srgb,#d8923a 35%,transparent)}
+.lbr input:not([type=checkbox]),.ddb{height:48px;box-sizing:border-box}
+.dd{display:block;position:relative;margin-top:6px}
+.ddb{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin:0;padding:10px 12px 10px 14px;font:inherit;font-size:17px;font-weight:500;text-align:left;color:var(--ink);background:var(--fld);border:1px solid var(--edge);border-radius:14px;cursor:pointer;box-shadow:inset 0 1px 0 var(--hi);transition:border-color .3s var(--eio),box-shadow .3s var(--eio),background-color .3s var(--eio),transform .15s var(--eo)}
+.ddb:active{transform:scale(.98)}
+.ddb .ddn{color:var(--mut)}
+.ddb .cv{flex:none;color:var(--mut);transition:transform .3s var(--eo),color .3s var(--eio)}
+.dd.open .ddb{border-color:#d8923a;box-shadow:inset 0 1px 0 var(--hi),0 0 0 3px color-mix(in srgb,#d8923a 32%,transparent)}
+.dd.open .ddb .cv{transform:rotate(180deg);color:var(--ink)}
+.ddb:focus-visible{outline:2px solid #d8923a;outline-offset:2px}
+.ddl{display:block;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:8;padding:6px;border-radius:18px;max-height:260px;overflow:auto;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px) scale(.97);transform-origin:50% 0;transition:opacity .3s var(--eio),transform .3s var(--eo),visibility 0s linear .3s}
+.dd.open .ddl{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .3s var(--eio),transform .3s var(--eo),visibility 0s}
+.ddo{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;margin:0;padding:8px 12px;font:inherit;font-size:17px;font-weight:500;text-align:left;color:var(--ink);background:transparent;border:0;border-radius:12px;cursor:pointer;transition:background-color .2s var(--eio),color .2s var(--eio)}
+.ddo+.ddo{margin-top:2px}
+.ddo.ddn{color:var(--mut)}
+.ddl.g{background:var(--noise),rgba(251,252,253,.97);box-shadow:inset 0 1px 0 var(--hi),0 16px 40px var(--sh)}
+:root[data-theme=dark] .ddl.g{background:var(--noise),rgba(42,55,66,.98)}
+.ddo .ck{flex:none;opacity:0;transform:scale(.6);color:#b9731c;transition:opacity .2s var(--eio),transform .3s var(--eo)}
+:root[data-theme=dark] .ddo .ck{color:#f0b967}
+.ddo.on{font-weight:700;background:color-mix(in srgb,#d8923a 18%,transparent)}.ddo.on .ck{opacity:1;transform:none}
+.ddo:hover,.ddo.hi{background:var(--fld)}.ddo.on:hover,.ddo.on.hi{background:color-mix(in srgb,#d8923a 28%,transparent)}
+.ddo:active{transform:scale(.99)}
+.ddo:focus-visible{outline:2px solid #d8923a;outline-offset:-2px}
 .lbw{display:block}
-.lbr label.chk{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;align-self:end;margin:0 0 10px;min-height:46px;color:var(--ink);font-size:14px;line-height:1.2}
 @media print{
  @page{size:A4 landscape;margin:0}
  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
@@ -422,9 +458,11 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
  .keys{display:flex;flex-direction:column;gap:6px;margin-top:22px;padding:16px 18px;font-size:14px;color:var(--mut)}.keys b{color:var(--ink);font-size:16px;margin-bottom:2px}
  kbd{display:inline-block;min-width:22px;padding:1px 7px;border-radius:7px;background:var(--fld);border:1px solid var(--edge);color:var(--ink);font:600 12px/18px Onest,system-ui,sans-serif;text-align:center}
  /* карточки заказов: кнопки для мыши вместо жестов */
- .ox{display:grid;grid-template-columns:repeat(3,30px);grid-auto-rows:30px;gap:0 4px;flex:none;order:2}.oc .m{order:1}.oc .a{order:3;min-width:88px;text-align:right}.oc .oa{order:4}
- .xb{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:var(--mut);cursor:pointer;transition:background-color .2s,color .2s}
- .xb:hover{background:var(--fld);color:var(--ink)}.xb.dx:hover{color:#c0392b}
+ .ox{display:grid;grid-template-columns:repeat(4,30px);grid-auto-rows:15px;gap:0 4px;flex:none;order:2}.oc .m{order:1}.oc .a{order:3;min-width:88px;text-align:right}.oc .oa{order:4}
+ .xb{display:grid;place-items:center;position:relative;width:30px;height:15px;border-radius:8px;color:var(--mut);cursor:pointer;transition:background-color .2s,color .2s,opacity .2s}
+ .xb::after{content:"";position:absolute;inset:-5px 0}   /* кнопка низкая, а попасть в неё можно с запасом */
+ .xb svg{width:13px;height:13px}
+ .xb:hover{background:var(--fld);color:var(--ink)}.xb.dx:hover{color:#c0392b}.xb.off{opacity:.35}
  /* окна по центру вместо нижних шторок */
  .grab{display:none}
  .sheet{top:50%;bottom:auto;width:min(94vw,640px);max-height:min(86vh,900px);border-radius:28px;padding:22px 26px 26px;transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;visibility:hidden;transition:transform .3s var(--ei),opacity .3s var(--eio),visibility 0s linear .3s,max-height .3s var(--eo),padding .3s var(--eo)}
@@ -529,6 +567,7 @@ const fixCust=c=>{if(typeof c==='string')c={n:c,u:0};if(!c||typeof c!=='object')
 const PM=/^\d{4}-\d{2}$/;
 const fixPlan=x=>x&&typeof x==='object'&&PM.test(S(x.month))&&num(x.m2)>0?Object.assign({},x,{month:S(x.month),m2:S(x.m2),u:+x.u||0}):null;
 const cleanPlan=x=>x&&typeof x==='object'&&PM.test(S(x.month))&&num(x.m2)>0?{month:S(x.month),m2:S(x.m2),u:+x.u||0}:null;
+const fixArch=a=>{if(!a||typeof a!=='object'||!S(a.id)||!a.o||typeof a.o!=='object')return null;const o=a.o;return{id:S(a.id),date:D10.test(S(a.date))?S(a.date):'',u:+a.u||0,del:a.del===true,o:{customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),bw:S(o.bw),rm:S(o.rm),pf:PF(o.pf)}}};   // архив заказов: заказы без факта, убранные из отчёта (db.arch)
 const dimOf=ym=>new Date(+ym.slice(0,4),+ym.slice(5),0).getDate();
 const shiftsIn=(ym,a,b)=>{let n=0;const y=+ym.slice(0,4),m=+ym.slice(5)-1;for(let d=a;d<=b;d++){const w=new Date(y,m,d).getDay();if(w>0&&w<6)n++}return n};   // смены: дни с понедельника по пятницу в диапазоне дней a..b месяца ym
 const fixList=(v,f)=>arr(v).map(f).filter(Boolean);
@@ -539,6 +578,7 @@ function load(){let d=null;try{d=JSON.parse(localStorage.getItem(K))}catch(e){}
  d.days=fixList(d.days,fixDay);
  d.customers=fixList(d.customers,fixCust);
  d.plans=fixList(d.plans,fixPlan);
+ d.arch=fixList(d.arch,fixArch);
  d.cur=d.cur||null;d.mode=d.mode==='mon'?'mon':'day';d.wa=d.wa!==false;return d}
 function mergeBy(L,R,key){
  const rm=new Map((R||[]).map(x=>[x[key],x])),lm=new Map(L.map(x=>[x[key],x]));let pull=false,push=false;
@@ -686,12 +726,12 @@ function toastSwipe(getEl,o){
    if(gone)o.hide();else o.release()}}}
 // long-press drag & drop of list cards (touch): cards move with transforms only, the final move is handed over as onDrop(from,to)
 function listDrag(o){
- const SLOP=8,HOLD=420,TOP=120,BOT=140,MAXV=18,LOCK=10,T1=76,T2=150,MAXH=190,MAXR=o.rt?124:0;   // MAXR: насколько можно утянуть карточку вправо (если есть действие «Печать»); T1/T2: pull in px where «carry» and «delete» begin
+ const SLOP=8,HOLD=420,TOP=120,BOT=140,MAXV=18,LOCK=10,T1=76,T2=150,T2R=150,MAXH=190,MAXR=o.rt?172:0,MSLOP=5;   // MAXR: насколько можно утянуть карточку вправо (если есть действия «Печать» и «В архив»); T1/T2 (влево) и T1/T2R (вправо): pull in px where the next action begins; MSLOP: the mouse must move this far before the card is lifted
  let st=null,timer=0,raf=0,last=0;
  const cards=()=>[...o.root().querySelectorAll(o.sel)];
  const clean=(keep)=>{cards().forEach(c=>{if(c===keep)return;c.classList.remove('drag','hz');c.removeAttribute('data-z');c.style.transform='';c.style.transition='';c.style.willChange='';c.style.zIndex='';c.style.opacity=''});const r=o.root();if(r)r.classList.remove('dragging')};
  const zoneOf=d=>d<T1?0:d<T2?1:2;
- const zoneAt=dx=>dx>0?(dx>=T1?3:0):zoneOf(-dx);   // влево: 1 - перенести, 2 - удалить; вправо: 3 - печать
+ const zoneAt=dx=>dx>0?(dx>=T2R?4:dx>=T1?3:0):zoneOf(-dx);   // влево: 1 - перенести, 2 - удалить; вправо: 3 - печать, 4 - в архив
  const hdx=()=>Math.max(Math.min(MAXR,st.dx-st.off),-MAXH);   // where the card is: finger travel minus the (easing out) dead zone, never to the right, never beyond MAXH
  function paint(){raf=0;if(!st||!st.on||st.end)return;
   if(st.mode==='h'){if(st.off)st.off=Math.abs(st.off)<.5?0:st.off*.78;const dx=hdx();st.el.style.transform='translate3d('+dx+'px,0,0) scale(1.02)';
@@ -723,12 +763,14 @@ function listDrag(o){
  function endH(cancel){const el=st.el,id=el.dataset.id,z=cancel?0:zoneAt(hdx());
   if(z===2||(z===1&&o.leaves&&o.leaves(id))){el.style.transition='transform .25s cubic-bezier(.4,0,1,1),opacity .25s ease';el.style.transform='translate3d(-115%,0,0)';el.style.opacity='0';
    setTimeout(()=>colOut(el,()=>{el.style.display='none';last=Date.now();o.onSwipe(id,z);clean(el);st=null;if(o.onEnd)o.onEnd()}),230);return true}
+  if(z===4&&o.leavesR&&o.leavesR(id)){el.style.transition='transform .25s cubic-bezier(.4,0,1,1),opacity .25s ease';el.style.transform='translate3d(115%,0,0)';el.style.opacity='0';
+   setTimeout(()=>colOut(el,()=>{el.style.display='none';last=Date.now();o.onSwipe(id,4);clean(el);st=null;if(o.onEnd)o.onEnd()}),230);return true}   // в архив: карточка уходит вправо
   el.style.transition='transform .3s cubic-bezier(.22,1,.36,1)';el.style.transform='translate3d(0,0,0)';
-  if(z===1||z===3)o.onSwipe(id,z);
+  if(z===1||z===3||z===4)o.onSwipe(id,z);
   setTimeout(()=>{last=Date.now();clean();st=null;if(o.onEnd)o.onEnd()},310);return true}
- return{
+ const api={
   start(e){if(st&&(st.on||st.end))return;clearTimeout(timer);timer=0;st=null;
-   if(e.touches.length!==1||!o.ok())return;const el=e.target.closest&&e.target.closest(o.sel);if(!el||!o.root().contains(el))return;
+   if(e.touches.length!==1||!o.ok())return;const el=e.target.closest&&e.target.closest(o.sel);if(!el||!o.root().contains(el)||e.target.closest('.ai'))return;   // форма активного заказа не тянется
    const t=e.touches[0];st={el,x0:t.clientX,y0:t.clientY,x:t.clientX,y:t.clientY,on:false,end:false,mode:''};timer=setTimeout(hold,HOLD)},
   move(e){if(!st||!e.touches.length)return;const t=e.touches[0];st.y=t.clientY;st.x=t.clientX;
    if(!st.on){if(Math.abs(t.clientX-st.x0)>SLOP||Math.abs(t.clientY-st.y0)>SLOP){clearTimeout(timer);timer=0;st=null}return}
@@ -748,8 +790,25 @@ function listDrag(o){
    el.style.transition='transform .3s ease';el.style.transform='translate3d(0,'+(ft-tops[from])+'px,0)';
    setTimeout(()=>{if(to!==from)o.onDrop(from,to);clean();last=Date.now();st=null;if(o.onEnd)o.onEnd()},310);
    return true},
+  mdown(e){   // мышь (ПК): зажать карточку и потянуть - она сразу «поднимается» и идёт за курсором, только по вертикали
+   if(e.button!==0||(st&&(st.on||st.end))||!o.ok())return;
+   if(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents)return;
+   const t=e.target;if(!t||!t.closest)return;const el=t.closest(o.sel);if(!el||!o.root().contains(el)||t.closest('.xb,.ai,input,textarea,select,button,a'))return;
+   if(cards().length<2)return;
+   clearTimeout(timer);timer=0;st={el,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY,on:false,end:false,mode:'',mouse:true};
+   const eat=ev=>{ev.stopPropagation();ev.preventDefault()};   // the click that follows the release must not open the order
+   const rm=()=>{document.removeEventListener('mousemove',mm,true);document.removeEventListener('mouseup',mu,true)};
+   const mm=ev=>{if(!st||!st.mouse){rm();return}
+    if(ev.buttons===0){mu(ev);return}
+    st.x=ev.clientX;st.y=ev.clientY;
+    if(!st.on){if(Math.abs(st.x-st.x0)+Math.abs(st.y-st.y0)<MSLOP)return;hold();if(!st||!st.on){rm();return}st.mode='v';st.off=0}
+    if(st.end)return;ev.preventDefault();if(!raf)raf=requestAnimationFrame(paint)};
+   const mu=ev=>{rm();if(!st||!st.mouse)return;if(!st.on){st=null;return}
+    if(!st.end){api.end(ev,false);window.addEventListener('click',eat,true);setTimeout(()=>window.removeEventListener('click',eat,true),0)}};
+   document.addEventListener('mousemove',mm,true);document.addEventListener('mouseup',mu,true)},
   recent:()=>Date.now()-last<600,
-  get active(){return !!(st&&st.on)}}}
+  get active(){return !!(st&&st.on)}};
+ return api}
 // accordion for the "Ещё" page: only the height is animated (300 ms); a very long list is animated only up to FOLDMAX px, the rest is off screen anyway
 const FOLDMAX=800;
 function foldRun(el,from,to,done){
@@ -813,7 +872,7 @@ const lbDate=d=>/^\d{4}-\d\d-\d\d$/.test(d)?d.slice(8)+'.'+d.slice(5,7)+'.'+d.sl
 const lbColor=rm=>/бел/i.test(S(rm))?'Белый':'Бурый';   // «БЕЛ» в любой строке сырья - белый, иначе бурый
 const lbProf=pf=>({B:'B',E:'E',C:'BE'})[PF(pf)]||'';
 // значения для окна печати: всё, что известно о заказе; количество, кип, марка, дата отгрузки и логистика - пустые, их вводят руками
-const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech).trim()||'-',part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:true,made:S(date),ship:'',dest:'',h:'',lay:'',str:'',cor:'',tape:'',err:''});
+const lbFrom=(o,date)=>({order:S(o.order),tech:S(o.tech).trim()||'-',part:'',name:'Гофролист',size:[o.len,o.wid].map(lbNum).filter(Boolean).join(' × '),mark:'',prof:lbProf(o.pf),color:lbColor(o.rm),qty:'',kip:'',copies:'1',cm:false,tot:false,made:S(date),ship:'',dest:'',h:'',lay:'',str:'',cor:'',tape:'',err:''});
 // листы: «1-6» и 6 копий - шесть листов с КИП 1/6 … 6/6 (без «из N» - просто 1 … 6); любой другой КИП печатается как есть на каждом листе
 function lbPlan(L){const cs=S(L.copies).trim(),c=cs===''?1:Number(cs.replace(',','.'));
  if(!Number.isInteger(c)||c<1||c>LB_MAX)return{n:0,kips:[],err:'Копий: целое число от 1 до '+LB_MAX};
@@ -1171,13 +1230,13 @@ setup(){
  function addCust(n){const l=n.toLowerCase(),c=db.customers.find(x=>x.n.toLowerCase()===l);if(c){if(c.del){c.del=false;c.u=now()}}else db.customers.push({n,u:now()})}
  const delCust=n=>{const c=db.customers.find(x=>x.n===n);if(c){c.del=true;c.u=now()}};
  function exportData(){
-  const data={app:'gofro-otchet',v:1,t:now(),reports:db.reports.filter(r=>!r.del),days:db.days.filter(x=>!x.del),customers:db.customers.filter(c=>!c.del),plans:db.plans.filter(p=>!p.del)};
-  if(!data.reports.length&&!data.days.length&&!data.customers.length&&!data.plans.length){say('Пока нечего экспортировать');return}
+  const data={app:'gofro-otchet',v:1,t:now(),reports:db.reports.filter(r=>!r.del),days:db.days.filter(x=>!x.del),customers:db.customers.filter(c=>!c.del),plans:db.plans.filter(p=>!p.del),arch:db.arch.filter(a=>!a.del)};
+  if(!data.reports.length&&!data.days.length&&!data.customers.length&&!data.plans.length&&!data.arch.length){say('Пока нечего экспортировать');return}
   const name='otchet-backup-'+today()+'.json';
   try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);say('Экспорт: '+name)}catch(e){say('Не удалось создать файл')}}
  function importData(d){
-  const cnt={reports:0,days:0,customers:0,plans:0};
-  for(const [k,key,clean] of [['reports','id',cleanRep],['days','date',cleanDay],['customers','n',cleanCust],['plans','month',cleanPlan]]){
+  const cnt={reports:0,days:0,customers:0,plans:0,arch:0};
+  for(const [k,key,clean] of [['reports','id',cleanRep],['days','date',cleanDay],['customers','n',cleanCust],['plans','month',cleanPlan],['arch','id',fixArch]]){
    for(const raw of (Array.isArray(d[k])?d[k]:[])){
     if(raw&&raw.del)continue;const r=clean(raw);if(!r)continue;
     const l=db[k].find(x=>k==='customers'?x.n.toLowerCase()===r.n.toLowerCase():x[key]===r[key]);
@@ -1188,9 +1247,9 @@ setup(){
  const pickFile=()=>{if(fileEl.value)fileEl.value.click()};
  async function onFile(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
   try{const d=JSON.parse(await f.text());
-   if(!d||typeof d!=='object'||Array.isArray(d)||!(Array.isArray(d.reports)||Array.isArray(d.days)||Array.isArray(d.customers)||Array.isArray(d.plans)))throw new Error('format');
+   if(!d||typeof d!=='object'||Array.isArray(d)||!(Array.isArray(d.reports)||Array.isArray(d.days)||Array.isArray(d.customers)||Array.isArray(d.plans)||Array.isArray(d.arch)))throw new Error('format');
    const c=importData(d);
-   say(c.reports+c.days+c.customers+c.plans?'Импорт: отчётов '+c.reports+', дней '+c.days+', заказчиков '+c.customers+(c.plans?', планов '+c.plans:''):'В файле нет новых данных')}
+   say(c.reports+c.days+c.customers+c.plans+c.arch?'Импорт: отчётов '+c.reports+', дней '+c.days+', заказчиков '+c.customers+(c.plans?', планов '+c.plans:'')+(c.arch?', в архиве '+c.arch:''):'В файле нет новых данных')}
   catch(err){say('Не удалось прочитать файл: нужен файл экспорта (.json)')}}
 
  const nowDay=ref(today());
@@ -1412,7 +1471,7 @@ setup(){
  const delDay=()=>{const x=db.days.find(y=>y.date===D.orig);if(x){x.del=true;x.u=now()}close()};
 
  // calculator for «Произведено» and «Брак, шт»: the result goes into the field
- const K=reactive({k:'fact',x:'',prev:'',done:false}),KN={fact:'Произведено',bq:'Брак'};
+ const K=reactive({k:'fact',t:'',x:'',prev:'',done:false}),KN={fact:'Произведено',bq:'Брак'};
  const kOpIn=x=>/[+−×÷]/.test(x.slice(1));
  const kVal=computed(()=>calcEval(K.x));
  const kErr=computed(()=>K.x!==''&&Number.isNaN(kVal.value));
@@ -1433,11 +1492,13 @@ setup(){
  const kBack=()=>{if(K.done){kFresh();return}K.x=K.x.slice(0,-1)};
  const kClear=()=>{K.x='';K.prev='';K.done=false};
  function kEq(){const v=calcEval(K.x);if(v===null||Number.isNaN(v)||!kOpIn(K.x))return;K.prev=K.x;K.x=v.toFixed(9).replace(/\.?0+$/,'').replace('-','−');K.done=true}
- function openCalc(k){const a=document.activeElement;if(a&&a.blur)a.blur();
-  const v=S(W.o[k]).replace(/\s+/g,'').replace(',','.');
+ function openCalc(k,t){const a=document.activeElement;if(a&&a.blur)a.blur();
+  const v=S((t==='a'?AC:W.o)[k]).replace(/\s+/g,'').replace(',','.');
   const have=/^\d+(\.\d+)?$/.test(v)&&num(v)>0;   // a number already in the field: an operator continues it, a digit starts a new one
-  Object.assign(K,{k,x:have?v:'',prev:'',done:have});calcOpen.value=true}
- const applyCalc=()=>{if(!kOk.value)return;const k=K.k;W.o[k]=String(kIns.value);calcOpen.value=false;onType(k);
+  Object.assign(K,{k,t:t||'',x:have?v:'',prev:'',done:have});calcOpen.value=true}
+ const applyCalc=()=>{if(!kOk.value)return;const k=K.k;
+  if(K.t==='a'){AC[k]=String(kIns.value);calcOpen.value=false;onAct(k);nextTick(()=>{const e=document.querySelector('.ai input[data-ak="'+k+'"]');if(e)try{e.focus({preventScroll:true})}catch(x){}});return}
+  W.o[k]=String(kIns.value);calcOpen.value=false;onType(k);
   nextTick(()=>{const e=sheetEl.value&&(sheetEl.value.querySelector('input[data-k="'+k+'"]')||sheetEl.value.querySelector('input'));e&&e.focus({preventScroll:true})})};
 
  const syncKey=computed(()=>cfg.url?'gofro:'+btoa(JSON.stringify({u:cfg.url,c:cfg.code})):'');
@@ -1453,10 +1514,10 @@ setup(){
   try{const ep=cfg.url+'/'+cfg.code+'.json';
    const r=await fetch(ep,{cache:'no-store'});if(!r.ok)throw new Error('Сервер ответил '+r.status);
    const remote=await r.json();let push=!remote;
-   const norm={reports:fixList(remote&&remote.reports,fixRep),days:fixList(remote&&remote.days,fixDay),customers:fixList(remote&&remote.customers,fixCust),plans:fixList(remote&&remote.plans,fixPlan)};
-   for(const [k,key] of [['reports','id'],['days','date'],['customers','n'],['plans','month']]){const m=mergeBy(db[k],norm[k],key);if(m.list)db[k]=m.list;if(m.push)push=true}
+   const norm={reports:fixList(remote&&remote.reports,fixRep),days:fixList(remote&&remote.days,fixDay),customers:fixList(remote&&remote.customers,fixCust),plans:fixList(remote&&remote.plans,fixPlan),arch:fixList(remote&&remote.arch,fixArch)};
+   for(const [k,key] of [['reports','id'],['days','date'],['customers','n'],['plans','month'],['arch','id']]){const m=mergeBy(db[k],norm[k],key);if(m.list)db[k]=m.list;if(m.push)push=true}
    if(!cur.value&&!pend.value){const tr=todayRep();if(tr)db.cur=tr.id}
-   if(push){const w=await fetch(ep,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:db.reports,days:db.days,customers:db.customers,plans:db.plans,t:now()})});if(!w.ok)throw new Error('Не удалось записать: '+w.status)}
+   if(push){const w=await fetch(ep,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({reports:db.reports,days:db.days,customers:db.customers,plans:db.plans,arch:db.arch,t:now()})});if(!w.ok)throw new Error('Не удалось записать: '+w.status)}
    cfg.last=now();sync.status='ok';if(manual)say('Синхронизировано')}
   catch(e){sync.status='err';sync.msg=String(e.message||e);if(manual)say('Ошибка синхронизации')}
   finally{sync.busy=false}}
@@ -1470,7 +1531,7 @@ setup(){
  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
  let tx=0,ty=0,t0=0,tok=false,tmd=false;
- const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big');ptrStart(e)};
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big,.ai');ptrStart(e)};
  const tEnd=e=>{ptrEnd();if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
   if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep';else if(v==='mon'&&tmd)mdTab.value=dx<0?'d':'m'}};
   const olistEl=ref(null);
@@ -1499,6 +1560,7 @@ setup(){
  const willLeave=id=>{const r=cur.value,o=r&&r.orders.find(x=>x.id===id);return !!o&&carryState(o)==='ok'&&num(o.fact)<=0};
  const carryOff=o=>{const k=carryState(o);return k==='done'||k==='full'};
  function onSwipe(id,z){const r=cur.value;if(!r)return;if(z===3){openLabel(id);return}   // вправо: печать маркировки
+  if(z===4){archOrd(id);return}   // дальше вправо: в архив
  const i=r.orders.findIndex(x=>x.id===id);if(i<0)return;const o=r.orders[i],nm='«'+o.customer+' '+o.order+'»';
   if(z===2){r.orders.splice(i,1);r.u=now();showToast({msg:'Заказ '+nm+' удалён',act:'Отменить'},5000);undo={rid:r.id,o,i};return}
   if(z!==1)return;const k=carryState(o);
@@ -1513,6 +1575,10 @@ setup(){
   showToast({msg:'Заказ '+nm+(part?': остаток '+fmt(left)+' шт перенесён ':' перенесён ')+dayAcc(nd)+(part?'. Сделанное осталось в этом дне':''),act:'Отменить'},6000);
   undo={k:'mv',rid:r.id,o,i,prev,part,tid:t.id,nid:n.id,made}}
  function toastAct(){const u=undo;undo=null;if(!u)return;const r=db.reports.find(x=>x.id===u.rid&&!x.del);
+  if(u.k==='fa'){const o=r&&r.orders.find(x=>x.id===u.id);if(o){Object.assign(o,u.prev);r.u=now();nextTick(()=>Object.assign(AC,u.draft))}hideToast();return}   // отмена ввода факта: заказ снова активный, введённые цифры возвращаются в поля
+  if(u.k==='ar'){const a=db.arch.find(x=>x.id===u.aid);if(a){a.del=true;a.u=now()}if(r&&!r.orders.some(x=>x.id===u.o.id)){r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}hideToast();return}   // отмена «В архив»
+  if(u.k==='ab'){const a=db.arch.find(x=>x.id===u.aid);if(a){a.del=false;a.u=now()}if(r){const j=r.orders.findIndex(x=>x.id===u.nid);if(j>-1){r.orders.splice(j,1);r.u=now()}}hideToast();return}   // отмена «Вернуть из архива»
+  if(u.k==='ad'){const a=db.arch.find(x=>x.id===u.aid);if(a){a.del=false;a.u=now()}hideToast();return}
   if(u.k==='mv'){const t=db.reports.find(x=>x.id===u.tid);   // отмена переноса: заказ уходит из следующего дня и возвращается
    if(t){const j=t.orders.findIndex(x=>x.id===u.nid);if(j>-1){t.orders.splice(j,1);t.u=now()}if(u.made&&!t.orders.length){t.del=true;t.u=now();if(db.cur===t.id){db.cur=null;pend.value=t.date}}}
    if(r){if(u.part){if(u.o.op==='2')u.o.op=u.prev}else if(!r.orders.some(x=>x.id===u.o.id))r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
@@ -1520,11 +1586,78 @@ setup(){
   if(r&&!r.orders.some(x=>x.id===u.o.id)){r.orders.splice(Math.min(u.i,r.orders.length),0,u.o);r.u=now()}
   hideToast()}
  function moveOrder(a,b){const r=cur.value;if(!r||a===b||a<0||b<0||a>=r.orders.length||b>=r.orders.length)return;r.orders.splice(b,0,r.orders.splice(a,1)[0]);r.u=now()}
+ const edArch=computed(()=>{const r=cur.value;return W.mode==='edit'&&!!W.id&&canArch(r&&r.orders.find(x=>x.id===W.id))});
+ const mvKey=(i,d,id)=>{moveOrder(i,i+d);nextTick(()=>{const e=document.querySelector('.oc[data-id="'+id+'"] .oh');e&&e.focus({preventScroll:true})})};   // клавиатура: Alt+↑ / Alt+↓ на карточке
+
+ // ---- архив: заказы без факта, которые убрали из отчёта (их вводят заранее, а потом переносят на другую дату); достать можно в любой отчёт
+ const archL=computed(()=>db.arch.map((a,i)=>[a,i]).filter(x=>!x[0].del).sort((x,y)=>((y[0].u||0)-(x[0].u||0))||(y[1]-x[1])).map(x=>x[0]));   // новые сверху
+ const archN=computed(()=>archL.value.length);
+ const canArch=o=>!!o&&num(o.fact)<=0&&num(o.bq)<=0;
+ const willArch=id=>{const r=cur.value;return canArch(r&&r.orders.find(x=>x.id===id))};
+ function archOrd(id){const r=cur.value,i=r?r.orders.findIndex(x=>x.id===id):-1;if(i<0)return false;const o=r.orders[i],nm='«'+o.customer+' '+o.order+'»';
+  if(!canArch(o)){say('У заказа '+nm+' уже есть факт: в архив убирают только заказы без факта');return false}
+  const a={id:uid(),date:r.date,u:now(),del:false,o:{customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),bw:S(o.bw),rm:S(o.rm),pf:PF(o.pf)}};
+  db.arch.push(a);r.orders.splice(i,1);r.u=now();
+  showToast({msg:'Заказ '+nm+' убран в архив',act:'Отменить'},6000);undo={k:'ar',rid:r.id,o,i,aid:a.id};return true}
+ function archBack(aid){const r=cur.value,a=db.arch.find(x=>x.id===aid&&!x.del);if(!r||!a)return;
+  const n=Object.assign({id:uid(),fact:'0',bq:'',op:''},a.o);r.orders.push(n);r.u=now();a.del=true;a.u=now();
+  showToast({msg:'Заказ «'+a.o.customer+' '+a.o.order+'» возвращён в отчёт на '+dm(r.date),act:'Отменить'},5000);undo={k:'ab',rid:r.id,nid:n.id,aid:a.id};
+  if(!archN.value)close()}
+ function archDel(aid){const a=db.arch.find(x=>x.id===aid&&!x.del);if(!a)return;a.del=true;a.u=now();
+  showToast({msg:'Заказ «'+a.o.customer+' '+a.o.order+'» удалён из архива',act:'Отменить'},5000);undo={k:'ad',aid};
+  if(!archN.value)close()}
+ const openArch=()=>{if(archN.value)show('arch')};
+ const archFromSheet=()=>{const id=W.id;if(id&&archOrd(id))close()};
+
+ // ---- активный заказ: первый заказ без факта развёрнут прямо в списке; факт, брак и вес заготовки вводятся на месте, без окна
+ const AC=reactive({id:'',fact:'',bq:'',bw:'',err:'',auto:null,btry:false,wk:false});
+ const actId=computed(()=>{const r=cur.value,o=r&&r.orders.find(x=>num(x.fact)===0);return o?o.id:''});
+ const actO=()=>{const r=cur.value;return r&&AC.id?r.orders.find(x=>x.id===AC.id)||null:null};
+ function loadAct(){const r=cur.value,o=r&&actId.value?r.orders.find(x=>x.id===actId.value):null;
+  Object.assign(AC,{id:o?o.id:'',fact:'',bq:o?S(o.bq):'',bw:o?S(o.bw):'',err:'',auto:null,btry:false,wk:!!(o&&S(o.bw).trim())})}
+ loadAct();watch(actId,loadAct);
+ const actFw=computed(()=>!AC.wk&&!!(S(AC.bq).trim()||AC.err==='bw'||(S(AC.bw).trim()&&!AC.auto)));   // поле веса: у заказа нет веса, а брак уже введён
+ const acv=k=>S(AC[k]).replace(/\s+/g,'');   // число из поля: пробелы между разрядами не мешают
+ const actBrk=computed(()=>r2(num(acv('bq'))*num(acv('bw'))/1000));
+ const actArea=computed(()=>{const o=actO();return o?area(Object.assign({},o,{fact:acv('fact')})):0});
+ const oArea=o=>o.id===AC.id&&o.id===actId.value?actArea.value:area(o);
+ const actNote=computed(()=>{const a=AC.auto;if(!a)return'';const rg=a.hi>a.lo?' '+fmt(a.lo)+'–'+fmt(a.hi):'';return a.src==='tech'?(rg?'вес был'+rg:'вес как раньше'):'вес по размеру'+rg});
+ function actFillBw(){if(AC.btry||AC.wk||!S(AC.bq).trim()||S(AC.bw).trim())return;AC.btry=true;const o=actO(),m=o&&memBw(mem.value,o);if(m){AC.bw=m.bw;AC.auto={date:m.date,src:m.src,lo:m.lo,hi:m.hi}}}
+ function onAct(k){AC.err='';if(k==='bw')AC.auto=null;else if(k==='bq')actFillBw()}
+ const focusAct=k=>nextTick(()=>{const e=document.querySelector('.ai input[data-ak="'+k+'"]');if(e)try{e.focus()}catch(x){}});
+ function actBad(k,msg){AC.err=k;if(msg)say(msg);focusAct(k)}
+ function actSave(){const r=cur.value,ex=actO();if(!r||!ex)return;
+  const g=k=>S(AC[k]).replace(/\s+/g,'');const f=g('fact'),bq=g('bq');let bw=g('bw');
+  for(const k of ['fact','bq','bw']){const v=g(k);if(v!==''&&!NUMRX.test(v)){actBad(k,'«'+FL[k]+'»: только число (цифры, точка или запятая)');return}}
+  if(!(num(f)>0)){actBad('fact',f===''?'Введите, сколько произведено':'Факт должен быть больше нуля');return}
+  if(bq&&!bw){actBad('bw');return}
+  if(!bq&&AC.auto)bw='';
+  const prev={fact:S(ex.fact),bq:S(ex.bq),bw:S(ex.bw),op:S(ex.op)},draft={fact:AC.fact,bq:AC.bq,bw:AC.bw};
+  ex.op='';Object.assign(ex,{fact:f,bq,bw});r.u=now();
+  showToast({msg:'Факт сохранён: '+ex.customer+' '+ex.order+' — '+fmt(num(f))+' шт',act:'Отменить'},5000);undo={k:'fa',rid:r.id,id:ex.id,prev,draft}}
+ function actEnter(k){if(k==='fact'){focusAct('bq');return}
+  if(k==='bq'&&actFw.value&&!S(AC.bw).trim()){focusAct('bw');return}
+  actSave()}
+ const actFocus=e=>{const t=e.target;if(t&&t.scrollIntoView)setTimeout(()=>{try{t.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}},320)};
+ const ctxOl=e=>{if(!(e.target.closest&&e.target.closest('input,textarea')))e.preventDefault()};
 
  // ---- печать маркировки: окно с полями (всё можно поменять), предпросмотр, печать на А4 в портрете; «1-6» и 6 копий = шесть листов с КИП 1/6 … 6/6
  const LB=reactive(lbFrom({},''));
- const LBROWS=[[{k:'part',l:'Часть',s:[['','—'],['1','1'],['2','2'],['3','3']]},{k:'dest',l:'Назначение',s:[['','—'],['VIKING','VIKING'],['Склад ГП','Склад ГП']]}],
-       [{k:'mark',l:'Марка'},{k:'qty',l:'Количество',im:'numeric'}],[{k:'kip',l:'№ кипы'},{k:'ship',l:'Дата отгрузки',d:1}]];
+ const LBROWS=[[{k:'part',l:'Часть',s:[['','Не выбрано'],['1','1'],['2','2'],['3','3']]},{k:'dest',l:'Назначение',s:[['','Не выбрано'],['VIKING','VIKING'],['Склад ГП','Склад ГП']]}],
+       [{k:'mark',l:'Марка'},{k:'qty',l:'Количество',im:'numeric'}],[{k:'kip',l:'№ кипы'},{k:'copies',l:'Копий',im:'numeric'}],[{k:'ship',l:'Дата отгрузки',d:1}]];
+ // выпадающие списки окна печати (свои, в стиле приложения): ddK - какой список открыт, ddI - подсвеченный пункт (стрелки на клавиатуре)
+ const ddK=ref(''),ddI=ref(0);
+ const ddLbl=f=>{const o=f.s.find(x=>x[0]===LB[f.k]);return o?o[1]:f.s[0][1]};
+ function ddTog(k){if(ddK.value===k){ddK.value='';return}const f=LBROWS.flat().find(x=>x.k===k);ddK.value=k;ddI.value=f?Math.max(0,f.s.findIndex(x=>x[0]===LB[k])):0}
+ function ddPick(f,v){LB[f.k]=v;onLb(f.k);ddK.value='';nextTick(()=>{const b=sheetEl.value&&sheetEl.value.querySelector('#dd-'+f.k);if(b)try{b.focus({preventScroll:true})}catch(x){}})}
+ function ddKey(e,f){const k=e.key,on=ddK.value===f.k,n=f.s.length;
+  if(k==='Escape'){if(on){ddK.value='';e.preventDefault();e.stopPropagation()}return}
+  if(k==='Tab'){ddK.value='';return}
+  if(k==='ArrowDown'||k==='ArrowUp'){e.preventDefault();e.stopPropagation();if(!on){ddTog(f.k);return}ddI.value=(ddI.value+(k==='ArrowDown'?1:n-1))%n;return}
+  if((k==='Home'||k==='End')&&on){e.preventDefault();ddI.value=k==='Home'?0:n-1;return}
+  if((k==='Enter'||k===' ')&&on){e.preventDefault();e.stopPropagation();ddPick(f,f.s[ddI.value][0])}}
+ document.addEventListener('pointerdown',e=>{if(ddK.value&&!(e.target&&e.target.closest&&e.target.closest('.dd.open')))ddK.value=''},true);
+ watch(()=>sheet.value,()=>{ddK.value=''});
  const lbPl=computed(()=>lbPlan(LB));
  const lbZ=computed(()=>{const w=vw.value;let sw;if(w>=1000){const W=Math.min(1120,w*.94);sw=W-52-28-360;const hz=(Math.min(vh.value*.86,900)-52-22-26-64)/582;return Math.max(.2,Math.min(1,(sw-2)/718,hz))}sw=Math.min(560,w)-36;return Math.max(.2,Math.min(1,(sw-2)/718))});
  const lbPrev=computed(()=>lblBake(lblBox(LB,lbPl.value.kips[0]||'')));
@@ -1542,7 +1675,7 @@ setup(){
   setTimeout(()=>{try{window.print()}catch(e){clean();say('Печать недоступна: сохраните PDF')}},80)}
  function lblPrint(){const p=lbPl.value;if(p.err){LB.err='copies';say(p.err);return}
   printOut(lblBake(p.kips.map(k=>lblPage(LB,k)).join('')),'@page{size:A4 portrait;margin:0}')}
- const dr=listDrag({root:()=>olistEl.value,sel:'.oc',scroller:()=>scrollEl.value,ok:()=>!open.value&&!calcOpen.value&&!!cur.value,onStart:()=>{tok=false},onDrop:moveOrder,hz:true,rt:true,onSwipe,leaves:willLeave});
+ const dr=listDrag({root:()=>olistEl.value,sel:'.oc',scroller:()=>scrollEl.value,ok:()=>!open.value&&!calcOpen.value&&!!cur.value,onStart:()=>{tok=false},onDrop:moveOrder,hz:true,rt:true,onSwipe,leaves:willLeave,leavesR:willArch});
  const onCard=id=>{if(dr.recent())return;openOrder(id)};
  const mv=(i,d)=>moveOrder(i,i+d);      // ПК: кнопки «выше / ниже» на карточке
  // клавиатура (ПК): Esc закрывает окно, N - новый заказ, T - сегодня, 1-4 - разделы, Ctrl+P - печать бланка; в калькуляторе работают цифры и знаки
@@ -1592,7 +1725,7 @@ setup(){
  const save=()=>{try{localStorage.setItem(K,JSON.stringify(db));saveBad=false}catch(e){if(!saveBad){saveBad=true;say('Не удалось сохранить: память браузера заполнена. Сделайте экспорт в «Ещё»')}}};
  watch(db,()=>{clearTimeout(st);st=setTimeout(()=>{if(window.requestIdleCallback)requestIdleCallback(save,{timeout:2000});else save()},500)},{deep:true});
  watch(cfg,()=>{try{localStorage.setItem(KS,JSON.stringify(cfg))}catch(e){}},{deep:true});
- watch(()=>[db.reports,db.days,db.customers,db.plans],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
+ watch(()=>[db.reports,db.days,db.customers,db.plans,db.arch],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
  // при запуске главная страница - сегодняшняя дата: отчёт за сегодня, если он уже есть, иначе пустой день с кнопкой «Начать отчёт»
  function landToday(){const t=today();nowDay.value=t;if(!cur.value||cur.value.date!==t){const tr=todayRep();dropEmpty();db.cur=tr?tr.id:null;pend.value=null}}
  landToday();
@@ -1616,9 +1749,9 @@ setup(){
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
- return{LB,LBROWS,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
+ return{ddK,ddI,ddLbl,ddTog,ddPick,ddKey,AC,actId,oArea,canArch,willArch,loadAct,archOrd,archL,archN,archBack,archDel,openArch,archFromSheet,edArch,onAct,actFw,actBrk,actArea,actNote,actSave,actEnter,actFocus,mvKey,ctxOl,LB,LBROWS,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
-  toastEl,landToday,ptrEl,ptrBusy,ptrMove,ptrCancel,refreshApp,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
+  toastEl,landToday,ptrEl,ptrBusy,ptrMove,ptrCancel,refreshApp,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drDown:dr.mdown,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,willLeave,nextDate,toastAct,toastShare,carryLbl,carryOff,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
   openDay,dayOk,delDay,openCalc,applyCalc,K,kVal,kErr,kOk,kIns,kName,kTop,kBig,kHint,kDigit,kDot,kOp,kBack,kClear,kEq,syncKey,syncTitle,syncSub,syncConnect,syncOff,syncNow,showInst,doInstall,offInst,isIos,
   theme,themePref,setTheme,THEMES,pg,nav,swn,PAGES,blank,bZoom,blankPagesH,blankInfo,wasteIn,rwIn,pdfBusy,blankDo,PROFILES,rmNote,rmRows,setPf,pend,viewDate,nowDay,desk,MDT,mdTab,mdn,dayPlan,dayPlanEdit,DNAV,dnav,mv,hotkey,bigZ,toToday,pickDate,pickOpen,goToDate,pz,pvEl,setZoom,pvStart,pvMove,pvEnd,startReport,onDay,selOrders,
@@ -1637,11 +1770,11 @@ template:`
     <template v-if="cur">
      <div class="sa">
      <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total) }}<small>м²</small></strong><div class="tb"><span>Брак за смену<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak) }} кг</b></div></div>
-     <div class="addrow"><button class="btn pri big" @click="openOrder()">Добавить заказ</button><button v-if="pendN" class="btn big" @click="openFacts">Факт ({{ pendN }})</button></div>
+     <div class="addrow"><button class="btn pri big" @click="openOrder()">Добавить заказ</button><button v-if="pendN" class="btn big" @click="openFacts">Факт ({{ pendN }})</button><button v-if="archN" type="button" class="btn big ico" :aria-label="'Архив заказов: '+archN" @click="openArch"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg><i class="bd">{{ archN }}</i></button></div>
      </div>
      <div class="lc">
-     <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @contextmenu.prevent><TransitionGroup name="li" tag="div">
-      <button v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :data-id="o.id" @click="onCard(o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(area(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" aria-label="Выше" @click.stop="mv(i,-1)" @keydown.enter.stop.prevent="mv(i,-1)" @keydown.space.stop.prevent="mv(i,-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Ниже" @click.stop="mv(i,1)" @keydown.enter.stop.prevent="mv(i,1)" @keydown.space.stop.prevent="mv(i,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Перенести на следующий день" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span></button>
+     <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @mousedown="drDown" @contextmenu="ctxOl"><TransitionGroup name="li" tag="div">
+      <div v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :class="{act:o.id===actId}" :data-id="o.id"><div class="oh" role="button" tabindex="0" @click="onCard(o.id)" @keydown.enter.self.prevent="onCard(o.id)" @keydown.space.self.prevent="onCard(o.id)" @keydown.alt.up.prevent="mvKey(i,-1,o.id)" @keydown.alt.down.prevent="mvKey(i,1,o.id)"><span class="n">{{ i+1 }}</span><span class="m"><span v-if="o.id===actId" class="ak">В работе</span><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small>{{ o.len }}×{{ o.wid }} · план {{ o.plan }} · факт&nbsp;{{ o.fact||'—' }}<template v-if="brk(o)>0"> · брак {{ fmt(brk(o)) }} кг</template><template v-if="isOpen(o)"> · не завершён</template></small></span><span class="a">{{ fmt(oArea(o)) }} м²</span><span class="ox"><span class="xb" role="button" tabindex="0" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" :class="{off:!canArch(o)}" role="button" tabindex="0" aria-label="В архив" @click.stop="archOrd(o.id)" @keydown.enter.stop.prevent="archOrd(o.id)" @keydown.space.stop.prevent="archOrd(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg></span><span class="xb" role="button" tabindex="0" aria-label="Перенести на следующий день" @click.stop="onSwipe(o.id,1)" @keydown.enter.stop.prevent="onSwipe(o.id,1)" @keydown.space.stop.prevent="onSwipe(o.id,1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg></span><span class="xb dx" role="button" tabindex="0" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span></div><span class="oa" aria-hidden="true"><span class="ob cb" :class="{off:carryOff(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h11M11 7l5 5-5 5M20 5v14"/></svg><i>{{ carryLbl(o) }}</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob ab" :class="{off:!canArch(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg><i>В архив</i></span><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="o.id===actId" class="ai" @focusin="actFocus"><div class="ar"><label>Произведено, шт<span class="inw"><input v-model="AC.fact" data-ak="fact" :class="{err:AC.err==='fact'}" inputmode="text" enterkeyhint="next" autocomplete="off" name="y7" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('fact')" @keydown.enter.prevent="actEnter('fact')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: произведено" @click="openCalc('fact','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label><label>Брак, шт<span class="inw"><input v-model="AC.bq" data-ak="bq" :class="{err:AC.err==='bq'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y8" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bq')" @keydown.enter.prevent="actEnter('bq')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: брак" @click="openCalc('bq','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label></div><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="actFw" class="ar one"><label>Вес заготовки, г<span class="inw"><input v-model="AC.bw" data-ak="bw" :class="{err:AC.err==='bw'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y9" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bw')" @keydown.enter.prevent="actEnter('bw')"></span></label></div></Transition><p class="ainfo" :class="{bad:AC.err==='bw'}"><template v-if="AC.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else>Площадь: <b>{{ fmt(actArea) }} м²</b><template v-if="actBrk>0"> · брак <b>{{ fmt(actBrk) }} кг</b></template><template v-if="actFw&&actNote"> · {{ actNote }}</template></template></p><div class="aact"><button type="button" class="btn" @click="onCard(o.id)">Изменить</button><button type="button" class="btn pri" @click="actSave">Сохранить факт</button></div></div></Transition></div>
      </TransitionGroup></div>
      <div v-if="dayPlan" class="g dw">
       <div class="rg" :class="{ok:dayPlan.pl>0&&dayPlan.done,no:!(dayPlan.pl>0)}" role="progressbar" aria-label="Выполнение плана на день" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="dayPlan.pl>0?Math.round(dayPlan.bar):0">
@@ -1892,7 +2025,7 @@ template:`
     </div>
     <div v-if="three" class="row"><button class="btn" :class="{inv:W.step===0}" :tabindex="W.step===0?-1:0" :aria-hidden="W.step===0" @click="back">Назад</button><button class="btn pri" @click="next">{{ W.step===2?'Добавить заказ':'Далее' }}</button></div>
     <div v-if="oneNew" class="row"><button class="btn" @click="saveMore">Добавить и ещё</button><button class="btn pri" @click="next">Добавить</button></div>
-    <div v-if="W.mode==='edit'" class="row"><button class="btn pri" @click="next">Сохранить</button></div>
+    <div v-if="W.mode==='edit'" class="row"><button v-if="edArch" type="button" class="btn" @click="archFromSheet">В архив</button><button class="btn pri" @click="next">Сохранить</button></div>
     <div v-if="W.mode==='fact'" class="row"><button class="btn" :class="{inv:W.qi===0}" :tabindex="W.qi===0?-1:0" :aria-hidden="W.qi===0" @click="factNext(-1)">Назад</button><button class="btn pri" @click="next">{{ W.qi===W.q.length-1?'Готово':'Далее' }}</button></div>
    </template>
    <div v-if="W.mode==='edit'" class="row"><button class="btn" @click="copyOrder">Скопировать заказ</button></div>
@@ -1908,10 +2041,12 @@ template:`
        <div class="lbe">
         <div v-for="(row,ri) in LBROWS" :key="'a'+ri" class="lbr" :class="'c'+row.length">
          <label v-for="(f,fi) in row" :key="f.k">{{ f.l }}
-          <span v-if="f.s" class="sel"><select v-model="LB[f.k]" @change="onLb(f.k)"><option v-for="o in f.s" :key="o[0]" :value="o[0]">{{ o[1] }}</option></select></span>
-          <input v-else v-model="LB[f.k]" :type="f.d?'date':'text'" :inputmode="f.im||'text'" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
+          <span v-if="f.s" class="dd" :class="{open:ddK===f.k}">
+           <button type="button" class="ddb" :id="'dd-'+f.k" aria-haspopup="listbox" :aria-expanded="ddK===f.k?'true':'false'" @click.prevent="ddTog(f.k)" @keydown="ddKey($event,f)"><span :class="{ddn:!LB[f.k]}">{{ ddLbl(f) }}</span><svg class="cv" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+           <span class="ddl g" role="listbox" :aria-labelledby="'dd-'+f.k"><button v-for="(o,oi) in f.s" :key="o[0]" type="button" role="option" tabindex="-1" class="ddo" :class="{on:LB[f.k]===o[0],hi:ddK===f.k&&ddI===oi,ddn:o[0]===''}" :aria-selected="LB[f.k]===o[0]?'true':'false'" @click.prevent="ddPick(f,o[0])"><span>{{ o[1] }}</span><svg class="ck" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></button></span>
+          </span>
+          <input v-else v-model="LB[f.k]" :class="{err:LB.err===f.k}" :type="f.d?'date':'text'" :inputmode="f.im||'text'" autocomplete="off" :name="'z'+ri+'_'+fi" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb(f.k)"></label>
         </div>
-        <div class="lbr c2"><label>Копий<input v-model="LB.copies" :class="{err:LB.err==='copies'}" inputmode="numeric" autocomplete="off" name="z9_0" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onLb('copies')"></label><label class="chk"><input type="checkbox" v-model="LB.tot"> КИП вида «1/6», а не «1»</label></div>
         <div class="row"><button class="btn pri" :disabled="!!lbPl.err" @click="lblPrint">Печать<template v-if="lbPl.n>1"> · {{ lbPl.n }} л.</template></button></div>
        </div>
       </div>
@@ -1968,6 +2103,15 @@ template:`
     <div class="row"><button class="btn pri" @click="syncNow(true)">Синхронизировать сейчас</button></div>
     <div class="row"><button class="btn dng" @click="sure('sy',syncOff)">{{ armed==='sy'?'Нажмите ещё раз':'Отключить синхронизацию' }}</button></div>
    </template>
+  </template>
+  <template v-else-if="sheet==='arch'">
+   <div class="grab"></div>
+   <div class="top2"><button class="ghost" @click="close">Закрыть</button><b>Архив заказов</b><span></span></div>
+   <div v-for="a in archL" :key="a.id" class="or ar">
+    <span class="m"><b class="nm"><span class="cu">{{ a.o.customer }}</span><span class="on">{{ a.o.order }}/{{ a.o.tech||'-' }}</span></b><small>{{ a.o.len }}×{{ a.o.wid }} · план {{ a.o.plan }}<template v-if="a.date"> · из отчёта {{ dm(a.date) }}</template></small></span>
+    <button type="button" class="btn sm pri" @click="archBack(a.id)">Вернуть на {{ dm(viewDate) }}</button>
+    <button type="button" class="btn sm ic" aria-label="Удалить из архива" @click="archDel(a.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+   </div>
   </template>
   <template v-else-if="sheet==='dayord'">
    <div class="grab"></div>
