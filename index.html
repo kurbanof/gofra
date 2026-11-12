@@ -40,6 +40,19 @@ html.tr *,html.tr *::before,html.tr *::after{transition:background-color .2s,col
 .dock.on::before{opacity:1}
 .fab{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;width:60px;height:60px;margin-left:-30px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;color:#1a1206;background:linear-gradient(180deg,#f0b967,#d8923a);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 26px rgba(216,146,58,.38),0 4px 10px var(--sh);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .3s var(--eo),opacity .3s ease,box-shadow .2s}
 .fab:active{transform:scale(.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 5px 14px rgba(216,146,58,.3),0 2px 6px var(--sh)}
+/* кнопка-бургер слева от панели разделов и боковая панель «Меню» */
+.bur,.thb{position:absolute;z-index:6;width:38px;height:38px;padding:0;border-radius:50%;display:grid;place-items:center;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;pointer-events:auto;transition:transform .15s var(--eo),background-color .3s var(--eio)}
+.bur:active,.thb:active{transform:scale(.93)}
+.top .bur{left:12px;top:calc(10px + env(safe-area-inset-top,0px))}
+.top.hide .bur{pointer-events:none}
+.scrim{position:fixed;inset:0;z-index:7;background:rgba(5,12,18,.4);opacity:0;visibility:hidden;transition:opacity .3s var(--eio),visibility 0s .3s}
+.scrim.open{opacity:1;visibility:visible;transition:opacity .3s var(--eio),visibility 0s}
+.drw{position:fixed;left:0;top:0;bottom:0;z-index:7;width:min(88vw,380px);display:flex;flex-direction:column;visibility:hidden;transform:translateX(-103%);transition:transform .3s var(--eo),visibility 0s .3s;background:var(--noise),color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-right:1px solid var(--edge);border-radius:0 28px 28px 0;box-shadow:inset -1px 0 0 var(--hi),14px 0 48px var(--sh);outline:none;touch-action:pan-y}
+.drw.open{visibility:visible;transform:none;transition:transform .3s var(--eo),visibility 0s}
+.dwh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 14px 6px 22px}
+.dwh b{font-size:24px;font-weight:700}
+.dwx{width:38px;height:38px;padding:0;border-radius:50%;display:grid;place-items:center;font:inherit;font-size:24px;line-height:1;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dwb{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:2px 16px calc(24px + env(safe-area-inset-bottom,0px))}
 .fab-enter-active,.fab-leave-active{transition:opacity .3s ease,transform .3s var(--eo)}
 .fab-enter-from,.fab-leave-to{opacity:0;transform:translateY(20px) scale(.7)}
 html.kbd .fab{opacity:0;pointer-events:none;transform:translateY(20px) scale(.7)}
@@ -62,7 +75,7 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 .dc small.hit{color:var(--ink);opacity:.85;overflow-wrap:anywhere}
 .fold{display:flow-root;padding:10px 14px 28px;margin:-10px -14px -38px}
 .g{background:var(--noise),var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--edge);border-radius:24px;box-shadow:inset 0 1px 0 var(--hi),0 12px 32px var(--sh)}
-.scroll .g{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--noise),var(--card);box-shadow:inset 0 1px 0 var(--hi),0 8px 22px var(--sh)}
+.scroll .g,.drw .g{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--noise),var(--card);box-shadow:inset 0 1px 0 var(--hi),0 8px 22px var(--sh)}
 .mut{color:var(--mut)}
 .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:0 0 16px}
 .dt{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left}
@@ -112,14 +125,23 @@ h2{font-size:20px;margin:18px 0 10px;font-weight:700}
 :root[data-theme=dark] .ai .ainfo.bad{color:#ff8a80}
 .ai .aact{display:flex;gap:10px;margin-top:10px}.ai .aact .btn{flex:1 1 0;min-width:0;padding:12px 10px}
 .nw{white-space:nowrap}
-.oc .pvw{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);grid-template-areas:"sz pl fa" "br br ed";gap:6px;margin-top:12px;padding-top:12px;cursor:default;background:linear-gradient(var(--edge),var(--edge)) top/100% 1px no-repeat}
-.pvt{min-width:0;padding:7px 9px 8px;border-radius:12px;background:var(--fld);box-shadow:inset 0 0 0 1px var(--edge)}
-.pvt.sz{grid-area:sz}.pvt.pl{grid-area:pl}.pvt.fa{grid-area:fa}.pvt.br{grid-area:br}.pve{grid-area:ed}
-@media(max-width:359px){.oc .pvw{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"sz ed" "pl fa" "br br"}}
-.pvt i{display:block;font-style:normal;font-size:12px;font-weight:600;line-height:1.25;color:var(--mut)}
-.pvt b{display:block;margin-top:1px;font-size:clamp(14px,4.4vw,17px);font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.oc .pvw{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;cursor:default;background:linear-gradient(var(--edge),var(--edge)) top/100% 1px no-repeat}
+.pvr{display:flex;align-items:center;gap:12px}
+.pvp{flex:1;min-width:0}
+.pvn{display:flex;align-items:baseline;gap:6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pvn b{font-size:clamp(17px,5vw,21px);font-weight:700;line-height:1.2}
+.pvn span{color:var(--mut);font-size:14px}
+.pvn em{margin-left:auto;font-style:normal;font-weight:700;font-size:15px;color:#9a5d12}
+:root[data-theme=dark] .pvn em{color:#f0b967}
+.pvbar{height:8px;margin-top:8px;border-radius:99px;background:var(--fld);box-shadow:inset 0 0 0 1px var(--edge);overflow:hidden}
+.pvbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f0b967,#d8923a);transition:width .3s var(--eo)}
+.pvl{display:flex;flex-direction:column;margin:0}
+.pvl>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 2px 3px;border-top:1px solid var(--edge)}
+.pvl dt{color:var(--mut);font-size:14px}
+.pvl dd{margin:0;font-size:16px;font-weight:700;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pve{flex:none;width:40px;height:40px}
 .oc.act .a{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.hpe{width:36px;height:36px}
+.hpe{width:36px;height:36px;flex:none}
 .pve,.hpe{display:grid;place-items:center;min-width:0;padding:0;border:0;border-radius:12px;color:#7a4a12;background:rgba(216,146,58,.15);box-shadow:inset 0 0 0 1px rgba(216,146,58,.3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s,transform .15s var(--eo)}
 .pve:hover,.hpe:hover{background:rgba(216,146,58,.26)}.pve:active,.hpe:active{transform:scale(.95)}
 :root[data-theme=dark] .pve,:root[data-theme=dark] .hpe{color:#f2d3a0;background:rgba(240,185,103,.13);box-shadow:inset 0 0 0 1px rgba(240,185,103,.28)}
@@ -472,10 +494,11 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
 @media (min-width:1000px){
  .top,.dock,.fab{display:none!important}
  .dnav{display:flex;align-items:center;justify-content:center;position:absolute;top:0;left:0;right:0;z-index:6;height:60px;padding:0 max(39px,calc((100% - 1240px)/2));background:color-mix(in srgb,var(--bg) 58%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
+ .dnav .bur{left:max(39px,calc((100% - 1240px)/2));top:11px}.dnav .thb{right:max(39px,calc((100% - 1240px)/2));top:11px}
  .dnav .pill{pointer-events:auto}.dnav .pill button{font-size:15px;padding:7px 22px}
- .dnav .dk{position:absolute;top:0;bottom:0;right:max(39px,calc((100% - 1240px)/2));display:flex;align-items:center;font-size:13px;color:var(--mut);white-space:nowrap}
+ .dnav .dk{position:absolute;top:0;bottom:0;right:calc(max(39px,calc((100% - 1240px)/2)) + 52px);display:flex;align-items:center;font-size:13px;color:var(--mut);white-space:nowrap}
 }
-@media (min-width:1000px) and (max-width:1099px){.dnav .dk{display:none}}
+@media (min-width:1000px) and (max-width:1239px){.dnav .dk{display:none}}
 @media (min-width:1000px){
  .scroll{padding:84px 24px 40px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--mut) 55%,transparent) transparent}
  .wrap{max-width:1240px}
@@ -501,7 +524,6 @@ textarea.err{border-color:#d9534f;box-shadow:0 0 0 3px #d9534f44}
  .dv.bl>.bkc{grid-column:2;grid-row:3/span 2}
  .dv.mon{grid-template-columns:minmax(0,5fr) minmax(0,4fr)}
  .dv.mon>.ca,.dv.mon>.cb{min-width:0}
- .dv.his{max-width:700px;margin:0 auto}
  .keys{display:flex;flex-direction:column;gap:6px;margin-top:22px;padding:16px 18px;font-size:14px;color:var(--mut)}.keys b{color:var(--ink);font-size:16px;margin-bottom:2px}
  kbd{display:inline-block;min-width:22px;padding:1px 7px;border-radius:7px;background:var(--fld);border:1px solid var(--edge);color:var(--ink);font:600 12px/18px Onest,system-ui,sans-serif;text-align:center}
  /* карточки заказов: кнопки для мыши вместо жестов */
@@ -581,8 +603,8 @@ const STEPS=[
 {t:'Расчёт брака',f:[{k:'bq',l:'Брак, заготовок (шт)',m:'numeric',opt:1},{k:'bw',l:'Вес одной заготовки, г',m:'decimal',opt:1}]}];
 const PAGES=[{v:'rep',t:'Отчёт'},{v:'bl',t:'Бланк'}],TABS=[{v:'rep',t:'Отчёт'},{v:'mon',t:'Месяц'},{v:'his',t:'Ещё'}];   // сверху: страницы раздела «Отчёт» (свайп), снизу: разделы
 const THEMES=[{v:'auto',t:'Как в системе'},{v:'light',t:'Светлая'},{v:'dark',t:'Тёмная'}];
-const IDX={rep:0,bl:1,mon:2,his:3};
-const DNAV=[{v:'rep',t:'Отчёт'},{v:'bl',t:'Бланк'},{v:'mon',t:'Месяц'},{v:'his',t:'Ещё'}];   // версия для ПК: все четыре раздела в одной верхней панели
+const IDX={bl:0,rep:1,mon:2};   // порядок кнопок в панели: Бланк, Отчёт, Месяц (по нему считается и направление анимации страниц)
+const DNAV=[{v:'bl',t:'Бланк'},{v:'rep',t:'Отчёт'},{v:'mon',t:'Месяц'}];   // версия для ПК: все четыре раздела в одной верхней панели
 // order form: layouts 'one' (one screen, fact and defect folded), 'three' (3 steps), 'six' (the old 6-step wizard); chosen in «Ещё → Настройки»
 const FI={customer:1,order:2,tech:3,len:4,wid:5,plan:6,fact:7,bq:8,bw:9,rm:10};   // neutral field names: nothing that Chrome or the keyboard could take for a login or an address form
 const FL={customer:'Заказчик',order:'Номер заказа',tech:'Техкарта',len:'Длина, мм',wid:'Ширина, мм',plan:'Нужно по заказу, шт',fact:'Произведено, шт',bq:'Брак, шт',bw:'Вес заготовки, г',rm:'Сырьё'};
@@ -607,7 +629,7 @@ const cleanDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?{date:S(x.date),m2
 const arr=v=>Array.isArray(v)?v:v&&typeof v==='object'?Object.values(v):[];
 const LB_SAVE=['part','mark','qty','kip','copies','ship','dest'];   // что на этикетке вводит человек: запоминается в заказе (lb), чтобы повторная печать не требовала ввода заново
 const lbPack=l=>{const o={};LB_SAVE.forEach(k=>{o[k]=S(l[k])});o.mark=o.mark.toUpperCase();o.cm=!!l.cm;o.nolast=!!l.nolast;return o};
-const fixLb=l=>{if(!l||typeof l!=='object')return undefined;const o={};LB_SAVE.forEach(k=>{if(l[k]!=null)o[k]=S(l[k]).slice(0,60)});o.mark=S(o.mark).toUpperCase();o.cm=l.cm===true;o.nolast=l.nolast===true;return o};
+const fixLb=l=>{if(!l||typeof l!=='object')return undefined;const o={};LB_SAVE.forEach(k=>{if(l[k]!=null)o[k]=S(l[k]).slice(0,60)});if(o.dest==='АВПЛ')o.dest='АПВЛ';o.mark=S(o.mark).toUpperCase();o.cm=l.cm===true;o.nolast=l.nolast===true;return o};
 const fixOrd=o=>({lb:fixLb(o.lb),id:S(o.id)||uid(),customer:S(o.customer),order:S(o.order),tech:S(o.tech),len:S(o.len),wid:S(o.wid),plan:S(o.plan),fact:S(o.fact),bq:S(o.bq),bw:S(o.bw),op:S(o.op),rm:S(o.rm).toUpperCase(),pf:PF(o.pf)});
 const fixRep=r=>r&&typeof r==='object'&&S(r.id)&&D10.test(S(r.date))?Object.assign({},r,{id:S(r.id),date:S(r.date),u:+r.u||0,waste:S(r.waste),rw:S(r.rw),orders:arr(r.orders).filter(o=>o&&typeof o==='object').map(fixOrd)}):null;
 const fixDay=x=>x&&typeof x==='object'&&D10.test(S(x.date))?Object.assign({},x,{date:S(x.date),m2:S(x.m2),ord:S(x.ord),sh:S(x.sh),brak:S(x.brak),u:+x.u||0}):null;
@@ -1022,7 +1044,7 @@ setup(){
  const db=reactive(load()),cfg=reactive(Object.assign({url:'',code:'',last:0},(()=>{try{return JSON.parse(localStorage.getItem(KS))||{}}catch(e){return{}}})()));
  const sync=reactive({busy:false,status:'',msg:''}),toast=reactive({msg:'',show:false,big:false,title:'',rows:[],note:'',act:'',text:''}),armed=ref('');
  const fold=reactive({sett:false,cust:false,bk:false}),toggleFold=k=>{fold[k]=!fold[k]};
- const tab=ref('rep'),pg=ref('rep'),swn=ref('sw'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false);
+ const tab=ref('rep'),pg=ref('rep'),swn=ref('sw'),dragging=ref(false),scrollEl=ref(null),sheetEl=ref(null),fileEl=ref(null),topHidden=ref(false),menu=ref(false),drwEl=ref(null);
  const sheet=ref(''),open=ref(false),oc=ref(0),calcOpen=ref(false),syncInp=ref('');
  const W=reactive({mode:'new',layout:'one',more:false,q:[],qi:0,step:0,id:null,err:'',o:{},auto:{size:null,bw:null,list:[],top:[]},bwTry:false,wk:false}),dateF=reactive({isNew:false,v:'',err:false}),D=reactive({orig:null,date:'',m2:'',ord:'',sh:'',brak:'',err:''});
  const mMonth=ref(null),mSel=ref(null),dp=ref(null),instOff=ref(false),pend=ref(null);
@@ -1048,7 +1070,7 @@ setup(){
  const total=computed(()=>cur.value?repTotal(cur.value):0);
  const totalBrak=computed(()=>cur.value?r2(repBrak(cur.value)):0);
  const customers=computed(()=>db.customers.filter(c=>!c.del).map(c=>c.n));
- const view=computed(()=>db.mode==='mon'?'mon':tab.value==='rep'&&pg.value==='bl'?'bl':tab.value);
+ const view=computed(()=>db.mode==='mon'?'mon':tab.value==='rep'&&pg.value==='bl'?'bl':'rep');
  // ---- навигация: нижняя панель «Отчёт / Месяц / Ещё»; внутри «Отчёта» страницы «Отчёт / Бланк» переключаются свайпом
  const nav=computed({get:()=>db.mode==='mon'?'mon':tab.value,set:v=>{if(v==='mon'){db.mode='mon'}else{db.mode='day';tab.value=v}}});
  // ПК: верхняя панель из четырёх разделов (Отчёт, Бланк, Месяц, Ещё)
@@ -1062,7 +1084,7 @@ setup(){
  const vw=ref(window.innerWidth||390),vh=ref(window.innerHeight||800);window.addEventListener('resize',()=>{vw.value=window.innerWidth||vw.value;vh.value=window.innerHeight||vh.value});
  // широкий экран (ПК, планшет в альбомной ориентации): другая вёрстка; жесты и разметка для телефона остаются как есть
  const DQ=window.matchMedia?matchMedia('(min-width:1000px)'):null,desk=ref(!!(DQ&&DQ.matches));
- const fabOn=computed(()=>view.value==='rep'&&!!cur.value&&!desk.value&&!open.value&&!calcOpen.value);   // круглая «+» только на телефоне, в дневном отчёте, пока не открыто окно
+ const fabOn=computed(()=>view.value==='rep'&&!!cur.value&&!desk.value&&!open.value&&!calcOpen.value&&!menu.value);   // круглая «+» только на телефоне, в дневном отчёте, пока не открыто окно
  if(DQ){const f=e=>{desk.value=!!e.matches};if(DQ.addEventListener)DQ.addEventListener('change',f);else if(DQ.addListener)DQ.addListener(f)}
  const fitW=computed(()=>desk.value?Math.min(1240,vw.value-64)-408:Math.min(560,vw.value-32));      // ширина предпросмотра: на ПК это левая колонка
  const fitZ=computed(()=>Math.min(1,Math.max(.2,(fitW.value-2)/SHEET_W)));
@@ -1582,9 +1604,14 @@ setup(){
  const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
 
  let tx=0,ty=0,t0=0,tok=false,tmd=false;
- const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!e.target.closest('.bch,.pvz.big,.ai');ptrStart(e)};
+ const tStart=e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;t0=Date.now();tmd=!!(e.target.closest&&e.target.closest('.mdsw'));tok=e.touches.length===1&&!open.value&&!calcOpen.value&&!menu.value&&!e.target.closest('.bch,.pvz.big,.ai');ptrStart(e)};
+ // свайп между разделами в порядке панели: Бланк - Отчёт - Месяц
+ const SWP=['bl','rep','mon'];
+ const swipeNav=d=>{const i=SWP.indexOf(view.value),j=i+d;if(i<0||j<0||j>=SWP.length)return;dnav.value=SWP[j]};
  const tEnd=e=>{ptrEnd();if(!tok)return;tok=false;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
-  if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){const v=view.value;if(dx<0&&v==='rep')pg.value='bl';else if(dx>0&&v==='bl')pg.value='rep';else if(v==='mon'&&tmd)mdTab.value=dx<0?'d':'m'}};
+  if(Math.abs(dx)>60&&Math.abs(dy)<Math.abs(dx)*.7&&Date.now()-t0<900){
+   if(view.value==='mon'&&tmd){if(dx<0)mdTab.value='d';else if(mdTab.value==='d')mdTab.value='m';else swipeNav(-1)}   // над плиткой «Месяц / День» свайп сначала переключает её, а из крайнего положения уходит на соседний раздел
+   else swipeNav(dx<0?1:-1)}};
   const olistEl=ref(null);
  // обновление страницы: в самом начале страницы потянуть вниз (телефон) или нажать кнопку в углу (компьютер)
  const ptrEl=ref(null),ptrBusy=ref(false);let ptr=null;const PTR_HIT=64,PTR_MAX=110;
@@ -1674,7 +1701,7 @@ setup(){
  // ---- печать маркировки: окно с полями (всё можно поменять), предпросмотр, печать на А4 в портрете; «1-6» и 6 копий = шесть листов с КИП 1/6 … 6/6
  const LB=reactive(lbFrom({},''));
  // поля правятся прямо на макете: c - ячейка в координатах листа (x1,y1,x2,y2), x - где начинается текст, fs - кегль, dd - выпадающий список, up - список открывается вверх
- const LBDD=[{k:'part',l:'Часть',s:[['','Не выбрано'],['1','1'],['2','2'],['3','3']]},{k:'dest',l:'Назначение',s:[['','Не выбрано'],['VIKING','VIKING'],['Склад ГП','Склад ГП'],['АВПЛ','АВПЛ']]}];
+ const LBDD=[{k:'part',l:'Часть',s:[['','Не выбрано'],['1','1'],['2','2'],['3','3']]},{k:'dest',l:'Назначение',s:[['','Не выбрано'],['VIKING','VIKING'],['Склад ГП','Склад ГП'],['АПВЛ','АПВЛ']]}];
  const DDF={part:LBDD[0],dest:LBDD[1]};
  const lbCell=(k,l,c,x,fs,o)=>Object.assign({k,l,c,x,fs,st:{left:(c[0]-LB_OX)+'px',top:(c[1]-LB_OY)+'px',width:(c[2]-c[0])+'px',height:(c[3]-c[1])+'px',paddingLeft:(x-c[0]-1)+'px'}},o||{});
  const LBI=[lbCell('part','Часть',[190,659,395,709],200,23.1,{dd:1}),lbCell('mark','Марка',[548,711,754,762],558.2,18.7,{m:1,ph:'МАРКА'}),
@@ -1724,6 +1751,9 @@ setup(){
  const pvId=ref('');
  const bqN=o=>num(o.bq)>0;
  const pvOn=o=>pvId.value===o.id&&o.id!==actId.value;
+ const pvFact=o=>fmt(num(o.fact));
+ const pvPct=o=>{const p=num(o.plan),f=num(o.fact);if(!(p>0))return'';return(f>=p?Math.round(f/p*100):Math.min(99,Math.floor(f/p*100)))+'\u00a0%'};   // 100 % только когда план действительно выполнен
+ const pvW=o=>num(o.plan)>0?Math.max(0,Math.min(100,num(o.fact)/num(o.plan)*100)).toFixed(1)+'%':'0%';
  const pvBrak=o=>{if(!bqN(o))return'—';const k=brk(o);return S(o.bq).trim()+'\u00a0шт'+(k>0?' / '+fmt(k)+'\u00a0кг':'')};
  const onHead=o=>{if(dr.recent()||o.id===actId.value)return;
   const on=pvId.value!==o.id;pvId.value=on?o.id:'';if(on)setTimeout(()=>pvVisible(o.id),330)};
@@ -1749,15 +1779,23 @@ setup(){
   else if(k==='Enter'||k==='=')(kOpIn(K.x)&&!K.done)?kEq():applyCalc();
   else if(k==='Backspace')kBack();else if(k==='Delete'||k==='c'||k==='C'||k==='с'||k==='С')kClear();else h=false;
   if(h)e.preventDefault();return h}
+ // боковая панель «Меню» (бывший раздел «Ещё»): кнопка-бургер слева от панели разделов
+ const openMenu=()=>{menu.value=true;setTimeout(()=>{const d=drwEl.value;if(d)try{d.focus({preventScroll:true})}catch(x){}},80)};
+ const closeMenu=()=>{menu.value=false};
+ let dwx=0,dwy=0;
+ const dwStart=e=>{const t=e.touches[0];dwx=t.clientX;dwy=t.clientY};
+ const dwEnd=e=>{const t=e.changedTouches[0],dx=t.clientX-dwx,dy=t.clientY-dwy;if(dx<-60&&Math.abs(dy)<Math.abs(dx)*.7)closeMenu()};   // свайп влево по панели закрывает её
+ const flipTheme=()=>setTheme(theme.value==='dark'?'light':'dark');   // кнопка на панели ПК: светлая / тёмная, выбор запоминается
  function hotkey(e){const t=e.target||{},typing=t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||!!t.isContentEditable,k=e.key;
-  if(k==='Escape'){if(calcOpen.value){calcOpen.value=false;e.preventDefault();return true}if(open.value){close();e.preventDefault();return true}if(toast.show&&toast.big){hideToast();return true}return false}
+  if(k==='Escape'){if(calcOpen.value){calcOpen.value=false;e.preventDefault();return true}if(open.value){close();e.preventDefault();return true}if(menu.value){closeMenu();e.preventDefault();return true}if(toast.show&&toast.big){hideToast();return true}return false}
   if((e.ctrlKey||e.metaKey)&&e.code==='KeyP'){e.preventDefault();if(view.value==='bl'&&cur.value&&!open.value)blankDo('print');else say('Печать бланка: раздел «Бланк», кнопка «Печать»');return true}
   if(calcOpen.value)return e.ctrlKey||e.metaKey||e.altKey?false:calcKey(e);
   if(typing||open.value||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey)return false;
   const c=e.code||'';
+  if(menu.value&&!/^(?:Digit|Numpad)4$/.test(c))return false;
   if(c==='KeyN'){e.preventDefault();if(view.value!=='rep'&&view.value!=='bl')dnav.value='rep';if(cur.value)openOrder();else startReport();return true}
   if(c==='KeyT'){e.preventDefault();toToday();return true}
-  const m=/^(?:Digit|Numpad)([1-4])$/.exec(c);if(m){e.preventDefault();dnav.value=DNAV[+m[1]-1].v;return true}
+  const m=/^(?:Digit|Numpad)([1-4])$/.exec(c);if(m){e.preventDefault();if(+m[1]===4){if(menu.value)closeMenu();else openMenu()}else dnav.value=DNAV[+m[1]-1].v;return true}
   return false}
 
   let lastY=0,tick=false;
@@ -1771,7 +1809,7 @@ setup(){
   if(i>-1&&i<ins.length-1)ins[i+1].focus();else{const f=primary();f&&f()}}
  const onFocusIn=e=>{if((e.target.tagName==='INPUT'&&e.target.type!=='date')||e.target.tagName==='TEXTAREA')setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'})}catch(x){}},280)};
 
- const isRoot=computed(()=>!open.value&&!calcOpen.value&&!(toast.show&&toast.big)&&db.mode!=='mon'&&tab.value==='rep'&&pg.value==='rep');
+ const isRoot=computed(()=>!open.value&&!calcOpen.value&&!menu.value&&!(toast.show&&toast.big)&&db.mode!=='mon'&&tab.value==='rep'&&pg.value==='rep');
  let syncT,trapped=false,ignorePop=false;
  const schedule=()=>{clearTimeout(syncT);syncT=setTimeout(syncTrap,40)};
  function syncTrap(){try{if(!isRoot.value&&!trapped){history.pushState({t:1},'');trapped=true}
@@ -1780,13 +1818,14 @@ setup(){
   if(calcOpen.value){calcOpen.value=false;return}
   if(toast.show&&toast.big&&!open.value){hideToast();return}
   if(open.value){if(sheet.value==='impdup'){show('imp');return}if(sheet.value==='waste'&&WA.q){show('unf');return}if(sheet.value==='order'&&W.mode==='new'&&W.step>0)back();else if(sheet.value==='order'&&W.mode==='fact'&&W.qi>0)factNext(-1);else close();return}
+  if(menu.value){menu.value=false;return}
   if(db.mode==='mon'||tab.value!=='rep'){db.mode='day';tab.value='rep';return}
   if(pg.value==='bl')pg.value='rep'}
  watch(isRoot,schedule);
 
  let st,dt;
  let saveBad=false;
- const save=()=>{try{localStorage.setItem(K,JSON.stringify(db));saveBad=false}catch(e){if(!saveBad){saveBad=true;say('Не удалось сохранить: память браузера заполнена. Сделайте экспорт в «Ещё»')}}};
+ const save=()=>{try{localStorage.setItem(K,JSON.stringify(db));saveBad=false}catch(e){if(!saveBad){saveBad=true;say('Не удалось сохранить: память браузера заполнена. Сделайте экспорт в меню')}}};
  watch(db,()=>{clearTimeout(st);st=setTimeout(()=>{if(window.requestIdleCallback)requestIdleCallback(save,{timeout:2000});else save()},500)},{deep:true});
  watch(cfg,()=>{try{localStorage.setItem(KS,JSON.stringify(cfg))}catch(e){}},{deep:true});
  watch(()=>[db.reports,db.days,db.customers,db.plans,db.arch],()=>{clearTimeout(dt);dt=setTimeout(()=>syncNow(false),1500)},{deep:true});
@@ -1814,7 +1853,7 @@ setup(){
   addEventListener('online',go);setInterval(go,60000);syncNow(false);
   if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
- return{fabOn,lbSave,pvId,pvOn,pvBrak,bqN,onHead,needScroll,scrollAct,scrollActSoon,ddK,ddI,ddLbl,ddTog,ddPick,ddKey,AC,actId,oArea,liveM2,liveBrk,canArch,willArch,loadAct,archOrd,archL,archN,archBack,archDel,openArch,archFromSheet,edArch,onAct,actFw,actBrk,actArea,actNote,actSave,actEnter,actFocus,mvKey,ctxOl,LB,LBI,LBDI,DDF,lbNoQ,lbSuf,lbFs,ddSt,onLbIn,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
+ return{pvFact,pvPct,pvW,menu,drwEl,openMenu,closeMenu,dwStart,dwEnd,flipTheme,swipeNav,fabOn,lbSave,pvId,pvOn,pvBrak,bqN,onHead,needScroll,scrollAct,scrollActSoon,ddK,ddI,ddLbl,ddTog,ddPick,ddKey,AC,actId,oArea,liveM2,liveBrk,canArch,willArch,loadAct,archOrd,archL,archN,archBack,archDel,openArch,archFromSheet,edArch,onAct,actFw,actBrk,actArea,actNote,actSave,actEnter,actFocus,mvKey,ctxOl,LB,LBI,LBDI,DDF,lbNoQ,lbSuf,lbFs,ddSt,onLbIn,lbPl,lbZ,lbPrev,lbInfo,openLabel,onLb,lblPrint,db,cfg,sync,toast,armed,tab,fold,toggleFold,foldIn,foldOut,colIn,colOut,dragging,resetScroll,shStart:sw.start,shMove:sw.move,shEnd:e=>sw.end(e,false),shCancel:e=>sw.end(e,true),backStep,isRoot,cwStart:cw.start,cwMove:cw.move,cwEnd:e=>cw.end(e,false),cwCancel:e=>cw.end(e,true),cdrag,calcEl,scrollEl,sheetEl,sheet,open,oc,calcOpen,syncInp,W,dateF,D,mMonth,mSel,
   reports,cur,repTotal,total,customers,view,repText,monthTitle,days,realDays,liveDays,mLive,mdays,mdaysDesc,selDay,mTot,mgN,dTot,dgN,dTitle,hq,hRes,hRows,shiftMonth,finState,finLabel,finishReport,exportData,pickFile,onFile,fileEl,topHidden,onScroll,
   toastEl,landToday,ptrEl,ptrBusy,ptrMove,ptrCancel,refreshApp,tsStart:ts.start,tsMove:ts.move,tsEnd:e=>ts.end(e,false),tsCancel:e=>ts.end(e,true),lastOrd,unfLeft,isOpen,finAns,WA,wasteOk,ordBrak,wasteSum,curWaste,hideToast,olistEl,drStart:dr.start,drDown:dr.mdown,drMove:dr.move,drEnd:e=>dr.end(e,false),drCancel:e=>dr.end(e,true),onCard,moveOrder,onSwipe,toastAct,toastShare,orderText,copyOrder,pasteOrder,onPaste,copy,sure,show,close,delCust,openDate,dateOk,goDate,renameDate,openReport,delReport,shownSteps,brakNow,totalBrak,brk,nextLabel,sugs,openOrder,next,back,pick,onType,pickTech,techChips,techK,pickSize,sizeChips,sizeNote,delOrder,
   bwNote,fwOn,prefs,setInput,INPUTS,GROUPS,FL,FI,three,oneNew,gOn,gHead,lastK,focusK0,orderTitle,orderCnt,barOn,barPct,onCommit,toggleMore,saveNow,saveMore,factNext,openFacts,pendN,nfN,finishNow,
@@ -1825,8 +1864,8 @@ setup(){
 template:`
 <div class="shell" @touchstart.passive="tStart" @touchmove.passive="ptrMove" @touchend.passive="tEnd" @touchcancel.passive="ptrCancel">
  <div class="ptr" ref="ptrEl" :class="{spin:ptrBusy}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div>
- <header class="dnav"><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–4 — разделы</span></header>
- <div class="top" :class="{hide:topHidden}"><Pill :items="DNAV" v-model="dnav"/></div>
+ <header class="dnav"><button type="button" class="g bur" aria-label="Меню" :aria-expanded="menu" @click="openMenu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><Pill class="nav dn" :items="DNAV" v-model="dnav"/><span class="dk">N — новый заказ · T — сегодня · 1–3 — разделы · 4 — меню</span><button type="button" class="g thb" :aria-label="theme==='dark'?'Светлая тема':'Тёмная тема'" @click="flipTheme"><svg v-if="theme==='dark'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2.5 12h2M19.5 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg v-else width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></header>
+ <div class="top" :class="{hide:topHidden}"><button type="button" class="g bur" aria-label="Меню" :aria-expanded="menu" @click="openMenu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><Pill :items="DNAV" v-model="dnav"/></div>
  <main class="scroll" ref="scrollEl" @scroll.passive="onScroll"><div class="wrap">
   <div v-if="showInst" class="g inst"><span>{{ desk?'Установите приложение на компьютер':'Добавьте приложение на главный экран' }}</span><button class="btn sm pri" @click="doInstall">{{ desk?'Установить':'Добавить' }}</button><button class="x" @click="offInst" aria-label="Скрыть">×</button></div>
   <Transition :name="swn" mode="out-in" @before-enter="resetScroll">
@@ -1839,7 +1878,7 @@ template:`
      </div>
      <div class="lc">
      <div class="olist" ref="olistEl" @touchstart.passive="drStart" @touchmove="drMove" @touchend="drEnd" @touchcancel="drCancel" @mousedown="drDown" @contextmenu="ctxOl"><TransitionGroup name="li" tag="div">
-      <div v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :class="{act:o.id===actId}" :data-id="o.id"><div class="oh" :role="o.id===actId?'group':'button'" tabindex="0" :aria-expanded="o.id===actId?undefined:pvOn(o)" @click="onHead(o)" @keydown.enter.self.prevent="onHead(o)" @keydown.space.self.prevent="onHead(o)" @keydown.alt.up.prevent="mvKey(i,-1,o.id)" @keydown.alt.down.prevent="mvKey(i,1,o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small><span class="nw">{{ o.len }}×{{ o.wid }}</span> · <span class="nw">план {{ o.plan }}</span> · <span class="nw">факт&nbsp;{{ o.fact||'—' }}</span><template v-if="bqN(o)"> · <span class="nw">брак {{ o.bq }}&nbsp;шт</span></template><template v-if="isOpen(o)"> · <span class="nw">не завершён</span></template></small></span><span class="a">{{ fmt(oArea(o)) }} м²<button v-if="o.id===actId" type="button" class="hpe" aria-label="Изменить заказ" @click.stop="onCard(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></button></span><span class="ox"><span v-if="o.id!==actId" class="xb" role="button" tabindex="0" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" :class="{off:!canArch(o)}" role="button" tabindex="0" aria-label="В архив" @click.stop="archOrd(o.id)" @keydown.enter.stop.prevent="archOrd(o.id)" @keydown.space.stop.prevent="archOrd(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg></span><span class="xb dx" role="button" tabindex="0" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span></div><span class="oa" aria-hidden="true"><span class="ob ab" :class="{off:!canArch(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg><i>В архив</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="pvOn(o)" class="pvw"><div class="pvt sz"><i>Размеры</i><b>{{ o.len }}×{{ o.wid }}</b></div><div class="pvt pl"><i>План</i><b>{{ o.plan }}</b></div><div class="pvt fa"><i>Факт</i><b>{{ o.fact||'—' }}</b></div><div class="pvt br"><i>Брак</i><b>{{ pvBrak(o) }}</b></div><button type="button" class="pve" aria-label="Изменить заказ" @click.stop="onCard(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></button></div></Transition><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="o.id===actId" class="ai" @focusin="actFocus"><div class="ar"><label>Произведено, шт<span class="inw"><input v-model="AC.fact" data-ak="fact" :class="{err:AC.err==='fact'}" inputmode="text" enterkeyhint="next" autocomplete="off" name="y7" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('fact')" @keydown.enter.prevent="actEnter('fact')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: произведено" @click="openCalc('fact','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label><label>Брак, шт<span class="inw"><input v-model="AC.bq" data-ak="bq" :class="{err:AC.err==='bq'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y8" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bq')" @keydown.enter.prevent="actEnter('bq')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: брак" @click="openCalc('bq','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label></div><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="actFw" class="ar one"><label>Вес заготовки, г<span class="inw"><input v-model="AC.bw" data-ak="bw" :class="{err:AC.err==='bw'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y9" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bw')" @keydown.enter.prevent="actEnter('bw')"></span></label></div></Transition><p v-if="AC.err==='bw'||actBrk>0||(actFw&&actNote)" class="ainfo" :class="{bad:AC.err==='bw'}"><template v-if="AC.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else><template v-if="actBrk>0">Брак: <b>{{ fmt(actBrk) }} кг</b></template><template v-if="actFw&&actNote"><template v-if="actBrk>0"> · </template>{{ actNote }}</template></template></p><div class="aact"><button type="button" class="btn" @click="openLabel(o.id)">Распечатать</button><button type="button" class="btn pri" @click="actSave">Сохранить</button></div></div></Transition></div>
+      <div v-for="(o,i) in cur.orders" :key="o.id" class="g oc" :class="{act:o.id===actId}" :data-id="o.id"><div class="oh" :role="o.id===actId?'group':'button'" tabindex="0" :aria-expanded="o.id===actId?undefined:pvOn(o)" @click="onHead(o)" @keydown.enter.self.prevent="onHead(o)" @keydown.space.self.prevent="onHead(o)" @keydown.alt.up.prevent="mvKey(i,-1,o.id)" @keydown.alt.down.prevent="mvKey(i,1,o.id)"><span class="n">{{ i+1 }}</span><span class="m"><b class="nm"><span class="cu">{{ o.customer }}</span><span class="on">{{ o.order }}/{{ o.tech||'-' }}</span></b><small><span class="nw">{{ o.len }}×{{ o.wid }}</span> · <span class="nw">план {{ o.plan }}</span> · <span class="nw">факт&nbsp;{{ o.fact||'—' }}</span><template v-if="bqN(o)"> · <span class="nw">брак {{ o.bq }}&nbsp;шт</span></template><template v-if="isOpen(o)"> · <span class="nw">не завершён</span></template></small></span><span class="a">{{ fmt(oArea(o)) }} м²<button v-if="o.id===actId" type="button" class="hpe" aria-label="Изменить заказ" @click.stop="onCard(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></button></span><span class="ox"><span v-if="o.id!==actId" class="xb" role="button" tabindex="0" aria-label="Печать маркировки" @click.stop="openLabel(o.id)" @keydown.enter.stop.prevent="openLabel(o.id)" @keydown.space.stop.prevent="openLabel(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg></span><span class="xb" :class="{off:!canArch(o)}" role="button" tabindex="0" aria-label="В архив" @click.stop="archOrd(o.id)" @keydown.enter.stop.prevent="archOrd(o.id)" @keydown.space.stop.prevent="archOrd(o.id)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg></span><span class="xb dx" role="button" tabindex="0" aria-label="Удалить" @click.stop="onSwipe(o.id,2)" @keydown.enter.stop.prevent="onSwipe(o.id,2)" @keydown.space.stop.prevent="onSwipe(o.id,2)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span></span></div><span class="oa" aria-hidden="true"><span class="ob ab" :class="{off:!canArch(o)}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 12h4"/></svg><i>В архив</i></span><span class="ob db"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg><i>Удалить</i></span></span><span class="pa" aria-hidden="true"><span class="ob pb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg><i>Печать</i></span></span><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="pvOn(o)" class="pvw"><div class="pvr"><div class="pvp"><div class="pvn"><b>{{ pvFact(o) }}</b><span v-if="num(o.plan)>0">/ {{ fmt(num(o.plan)) }}</span><em v-if="num(o.plan)>0">{{ pvPct(o) }}</em></div><div v-if="num(o.plan)>0" class="pvbar"><i :style="{width:pvW(o)}"></i></div></div><button type="button" class="pve" aria-label="Изменить заказ" @click.stop="onCard(o.id)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></button></div><dl class="pvl"><div><dt>Размеры</dt><dd>{{ o.len }} × {{ o.wid }}</dd></div><div><dt>Брак</dt><dd>{{ pvBrak(o) }}</dd></div></dl></div></Transition><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="o.id===actId" class="ai" @focusin="actFocus"><div class="ar"><label>Произведено, шт<span class="inw"><input v-model="AC.fact" data-ak="fact" :class="{err:AC.err==='fact'}" inputmode="text" enterkeyhint="next" autocomplete="off" name="y7" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('fact')" @keydown.enter.prevent="actEnter('fact')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: произведено" @click="openCalc('fact','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label><label>Брак, шт<span class="inw"><input v-model="AC.bq" data-ak="bq" :class="{err:AC.err==='bq'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y8" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bq')" @keydown.enter.prevent="actEnter('bq')"><button type="button" class="calcb" tabindex="-1" aria-label="Калькулятор: брак" @click="openCalc('bq','a')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01" stroke-width="2.4"/></svg></button></span></label></div><Transition :css="false" @enter="colIn" @leave="colOut"><div v-if="actFw" class="ar one"><label>Вес заготовки, г<span class="inw"><input v-model="AC.bw" data-ak="bw" :class="{err:AC.err==='bw'}" inputmode="text" enterkeyhint="done" autocomplete="off" name="y9" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" @input="onAct('bw')" @keydown.enter.prevent="actEnter('bw')"></span></label></div></Transition><p v-if="AC.err==='bw'||actBrk>0||(actFw&&actNote)" class="ainfo" :class="{bad:AC.err==='bw'}"><template v-if="AC.err==='bw'">Укажите вес одной заготовки или очистите количество брака.</template><template v-else><template v-if="actBrk>0">Брак: <b>{{ fmt(actBrk) }} кг</b></template><template v-if="actFw&&actNote"><template v-if="actBrk>0"> · </template>{{ actNote }}</template></template></p><div class="aact"><button type="button" class="btn" @click="openLabel(o.id)">Распечатать</button><button type="button" class="btn pri" @click="actSave">Сохранить</button></div></div></Transition></div>
      </TransitionGroup></div>
      <div v-if="dayPlan" class="g dw">
       <div class="rg" :class="{ok:dayPlan.pl>0&&dayPlan.done,no:!(dayPlan.pl>0)}" role="progressbar" aria-label="Выполнение плана на день" aria-valuemin="0" aria-valuemax="100" :aria-valuenow="dayPlan.pl>0?Math.round(dayPlan.bar):0">
@@ -1907,35 +1946,6 @@ template:`
     </template>
     <div v-else class="g empty"><p>За {{ dayTxt(viewDate) }} заказов нет.</p><button class="btn pri big" @click="startReport">Начать отчёт</button></div>
    </section>
-   <section v-else-if="view==='his'" key="his" class="dv his">
-    <div class="head"><h1>Ещё</h1></div>
-    <div class="blk">
-     <h2>Синхронизация</h2>
-    <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
-    <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
-    </div>
-    <div class="blk">
-     <button type="button" class="sech" :class="{on:fold.sett}" :aria-expanded="fold.sett" @click="toggleFold('sett')"><span>Настройки</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
-     <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.sett" class="fold">
-     <div class="g opts" role="radiogroup" aria-label="Тема"><div class="oh">Тема</div>
-      <button v-for="m in THEMES" :key="m.v" type="button" class="opt" :class="{on:themePref===m.v}" role="radio" :aria-checked="themePref===m.v" @click="setTheme(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
-     </div>
-     <div class="g opts" role="radiogroup" aria-label="Ввод заказа"><div class="oh">Ввод заказа</div>
-      <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
-     </div>
-     </div></Transition>
-    </div>
-    <div class="blk">
-     <button type="button" class="sech" :class="{on:fold.cust}" :aria-expanded="fold.cust" @click="toggleFold('cust')"><span>Сохранённые заказчики</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
-     <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.cust" class="fold">
-    <TransitionGroup name="li" tag="div">
-     <div v-for="c in customers" :key="c" class="g item"><div class="t"><b>{{ c }}</b></div><button class="btn sm dng" @click="sure('c'+c,()=>delCust(c))">{{ armed==='c'+c?'Нажмите ещё раз':'Удалить' }}</button></div>
-    </TransitionGroup>
-    <p v-if="!customers.length" class="mut">Имена появятся после первого заказа.</p>
-    </div></Transition>
-    </div>
-     <div class="g keys"><b>Клавиши на компьютере</b><span><kbd>N</kbd> новый заказ</span><span><kbd>T</kbd> вернуться на сегодня</span><span><kbd>1</kbd>–<kbd>4</kbd> Отчёт, Бланк, Месяц, Ещё</span><span><kbd>Esc</kbd> закрыть окно</span><span><kbd>Ctrl</kbd>+<kbd>P</kbd> печать бланка</span><span>В калькуляторе: цифры, <kbd>+</kbd> <kbd>−</kbd> <kbd>*</kbd> <kbd>/</kbd>, <kbd>Enter</kbd> — равно / подставить</span></div>
-   </section>
    <section v-else key="mon" class="dv mon">
     <div class="head"><div class="mn"><button class="btn sm" @click="shiftMonth(-1)" aria-label="Предыдущий месяц">‹</button><h1>{{ monthTitle }}</h1><button class="btn sm" @click="shiftMonth(1)" aria-label="Следующий месяц">›</button></div></div>
      <div class="ca">
@@ -2002,6 +2012,38 @@ template:`
  <Transition name="fab"><button v-if="fabOn" type="button" class="fab" aria-label="Добавить заказ" @click="openOrder()"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></Transition>
 </div>
 <Teleport to="body">
+ <div class="scrim" :class="{open:menu}" @click="closeMenu"></div>
+ <aside class="drw" :class="{open:menu}" ref="drwEl" role="dialog" aria-modal="true" aria-label="Меню" :aria-hidden="!menu" tabindex="-1" @touchstart.passive="dwStart" @touchend.passive="dwEnd">
+  <div class="dwh"><b>Меню</b><button type="button" class="g dwx" aria-label="Закрыть" @click="closeMenu">×</button></div>
+  <div class="dwb">
+    <div class="blk">
+    <h2>Синхронизация</h2>
+   <div class="g sy"><div class="m"><b>{{ syncTitle }}</b><small>{{ syncSub }}</small></div><button class="btn sm" @click="show('sync')">{{ cfg.url?'Настроить':'Подключить' }}</button></div>
+   <div class="g sy io"><div class="m"><b>Резервная копия</b></div><button class="btn sm" @click="exportData">Экспорт</button><button class="btn sm" @click="pickFile">Импорт</button><input type="file" ref="fileEl" accept=".json,application/json,text/plain" hidden @change="onFile"></div>
+   </div>
+   <div class="blk">
+    <button type="button" class="sech" :class="{on:fold.sett}" :aria-expanded="fold.sett" @click="toggleFold('sett')"><span>Настройки</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+    <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.sett" class="fold">
+    <div class="g opts" role="radiogroup" aria-label="Тема"><div class="oh">Тема</div>
+     <button v-for="m in THEMES" :key="m.v" type="button" class="opt" :class="{on:themePref===m.v}" role="radio" :aria-checked="themePref===m.v" @click="setTheme(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
+    </div>
+    <div class="g opts" role="radiogroup" aria-label="Ввод заказа"><div class="oh">Ввод заказа</div>
+     <button v-for="m in INPUTS" :key="m.v" type="button" class="opt" :class="{on:prefs.input===m.v}" role="radio" :aria-checked="prefs.input===m.v" @click="setInput(m.v)"><span class="rd"></span><span class="m"><b>{{ m.t }}</b></span></button>
+    </div>
+    </div></Transition>
+   </div>
+   <div class="blk">
+    <button type="button" class="sech" :class="{on:fold.cust}" :aria-expanded="fold.cust" @click="toggleFold('cust')"><span>Сохранённые заказчики</span><i class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></i></button>
+    <Transition :css="false" @enter="foldIn" @leave="foldOut"><div v-if="fold.cust" class="fold">
+   <TransitionGroup name="li" tag="div">
+    <div v-for="c in customers" :key="c" class="g item"><div class="t"><b>{{ c }}</b></div><button class="btn sm dng" @click="sure('c'+c,()=>delCust(c))">{{ armed==='c'+c?'Нажмите ещё раз':'Удалить' }}</button></div>
+   </TransitionGroup>
+   <p v-if="!customers.length" class="mut">Имена появятся после первого заказа.</p>
+   </div></Transition>
+   </div>
+    <div class="g keys"><b>Клавиши на компьютере</b><span><kbd>N</kbd> новый заказ</span><span><kbd>T</kbd> вернуться на сегодня</span><span><kbd>1</kbd>–<kbd>3</kbd> Бланк, Отчёт, Месяц</span><span><kbd>4</kbd> это меню</span><span><kbd>Esc</kbd> закрыть окно</span><span><kbd>Ctrl</kbd>+<kbd>P</kbd> печать бланка</span><span>В калькуляторе: цифры, <kbd>+</kbd> <kbd>−</kbd> <kbd>*</kbd> <kbd>/</kbd>, <kbd>Enter</kbd> — равно / подставить</span></div>
+  </div>
+ </aside>
  <div class="ov" :class="{open:open}" @click="close"></div>
  <div class="g sheet" :class="{open:open,drag:dragging,lblw:sheet==='lbl'}" ref="sheetEl" @focusin="onFocusIn" @keydown="onKey" @touchstart.passive="shStart" @touchmove="shMove" @touchend="shEnd" @touchcancel="shCancel"><div :key="oc">
   <template v-if="sheet==='date'">
