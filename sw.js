@@ -1,4 +1,4 @@
-const C='gofro-v27',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
+const C='gofro-v28',F=['./','index.html','manifest.json','icon-192.png','icon-512.png'];
 // optional files: Vue (next to the page for the Windows package, otherwise from the CDN) and the font; a failure here never breaks the install
 const OPT=['vue.global.prod.js','https://cdn.jsdelivr.net/npm/vue@3.5.13/dist/vue.global.prod.js','https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap'];
 const EXT=['cdn.jsdelivr.net','unpkg.com','cdnjs.cloudflare.com','fonts.googleapis.com','fonts.gstatic.com'];
