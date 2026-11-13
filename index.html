@@ -1882,7 +1882,7 @@ template:`
     <div class="head"><div class="hl"><h1 class="dtw"><span class="dt">План на {{ dm(viewDate) }}</span><input class="dpk" type="date" :value="viewDate" @change="pickDate" @click="pickOpen" aria-label="Выбрать дату"></h1></div><button v-if="viewDate!==nowDay" type="button" class="btn sm" @click="toToday">Сегодня</button></div>
     <template v-if="cur">
      <div class="sa">
-     <div class="g total"><span class="tl">Произведено за смену</span><strong class="tn">{{ fmt(total+liveM2) }}<small>м²</small></strong><div class="tb"><span>Погонные метры за смену</span><b>{{ fmt(totalLm+liveLm) }} пог. м</b></div><div class="tb t2"><span>Брак за смену<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak+liveBrk) }} кг</b></div></div>
+     <div class="g total"><span class="tl">Произведено<br>за смену</span><strong class="tn">{{ fmt(total+liveM2) }}<small>м²</small></strong><div class="tb"><span>Погонаж</span><b>{{ fmt(totalLm+liveLm) }} м</b></div><div class="tb t2"><span>Брак<template v-if="curWaste>0"> (в т.ч. отходы {{ fmt(curWaste) }})</template></span><b>{{ fmt(totalBrak+liveBrk) }} кг</b></div></div>
      <div v-if="desk" class="addrow"><button class="btn pri big" @click="openOrder()">Добавить заказ</button></div>
      </div>
      <div class="lc">
